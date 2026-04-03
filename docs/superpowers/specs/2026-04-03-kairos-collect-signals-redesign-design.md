@@ -1,7 +1,7 @@
 # kairos-collect-signals 重构设计文档
 
 **日期**: 2026-04-03
-**版本**: v4.0
+**版本**: v4.1
 **状态**: 设计中
 
 ---
@@ -14,6 +14,7 @@
 | v2.0 | 2026-04-03 | 根据 CTO/PM/工程师审阅意见更新 |
 | v3.0 | 2026-04-03 | 修正 Skill 设计原则：Skill 是指令集，Agent 执行，不包含 LLM API 调用 |
 | v4.0 | 2026-04-03 | 深度优化：新增 9 项 Banned Patterns、Quality Gates 四项门控、Source Whitelist；针对公众号高质量内容优化 |
+| v4.1 | 2026-04-04 | 修复：临时文件改到本地临时目录、高质量社交作者白名单、时效性3天、默认关键词搜索 |
 
 ---
 
@@ -95,15 +96,22 @@ kairos-collect-signals/
 ├── README.md                     # 人类可读文档
 ├── scripts/
 │   ├── collect.py               # 信号采集脚本
-│   └── dedup.py                 # 去重脚本（可选）
+│   ├── dedup.py                 # 去重脚本
+│   └── cleanup.py               # 临时文件清理脚本
 ├── references/
-│   ├── sources.json             # 数据源配置（72个源）
-│   ├── keywords.json            # 关键词配置
+│   ├── sources.json             # 数据源配置（RSS/API/HTML 源）
+│   ├── keywords.json            # 关键词配置（默认搜索关键词）
+│   ├── high_quality_authors.json # 高质量作者白名单（Twitter/Reddit）
 │   ├── banned_patterns.json     # 禁止选题模式
 │   └── angle_prompt.md          # 角度生成 Prompt 模板
 └── evals/
     └── evals.json               # 测试用例
 ```
+
+**临时文件管理**：
+- 所有过程文件存放在 `./.kairos-temp/` 目录
+- 任务结束后自动清理（Agent 执行 `python3 scripts/cleanup.py`）
+- 不使用 `/tmp` 目录
 
 ---
 
@@ -113,17 +121,20 @@ kairos-collect-signals/
 用户请求 → Agent 激活 Skill → Agent 执行：
 
 Step 1: 采集信号
-   └─ Bash: python3 scripts/collect.py --tier 1 --limit 100
-   └─ 输出: /tmp/kairos-signals.json
+   └─ Bash: python3 scripts/collect.py --tier 1 --limit 100 --keywords "{用户关键词}"
+   └─ 如果用户未提供关键词：使用 references/keywords.json 中的默认关键词
+   └─ 时效性过滤：只采集 3 天内的内容
+   └─ 输出: ./.kairos-temp/signals.json
 
 Step 2: 读取信号
    └─ Agent: 读取 JSON 文件
 
 Step 3: 去重
-   └─ Bash: python3 scripts/dedup.py --input /tmp/kairos-signals.json --output /tmp/kairos-signals-deduped.json
+   └─ Bash: python3 scripts/dedup.py --input ./.kairos-temp/signals.json --output ./.kairos-temp/signals-deduped.json
 
 Step 4: 过滤信号
    └─ Agent: 应用 Banned Patterns 和 Whitelist 规则
+   └─ 时效性：3 天以内的信号
 
 Step 5: 生成角度
    └─ Agent: 使用 references/angle_prompt.md 的 Prompt
@@ -131,6 +142,10 @@ Step 5: 生成角度
 
 Step 6: 输出结果
    └─ Agent: 输出 JSON 格式
+
+Step 7: 清理临时文件
+   └─ Bash: python3 scripts/cleanup.py
+   └─ 删除 ./.kairos-temp/ 目录
 ```
 
 ---
@@ -147,10 +162,18 @@ Step 6: 输出结果
 - 读取 `references/sources.json` 获取数据源
 - 并发采集 RSS/API/HTML 源
 - 单个源失败不影响整体（try/except）
-- 输出到 `/tmp/kairos-signals.json`
+- **时效性过滤**：只采集 3 天内的内容
+- **关键词逻辑**：
+  - 如果用户提供了关键词：使用用户关键词
+  - 如果用户未提供：使用 `references/keywords.json` 中的默认关键词
+- 输出到 `./.kairos-temp/signals.json`
 
 **调用方式**:
 ```bash
+# 用户提供关键词
+python3 scripts/collect.py --tier 1 --limit 100 --keywords "LangChain RAG"
+
+# 用户未提供关键词，使用默认关键词
 python3 scripts/collect.py --tier 1 --limit 100
 ```
 
@@ -185,7 +208,7 @@ python3 scripts/collect.py --tier 1 --limit 100
 
 **执行者**: Agent（读取 JSON 文件）
 
-**文件**: `/tmp/kairos-signals.json`
+**文件**: `./.kairos-temp/signals.json`
 
 ### Step 3: 去重
 
@@ -196,11 +219,26 @@ python3 scripts/collect.py --tier 1 --limit 100
 **功能**:
 - 基于信号内容哈希去重
 - 保留发布时间更新的信号
-- 输出到 `/tmp/kairos-signals-deduped.json`
+- 输出到 `./.kairos-temp/signals-deduped.json`
 
 **调用方式**:
 ```bash
-python3 scripts/dedup.py --input /tmp/kairos-signals.json --output /tmp/kairos-signals-deduped.json
+python3 scripts/dedup.py --input ./.kairos-temp/signals.json --output ./.kairos-temp/signals-deduped.json
+```
+
+### Step 7: 清理临时文件
+
+**执行者**: Bash（任务结束时执行）
+
+**脚本**: `scripts/cleanup.py`
+
+**功能**:
+- 删除 `./.kairos-temp/` 目录及其所有内容
+- 确保不残留临时文件
+
+**调用方式**:
+```bash
+python3 scripts/cleanup.py
 ```
 
 ### Step 4: 过滤信号
@@ -300,9 +338,10 @@ python3 scripts/dedup.py --input /tmp/kairos-signals.json --output /tmp/kairos-s
 | 顶级开发者博客 | Andrej Karpathy, Tomasz Tunguz, Simon Willison | ✅ 白名单 |
 | 学术论文 | ArXiv (cs.AI/CL/LG), ACL, NeurIPS | ✅ 白名单 |
 | 知名技术媒体 | The Verge Tech, Ars Technica, Wired | ✅ 白名单 |
+| **高质量社交作者** | 见 `references/high_quality_authors.json` | ✅ 白名单 |
 | 聚合类内容 | 程序员日报, 开发者头条, 知乎日报 | ❌ 禁止 |
 | 资讯类翻译 | 机器翻译的海外资讯 | ❌ 禁止 |
-| 社交媒体 | Twitter/X, Reddit, Weibo 热帖 | ❌ 禁止（除非有大佬原创） |
+| 普通社交内容 | Twitter/X, Reddit 非白名单内容 | ❌ 禁止 |
 
 ### 6.4 内容类型过滤
 
@@ -415,12 +454,13 @@ description: |
 
 ## 流程
 
-1. **采集信号**: `python3 scripts/collect.py --tier 1 --limit 100`
-2. **读取信号**: 读取 `/tmp/kairos-signals.json`
-3. **去重**: `python3 scripts/dedup.py --input /tmp/kairos-signals.json --output /tmp/kairos-signals-deduped.json`
+1. **采集信号**: `python3 scripts/collect.py --tier 1 --limit 100 --keywords "{用户关键词}"`（用户未提供关键词时使用默认关键词）
+2. **读取信号**: 读取 `./.kairos-temp/signals.json`
+3. **去重**: `python3 scripts/dedup.py --input ./.kairos-temp/signals.json --output ./.kairos-temp/signals-deduped.json`
 4. **过滤**: 应用 Banned Patterns 和 Whitelist 规则
 5. **生成角度**: 使用 `references/angle_prompt.md` 的 Prompt
 6. **输出**: JSON 格式
+7. **清理**: `python3 scripts/cleanup.py`（删除 `./.kairos-temp/`）
 
 ## 过滤规则
 
@@ -438,14 +478,30 @@ description: |
 - ❌ ai_generated: `/(首先|其次|最后|总之).{0,15}(我们可以看到|研究表明)/`
 - ❌ clickbait: `/竟然|居然|万万没想到|99%的人都不知道|绝了/`
 
-### Step 2: Source Whitelist（仅白名单来源）
+### Step 2: Source Whitelist（来源白名单）
 
-仅以下来源可进入候选：
+**来源类型**：
 
-- ✅ 官方技术博客 (OpenAI/Anthropic/Google DeepMind/Stripe)
-- ✅ 顶级开发者博客 (Andrej Karpathy/Tomasz Tunguz/Simon Willison)
-- ✅ 学术论文 (ArXiv cs.AI/CL/LG, ACL, NeurIPS)
-- ❌ 聚合类内容、资讯翻译、社交媒体热帖
+| 来源类型 | 示例 | 状态 |
+|----------|------|------|
+| 官方技术博客 | OpenAI Blog, Anthropic Blog, Google DeepMind, Stripe Blog | ✅ 白名单 |
+| 顶级开发者博客 | Andrej Karpathy, Tomasz Tunguz, Simon Willison | ✅ 白名单 |
+| 学术论文 | ArXiv (cs.AI/CL/LG), ACL, NeurIPS | ✅ 白名单 |
+| 知名技术媒体 | The Verge Tech, Ars Technica, Wired | ✅ 白名单 |
+| **高质量社交作者** | 见 `references/high_quality_authors.json` | ✅ 白名单 |
+| 聚合类内容 | 程序员日报, 开发者头条, 知乎日报 | ❌ 禁止 |
+| 资讯类翻译 | 机器翻译的海外资讯 | ❌ 禁止 |
+| 普通社交内容 | Twitter/Reddit 泛泛热帖 | ❌ 禁止 |
+
+**高质量社交作者白名单**（`references/high_quality_authors.json`）：
+- Twitter/X 上有独特观点的 AI 开发者、研究者
+- Reddit (r/MachineLearning, r/LocalLLaMA) 上有深度的讨论
+- 配置字段：`username`, `platform`, `bio`, `followers_threshold`
+
+**社交媒体采集逻辑**：
+1. 仅采集白名单作者的推文/帖子
+2. 非白名单作者的社交内容直接拒绝
+3. 白名单作者的内容仍需通过 Banned Patterns 和 Quality Gates
 
 ### Step 3: Quality Gates（质量门控）
 
@@ -501,12 +557,78 @@ Agent 使用 `references/angle_prompt.md` 中的 Prompt 模板，
       "tier": 1,
       "category": "official",
       "enabled": true
+    },
+    {
+      "name": "HuggingFace Blog",
+      "url": "https://huggingface.co/blog/feed.xml",
+      "type": "rss",
+      "tier": 1,
+      "category": "official",
+      "enabled": true
+    },
+    {
+      "name": "Twitter - Anthropic",
+      "url": "https://twitter.com/AnthropicAI",
+      "type": "twitter",
+      "tier": 1,
+      "category": "twitter",
+      "enabled": true
     }
   ]
 }
 ```
 
-### 9.2 references/angle_prompt.md
+### 9.2 references/keywords.json
+
+```json
+{
+  "default_keywords": [
+    "LLM", "RAG", "LangChain", "AI Agent",
+    "machine learning", "neural network",
+    "Claude", "GPT-4", "transformer"
+  ],
+  "recency_days": 3
+}
+```
+
+### 9.3 references/high_quality_authors.json
+
+```json
+{
+  "twitter": [
+    {
+      "username": "anthropic",
+      "display_name": "Anthropic",
+      "bio": "AI safety and research",
+      "description": "官方账号，发布 Claude 相关技术解读"
+    },
+    {
+      "username": "kaborl",
+      "display_name": "OpenClover 作者",
+      "bio": "Building open source AI tools",
+      "description": "OpenClover 作者，AI 工具深度实践"
+    },
+    {
+      "username": "amasad",
+      "display_name": "Riley Goodside",
+      "bio": "LLM prompting techniques",
+      "description": "LLM prompting 专家，独特视角"
+    }
+  ],
+  "reddit": [
+    {
+      "subreddit": "MachineLearning",
+      "description": "高质量 ML 讨论"
+    },
+    {
+      "subreddit": "LocalLLaMA",
+      "description": "本地 LLM 部署实践"
+    }
+  ]
+}
+```
+
+### 9.4 references/angle_prompt.md
 
 ```markdown
 # 角度生成 Prompt
@@ -724,11 +846,14 @@ JSON 数组，每个元素包含：
 ### Phase 1：MVP
 
 - [ ] SKILL.md（符合规范）
-- [ ] scripts/collect.py（采集脚本）
+- [ ] scripts/collect.py（采集脚本，支持关键词参数）
 - [ ] scripts/dedup.py（去重脚本）
-- [ ] references/sources.json（72源配置）
-- [ ] references/keywords.json（关键词配置，基本结构）
+- [ ] scripts/cleanup.py（临时文件清理脚本）
+- [ ] references/sources.json（RSS/API/HTML 源配置）
+- [ ] references/keywords.json（默认关键词配置）
+- [ ] references/high_quality_authors.json（高质量社交作者白名单）
 - [ ] references/angle_prompt.md（Prompt 模板）
+- [ ] references/banned_patterns.json（Banned Patterns 配置）
 - [ ] 评估用例
 
 ### Phase 2

@@ -1,7 +1,7 @@
 # kairos-collect-signals 重构设计文档
 
 **日期**: 2026-04-03
-**版本**: v3.0
+**版本**: v4.0
 **状态**: 设计中
 
 ---
@@ -13,6 +13,7 @@
 | v1.0 | 2026-04-03 | 初始设计 |
 | v2.0 | 2026-04-03 | 根据 CTO/PM/工程师审阅意见更新 |
 | v3.0 | 2026-04-03 | 修正 Skill 设计原则：Skill 是指令集，Agent 执行，不包含 LLM API 调用 |
+| v4.0 | 2026-04-03 | 深度优化：新增 9 项 Banned Patterns、Quality Gates 四项门控、Source Whitelist；针对公众号高质量内容优化 |
 
 ---
 
@@ -118,14 +119,17 @@ Step 1: 采集信号
 Step 2: 读取信号
    └─ Agent: 读取 JSON 文件
 
-Step 3: 过滤信号
+Step 3: 去重
+   └─ Bash: python3 scripts/dedup.py --input /tmp/kairos-signals.json --output /tmp/kairos-signals-deduped.json
+
+Step 4: 过滤信号
    └─ Agent: 应用 Banned Patterns 和 Whitelist 规则
 
-Step 4: 生成角度
+Step 5: 生成角度
    └─ Agent: 使用 references/angle_prompt.md 的 Prompt
    └─ Agent: 使用自己的 LLM 能力生成角度
 
-Step 5: 输出结果
+Step 6: 输出结果
    └─ Agent: 输出 JSON 格式
 ```
 
@@ -177,7 +181,29 @@ python3 scripts/collect.py --tier 1 --limit 100
 }
 ```
 
-### Step 2: 过滤信号
+### Step 2: 读取信号
+
+**执行者**: Agent（读取 JSON 文件）
+
+**文件**: `/tmp/kairos-signals.json`
+
+### Step 3: 去重
+
+**执行者**: Bash（通过 Agent 调用）
+
+**脚本**: `scripts/dedup.py`
+
+**功能**:
+- 基于信号内容哈希去重
+- 保留发布时间更新的信号
+- 输出到 `/tmp/kairos-signals-deduped.json`
+
+**调用方式**:
+```bash
+python3 scripts/dedup.py --input /tmp/kairos-signals.json --output /tmp/kairos-signals-deduped.json
+```
+
+### Step 4: 过滤信号
 
 **执行者**: Agent（根据规则自己判断）
 
@@ -186,7 +212,7 @@ python3 scripts/collect.py --tier 1 --limit 100
 **Banned Patterns**: 直接拒绝
 **Translation Whitelist**: 豁免或标记
 
-### Step 3: 生成角度
+### Step 5: 生成角度
 
 **执行者**: Agent（使用自己的 LLM 能力）
 
@@ -198,7 +224,7 @@ python3 scripts/collect.py --tier 1 --limit 100
 3. 使用自己的 LLM 能力生成角度
 4. 解析 JSON 输出
 
-### Step 4: 输出结果
+### Step 6: 输出结果
 
 **执行者**: Agent
 
@@ -212,22 +238,83 @@ python3 scripts/collect.py --tier 1 --limit 100
 
 以下模式**直接拒绝**，不进入候选列表：
 
-| 模式 | 类型 | 拒绝理由 |
+| 模式 | 类型 | 拒绝理由 | 正则示例 |
+|------|------|---------|---------|
+| 热点炒作 | hot_news | 热点话题，泛滥内容 | `/(刚刚\|重磅\|突发\|震惊\|炸裂).*(发布\|上线\|推出\|宣布)/` |
+| 预测类标题 | predictions | 无长期价值 | `/(十大\|预测\|展望\|趋势).*\d{4}年\|来年.*趋势\|必火/` |
+| 二道贩子概述 | generic_overview | 二手信息重组，无一手经验 | `/一文读懂\|全面解读\|快速入门\|分钟学会\|一张图读懂\|深入浅出.*介绍/` |
+| 焦虑营销 | anxiety_marketing | 标题党，情绪操控 | `/AI取代.*职业\|将被淘汰\|即将消失\|逆天\|颠覆认知\|太卷了/` |
+| 机器翻译泛滥 | translation_fluff | 无深度内容，翻译腔 | `/(让我们深入\|值得注意的是\|本文将探讨\|翻译自)/` |
+| 工具推荐堆砌 | tool_list | 无深度体验，流水账式 | `/工具推荐\|必备神器\|10款.*工具\|超级好用.*工具/` |
+| 入门教程泛滥 | tutorial_fluff | 基础内容，无独特价值 | `/从零开始\|新手必看\|入门教程\|上手指南\|小白.*必学/` |
+| AI生成特征 | ai_generated | AI批量生产特征 | `/(首先\|其次\|最后\|总之).{0,15}(我们可以看到\|研究表明\|显而易见)/` |
+| 标题党特征 | clickbait | 夸张标题 | `/竟然\|居然\|万万没想到\|99%的人都不知道\|绝了/` |
+
+### 6.2 Quality Gates（质量门控）
+
+**每个信号必须通过以下所有门控**，使用 Agent + LLM 判断：
+
+| 门控 | 标准 | 检验方式 |
 |------|------|---------|
-| "刚刚，OpenAI又发布..." | hot_news | 热点话题，泛滥内容 |
-| "2026年AI十大预测！" | predictions | 无长期价值 |
-| "一文读懂AI前世今生！" | generic_overview | 二道贩子特征 |
-| "AI取代XXX职业！" | anxiety_marketing | 标题党 |
+| **一手经验** | 包含作者亲身测试、实验、数据、案例 | 关键词：实测、自己、我的实验、我们发现、我们测试、代码实现 |
+| **独特观点** | 不是泛泛而谈，有差异化视角 | 非综述类，非对比类，有独特结论 |
+| **深度分析** | 不是浅层介绍，有技术深度 | 包含代码/数据/架构/原理/分析 |
+| **实战价值** | 可落地，不是纯理论 | 包含案例/实操/经验/踩坑/总结 |
 
-### 6.2 Translation Whitelist（豁免规则）
+**Agent 质量评估 Prompt**：
+```
+你是内容质量评审员。评估以下信号是否通过质量门控。
 
-以下来源**可以豁免**进入候选列表：
+信号内容：{content}
+信号来源：{source}
 
-| 来源 | 条件 | 状态 |
-|------|------|------|
-| 官方技术博客 (OpenAI/Claude/DeepMind) | 有深度技术解读 | ✅ 豁免 |
-| 大佬博客 (Andrej Karpathy等) | 有独特观点或一手经验 | ✅ 豁免 |
-| 资讯类翻译 | 无深度内容 | ❌ 禁止 |
+评估标准（每项 0-1 分）：
+1. 一手经验：是否有作者亲身测试、实验、数据或案例？
+2. 独特观点：是否有差异化视角？不是泛泛而谈？
+3. 深度分析：是否有技术深度？不是浅层介绍？
+4. 实战价值：是否可落地？不是纯理论？
+
+通过条件：总分 >= 3 且每项 >= 0.5
+
+输出 JSON：
+{
+  "quality_score": 总分,
+  "pass": true/false,
+  "reasons": ["优势...", "劣势..."],
+  "gate_scores": {
+    "firsthand_experience": 分数,
+    "unique_perspective": 分数,
+    "depth_analysis": 分数,
+    "practical_value": 分数
+  }
+}
+```
+
+### 6.3 Source Whitelist（来源白名单）
+
+**仅以下来源可进入候选列表**，其余直接拒绝：
+
+| 来源类型 | 示例 | 状态 |
+|----------|------|------|
+| 官方技术博客 | OpenAI Blog, Anthropic Blog, Google DeepMind, Stripe Blog | ✅ 白名单 |
+| 顶级开发者博客 | Andrej Karpathy, Tomasz Tunguz, Simon Willison | ✅ 白名单 |
+| 学术论文 | ArXiv (cs.AI/CL/LG), ACL, NeurIPS | ✅ 白名单 |
+| 知名技术媒体 | The Verge Tech, Ars Technica, Wired | ✅ 白名单 |
+| 聚合类内容 | 程序员日报, 开发者头条, 知乎日报 | ❌ 禁止 |
+| 资讯类翻译 | 机器翻译的海外资讯 | ❌ 禁止 |
+| 社交媒体 | Twitter/X, Reddit, Weibo 热帖 | ❌ 禁止（除非有大佬原创） |
+
+### 6.4 内容类型过滤
+
+| 类型 | 处理方式 |
+|------|---------|
+| 新闻报道 | ❌ 禁止（太时效性，无长期价值） |
+| 产品介绍 | ⚠️ 仅当有深度评测/对比时保留 |
+| 教程/入门 | ❌ 禁止（泛滥，无独特价值） |
+| 观点评论 | ✅ 保留，需有独特视角 |
+| 技术深度文 | ✅ 保留，核心目标 |
+| 实战案例 | ✅ 保留，最高价值 |
+| 工具评测 | ✅ 保留，需有真实体验 |
 
 ---
 
@@ -257,15 +344,22 @@ python3 scripts/collect.py --tier 1 --limit 100
       "source_signals": ["sig-20260403-xxxx"],
       "signals_count": 1,
       "type": "technical_explainer",
-      "value_score": 0.85,
+      "quality_score": 0.85,
+      "gate_scores": {
+        "firsthand_experience": 0.9,
+        "unique_perspective": 0.8,
+        "depth_analysis": 0.85,
+        "practical_value": 0.8
+      },
       "differentiation": "基于实测，有独特一手经验",
       "chase_trend": false,
-      "值得写吗": true,
-      "拒绝理由": null,
+      "worth_writing": true,
+      "reject_reason": null,
       "platforms": {
         "wechat": {
           "format": "深度技术文",
-          "length": "3000+ 字"
+          "length": "3000+ 字",
+          "angle": "从实测失效场景切入"
         }
       }
     }
@@ -273,11 +367,28 @@ python3 scripts/collect.py --tier 1 --limit 100
   "meta": {
     "total_signals": 150,
     "signals_filtered": 130,
+    "rejected_reasons": {
+      "banned_pattern": 45,
+      "quality_gate_failed": 60,
+      "source_not_whitelisted": 25
+    },
     "candidate_topics_count": 5,
     "collection_time": "2026-04-03T10:00:00+08:00"
   }
 }
 ```
+
+**字段说明**：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `quality_score` | float | 质量总分（0-1），由 gate_scores 平均 |
+| `gate_scores` | object | 四项质量门控得分 |
+| `worth_writing` | bool | 是否值得写（替代"值得写吗"） |
+| `reject_reason` | string/null | 拒绝理由（如果 worth_writing=false） |
+| `rejected_reasons` | object | 过滤统计（meta 中） |
+| `chase_trend` | bool | 是否追热点（应尽量避免） |
+| `angle` | string | 公众号专属角度提示 |
 
 ---
 
@@ -306,23 +417,44 @@ description: |
 
 1. **采集信号**: `python3 scripts/collect.py --tier 1 --limit 100`
 2. **读取信号**: 读取 `/tmp/kairos-signals.json`
-3. **过滤**: 应用 Banned Patterns 和 Whitelist 规则
-4. **生成角度**: 使用 `references/angle_prompt.md` 的 Prompt
-5. **输出**: JSON 格式
+3. **去重**: `python3 scripts/dedup.py --input /tmp/kairos-signals.json --output /tmp/kairos-signals-deduped.json`
+4. **过滤**: 应用 Banned Patterns 和 Whitelist 规则
+5. **生成角度**: 使用 `references/angle_prompt.md` 的 Prompt
+6. **输出**: JSON 格式
 
 ## 过滤规则
 
-### Banned Patterns（直接拒绝）
+### Step 1: Banned Patterns（直接拒绝）
 
-- ❌ hot_news: "刚刚，OpenAI又发布..."
-- ❌ predictions: "2026年AI十大预测！"
-- ❌ generic_overview: "一文读懂AI前世今生！"
-- ❌ anxiety_marketing: "AI取代XXX职业！"
+使用正则匹配以下模式，匹配则直接拒绝：
 
-### Translation Whitelist（豁免条件）
+- ❌ hot_news: `/(刚刚|重磅|突发|震惊|炸裂).*(发布|上线|推出|宣布)/`
+- ❌ predictions: `/(十大|预测|展望|趋势).*\d{4}年|来年.*趋势|必火/`
+- ❌ generic_overview: `/一文读懂|全面解读|快速入门|分钟学会|一张图读懂/`
+- ❌ anxiety_marketing: `/AI取代.*职业|将被淘汰|即将消失|逆天|颠覆认知|太卷了/`
+- ❌ translation_fluff: `/(让我们深入|值得注意的是|本文将探讨|翻译自)/`
+- ❌ tool_list: `/工具推荐|必备神器|10款.*工具|超级好用.*工具/`
+- ❌ tutorial_fluff: `/从零开始|新手必看|入门教程|上手指南|小白.*必学/`
+- ❌ ai_generated: `/(首先|其次|最后|总之).{0,15}(我们可以看到|研究表明)/`
+- ❌ clickbait: `/竟然|居然|万万没想到|99%的人都不知道|绝了/`
 
-- ✅ 官方技术博客 (OpenAI/Claude/DeepMind): 必须有深度技术解读
-- ✅ 大佬博客 (Andrej Karpathy等): 必须有独特观点
+### Step 2: Source Whitelist（仅白名单来源）
+
+仅以下来源可进入候选：
+
+- ✅ 官方技术博客 (OpenAI/Anthropic/Google DeepMind/Stripe)
+- ✅ 顶级开发者博客 (Andrej Karpathy/Tomasz Tunguz/Simon Willison)
+- ✅ 学术论文 (ArXiv cs.AI/CL/LG, ACL, NeurIPS)
+- ❌ 聚合类内容、资讯翻译、社交媒体热帖
+
+### Step 3: Quality Gates（质量门控）
+
+使用 Agent + LLM 评估，每项 >= 0.5 分且总分 >= 3：
+
+1. **一手经验**：是否有作者亲身测试/实验/数据？
+2. **独特观点**：是否有差异化视角？
+3. **深度分析**：是否有技术深度？
+4. **实战价值**：是否可落地？
 
 ## 角度生成
 
@@ -346,6 +478,7 @@ Agent 使用 `references/angle_prompt.md` 中的 Prompt 模板，
 | 文件 | 说明 |
 |------|------|
 | `scripts/collect.py` | 信号采集脚本 |
+| `scripts/dedup.py` | 去重脚本 |
 | `references/sources.json` | 72 个数据源配置 |
 | `references/keywords.json` | 关键词配置 |
 | `references/banned_patterns.json` | 禁止选题模式 |
@@ -378,34 +511,50 @@ Agent 使用 `references/angle_prompt.md` 中的 Prompt 模板，
 ```markdown
 # 角度生成 Prompt
 
-你是一个写作角度策划专家。根据以下信号，生成独特的写作角度。
+你是一个写作角度策划专家，为微信公众号 AI 技术深度文生成独特角度。
 
 ## 信号
 
 {SIGNALS}
 
-## 要求
+## 角度生成要求
 
-1. 每个角度必须独特，不是泛泛而谈
-2. 说明差异化：为什么我们能写别人写不了的
-3. 评估是否在追热点（chase_trend）
-4. 只输出高价值角度（value_score > 0.5）
-5. 最多生成 10 个角度
+1. **禁止二道贩子**：必须是原创视角，不能是综述/对比/入门介绍
+2. **一手经验**：角度必须有实测/案例/踩坑，不能是纯理论
+3. **独特差异化**：说明为什么我们能写别人写不了的
+4. **追热点警告**：如果是热点（chase_trend=true），必须有独特深度视角
+5. **质量门槛**：value_score > 0.6 才能输出
 
-## 目标用户
+## 公众号专属角度要求
 
-微信公众号 AI 技术深度作者，3000+ 字深度技术文
+每个角度必须包含：
+- **切入角度**：不是泛泛而谈，从具体场景切入
+- **独特视角**：有差异化，不是翻译/编译/综述
+- **可写性**：3000+ 字有东西可写，不是凑字数
 
 ## 输出格式
 
 JSON 数组，每个元素包含：
 {
-  "topic": "角度标题",
-  "angle_hint": "切入说明",
-  "type": "technical_explainer | tool_review | opinion_commentary",
-  "differentiation": "差异化说明",
+  "topic": "角度标题（具体，不是泛泛）",
+  "angle_hint": "从XX切入，有XX独特优势",
+  "type": "technical_explainer | case_study | opinion_critique",
+  "differentiation": "为什么我们能写别人写不了",
   "chase_trend": true/false,
-  "value_score": 0-1
+  "quality_score": 0-1,
+  "gate_scores": {
+    "firsthand_experience": 0-1,
+    "unique_perspective": 0-1,
+    "depth_analysis": 0-1,
+    "practical_value": 0-1
+  },
+  "platforms": {
+    "wechat": {
+      "format": "深度技术文",
+      "length": "3000+ 字",
+      "angle": "具体切入角度"
+    }
+  }
 }
 ```
 
@@ -426,7 +575,142 @@ JSON 数组，每个元素包含：
       "assertions": [
         "signals 是非空数组",
         "candidate_topics 是非空数组",
-        "每个 candidate_topic 包含 value_score, differentiation, chase_trend"
+        "每个 candidate_topic 包含 value_score, differentiation, chase_trend",
+        "每个 candidate_topic 的 value_score 在 0-1 之间"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Banned Patterns 过滤 - hot_news",
+      "signals": [
+        {
+          "id": "sig-001",
+          "content": "刚刚，OpenAI又发布重磅更新！",
+          "type": "hot_news"
+        }
+      ],
+      "expected_output": "该信号不应出现在 candidate_topics 中",
+      "assertions": [
+        "candidate_topics 长度为 0 或不包含 sig-001"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Banned Patterns 过滤 - predictions",
+      "signals": [
+        {
+          "id": "sig-002",
+          "content": "2026年AI十大预测！",
+          "type": "predictions"
+        }
+      ],
+      "expected_output": "该信号不应出现在 candidate_topics 中",
+      "assertions": [
+        "candidate_topics 长度为 0 或不包含 sig-002"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Banned Patterns 过滤 - generic_overview",
+      "signals": [
+        {
+          "id": "sig-003",
+          "content": "一文读懂AI前世今生",
+          "type": "generic_overview"
+        }
+      ],
+      "expected_output": "该信号不应出现在 candidate_topics 中",
+      "assertions": [
+        "candidate_topics 长度为 0 或不包含 sig-003"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "value_score 范围验证",
+      "signals": [
+        {
+          "id": "sig-004",
+          "content": "Valid technical content",
+          "type": "technical"
+        }
+      ],
+      "expected_output": "candidate_topics 中 value_score 应在 0-1 之间",
+      "assertions": [
+        "每个 candidate_topic 的 value_score >= 0",
+        "每个 candidate_topic 的 value_score <= 1"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "空信号场景",
+      "signals": [],
+      "expected_output": "应返回空数组或合理的空状态响应",
+      "assertions": [
+        "signals 是空数组 或",
+        "candidate_topics 是空数组"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Source Whitelist - 聚合类内容应被拒绝",
+      "signals": [
+        {
+          "id": "sig-007",
+          "content": "程序员日报：本周 AI 十大新闻",
+          "source": {"platform": "程序员日报", "url": "..."}
+        }
+      ],
+      "expected_output": "该信号不应出现在 candidate_topics 中",
+      "assertions": [
+        "candidate_topics 长度为 0 或不包含 sig-007"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Quality Gate - 一手经验验证",
+      "signals": [
+        {
+          "id": "sig-008",
+          "content": "我测试了 5 种 RAG 策略，发现只有 XX 有效...",
+          "source": {"platform": "Personal Blog", "url": "..."}
+        }
+      ],
+      "expected_output": "应通过质量门控，gate_scores.firsthand_experience >= 0.5",
+      "assertions": [
+        "candidate_topics 包含 sig-008",
+        "candidate_topics[0].gate_scores.firsthand_experience >= 0.5"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Quality Gate - 缺乏深度应被拒绝",
+      "signals": [
+        {
+          "id": "sig-009",
+          "content": "AI 是什么？有哪些应用？本文给你答案...",
+          "source": {"platform": "技术博客", "url": "..."}
+        }
+      ],
+      "expected_output": "该信号应被质量门控拒绝",
+      "assertions": [
+        "candidate_topics 长度为 0 或不包含 sig-009"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "高质量内容 - 实战案例应通过",
+      "signals": [
+        {
+          "id": "sig-010",
+          "content": "我们在生产环境踩坑 LangChain 的教训：内存泄漏、token 爆表、响应延迟的排查过程...",
+          "source": {"platform": "Stripe Blog", "url": "..."}
+        }
+      ],
+      "expected_output": "应通过所有质量门控",
+      "assertions": [
+        "candidate_topics 包含 sig-010",
+        "candidate_topics[0].quality_score >= 0.6",
+        "candidate_topics[0].gate_scores.firsthand_experience >= 0.7"
       ]
     }
   ]
@@ -441,14 +725,15 @@ JSON 数组，每个元素包含：
 
 - [ ] SKILL.md（符合规范）
 - [ ] scripts/collect.py（采集脚本）
+- [ ] scripts/dedup.py（去重脚本）
 - [ ] references/sources.json（72源配置）
+- [ ] references/keywords.json（关键词配置，基本结构）
 - [ ] references/angle_prompt.md（Prompt 模板）
 - [ ] 评估用例
 
 ### Phase 2
 
-- [ ] 去重脚本
-- [ ] 关键词配置
+- [ ] 关键词配置（增强版）
 - [ ] 小红书/抖音输出字段
 
 ---

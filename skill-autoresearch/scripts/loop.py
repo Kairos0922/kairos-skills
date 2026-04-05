@@ -328,9 +328,9 @@ def run_loop(
         print(f"{'='*60}")
 
         # New behavior: put runs alongside the skill being tested (sibling directory)
-        # e.g., /path/to/kairos-collect-signals-eval/kairos-collect-signals/iteration-1/
+        # e.g., /path/to/kairos-collect-signals-eval/iteration-1/
         skill_runs_root = Path(str(skill_path) + "-eval").resolve()
-        run_dir = skill_runs_root / skill_name / f"iteration-{iteration}"
+        run_dir = skill_runs_root / f"iteration-{iteration}"
         run_dir.mkdir(parents=True, exist_ok=True)
 
         # Step 1: Git snapshot BEFORE making changes

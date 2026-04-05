@@ -12,7 +12,7 @@ Usage:
     python3 scripts/harness.py --skill-path /path/to/target-skill --iteration 1
 
 Output:
-    <skill-path>-eval/<skill-name>/iteration-<N>/eval-<case-id>/
+    <skill-path>-eval/iteration-<N>/eval-<case-id>/
         ├── output.json          # raw skill output
         ├── grading.json         # pass/fail per assertion + evidence
         └── metrics.json         # timing, token counts
@@ -40,14 +40,15 @@ RUNS_ROOT = WORKSPACE_ROOT / "runs"
 def set_runs_root_from_skill(skill_path: Path) -> None:
     """Set RUNS_ROOT to be alongside the skill being tested (sibling directory)."""
     global RUNS_ROOT
-    # Put runs directory next to the skill, e.g.:
     # skill: /path/to/kairos-collect-signals
     # runs:  /path/to/kairos-collect-signals-eval/
     RUNS_ROOT = Path(str(skill_path) + "-eval").resolve()
 
 
 def get_run_dir(skill_name: str, iteration: int) -> Path:
-    run_dir = RUNS_ROOT / skill_name / f"iteration-{iteration}"
+    # Path: <skill-path>-eval/iteration-{N}/
+    # Example: kairos-collect-signals-eval/iteration-1/
+    run_dir = RUNS_ROOT / f"iteration-{iteration}"
     run_dir.mkdir(parents=True, exist_ok=True)
     return run_dir
 

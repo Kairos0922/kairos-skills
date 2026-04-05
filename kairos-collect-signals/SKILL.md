@@ -102,6 +102,15 @@ python3 scripts/dedup.py --input ./.kairos-temp/signals.json --output ./.kairos-
 | 深度分析 | 是否有技术深度 |
 | 实战价值 | 是否可落地 |
 
+**实验性 - 跨信号合成（Signal Synthesis）**：
+
+在 Step 5 生成角度之前，先将过滤后的信号按主题/技术栈分组。每组选取 2-3 个互补信号，优先组合：
+- 不同来源（博客 + 论文）
+- 不同角度（问题 + 解决方案）
+- 不同深度（现象 + 根因）
+
+这样可以从信号组合中生成比单一信号更丰富的角度。
+
 ### Step 5: 生成角度
 
 1. 读取 `references/angle_prompt.md`
@@ -221,6 +230,7 @@ python3 scripts/cleanup.py
       "angle_hint": "从'实际失效场景'切入",
       "source_signals": ["sig-20260403-xxxx"],
       "signals_count": 1,
+      "synthesized_group": false,
       "type": "technical_explainer",
       "quality_score": 0.85,
       "gate_scores": {
@@ -243,6 +253,11 @@ python3 scripts/cleanup.py
       "banned_pattern": 45,
       "quality_gate_failed": 60,
       "source_not_whitelisted": 25
+    },
+    "synthesis_stats": {
+      "total_groups": 0,
+      "synthesized_angles": 0,
+      "avg_signals_per_synthesized_angle": 0
     },
     "candidate_topics_count": 5,
     "collection_time": "2026-04-03T10:00:00+08:00"
@@ -334,3 +349,11 @@ python3 scripts/cleanup.py
     "vibe coding", "MCP", "model context protocol",
     "LangGraph", "LlamaIndex", "dspy"
   ]
+
+### Step 5: 生成角度
+
+1. 读取 `references/angle_prompt.md`
+2. **实验性 - 合成信号组**：如果过滤后的 signals >= 5 个，先按主题/技术栈分组，选取互补的 2-3 个信号为一组。每组生成 1-2 个角度
+3. 将过滤后的 signals（及其分组信息）按格式填入 `{SIGNALS}` 占位符（见 angle_prompt.md 中的信号格式化说明）
+4. 使用自己的 LLM 能力生成角度
+5. 解析 JSON 输出

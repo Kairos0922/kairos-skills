@@ -10,7 +10,7 @@ Decision rules:
   - else: REVERT (worse than best)
 
 Usage:
-    python3 scripts/decision.py --run-dir runs/<skill>/iteration-<N> --benchmark benchmark.json
+    python3 scripts/decision.py --run-dir <skill-path>-eval/iteration-<N> --benchmark benchmark.json
 """
 
 import argparse

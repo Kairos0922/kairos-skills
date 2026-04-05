@@ -328,9 +328,6 @@ python3 scripts/cleanup.py
    - ❌ "AI Agent 入门指南"
    - ✅ 必须有具体切入角度和差异点
 
-"angle": "具体切入角度"
-}
-
 ## 额外质量检查
 
 生成每个候选角度前，自问：

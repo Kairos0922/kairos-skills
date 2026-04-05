@@ -45,7 +45,7 @@ def set_runs_root_from_skill(skill_path: Path) -> None:
     RUNS_ROOT = Path(str(skill_path) + "-eval").resolve()
 
 
-def get_run_dir(skill_name: str, iteration: int) -> Path:
+def get_run_dir(iteration: int) -> Path:
     # Path: <skill-path>-eval/iteration-{N}/
     # Example: kairos-collect-signals-eval/iteration-1/
     run_dir = RUNS_ROOT / f"iteration-{iteration}"
@@ -407,7 +407,7 @@ def run_harness(skill_path: Path, iteration: int, runs_dir: Optional[Path] = Non
     if not eval_cases:
         raise ValueError(f"No eval cases found in {evals_file}")
 
-    run_dir = get_run_dir(skill_name, iteration)
+    run_dir = get_run_dir(iteration)
     print(f"[harness] Starting harness for {skill_name} iteration {iteration}")
     print(f"[harness] Run directory: {run_dir}")
     print(f"[harness] {len(eval_cases)} eval cases")

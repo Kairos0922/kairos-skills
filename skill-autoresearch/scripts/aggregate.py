@@ -9,7 +9,7 @@ Responsibilities:
 4. Output benchmark.json
 
 Usage:
-    python3 scripts/aggregate.py --run-dir runs/<skill>/iteration-<N>
+    python3 scripts/aggregate.py --run-dir <skill-path>-eval/iteration-<N>
 """
 
 import argparse
@@ -250,7 +250,7 @@ def main():
         "--run-dir",
         type=Path,
         required=True,
-        help="Path to run directory (e.g., runs/kairos-collect-signals/iteration-1)",
+        help="Path to run directory (e.g., <skill-path>-eval/iteration-1)",
     )
     args = parser.parse_args()
 

@@ -1,0 +1,23 @@
+# System files
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+
+# Claude Code
+.claude/
+
+# Environment and secrets
+.env
+.env.*
+*.env
+
+# Test runs
+skill-autoresearch/runs/
+
+# Documentation
+docs/
+
+# IDE
+.idea/
+.vscode/

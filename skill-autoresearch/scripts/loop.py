@@ -297,6 +297,7 @@ def run_loop(
     epsilon: float = 0.05,
     skip_revert: bool = False,
     watchdog_interval: int = 5,
+    skip_permissions: bool = False,
 ) -> dict:
     """
     Run the full optimization loop.
@@ -326,7 +327,10 @@ def run_loop(
         print(f"[loop] === Iteration {iteration}/{max_iterations} ===")
         print(f"{'='*60}")
 
-        run_dir = RUNS_ROOT / skill_name / f"iteration-{iteration}"
+        # New behavior: put runs alongside the skill being tested (sibling directory)
+        # e.g., /path/to/kairos-collect-signals-eval/kairos-collect-signals/iteration-1/
+        skill_runs_root = Path(str(skill_path) + "-eval").resolve()
+        run_dir = skill_runs_root / skill_name / f"iteration-{iteration}"
         run_dir.mkdir(parents=True, exist_ok=True)
 
         # Step 1: Git snapshot BEFORE making changes
@@ -367,7 +371,7 @@ def run_loop(
 
         # Step 4: Run harness
         print(f"[loop] Running harness...")
-        harness_ok = run_harness(skill_path, iteration, run_dir)
+        harness_ok = run_harness(skill_path, iteration, run_dir, skip_permissions=skip_permissions)
         if not harness_ok:
             consecutive_failures += 1
             print(f"[loop] ⚠️  Harness failed ({consecutive_failures}/3), reverting")
@@ -501,15 +505,20 @@ def run_loop(
     return history
 
 
-def run_harness(skill_path: Path, iteration: int, run_dir: Path) -> bool:
+def run_harness(skill_path: Path, iteration: int, run_dir: Path, skip_permissions: bool = False) -> bool:
     """Run harness.py and aggregate.py. Return success status."""
     script_path = WORKSPACE_ROOT / "scripts" / "harness.py"
 
     # Step 1: Run harness
+    cmd = [
+        sys.executable, str(script_path),
+        "--skill-path", str(skill_path),
+        "--iteration", str(iteration),
+    ]
+    if skip_permissions:
+        cmd.append("--dangerously-skip-permissions")
     result = subprocess.run(
-        [sys.executable, str(script_path),
-         "--skill-path", str(skill_path),
-         "--iteration", str(iteration)],
+        cmd,
         capture_output=True,
         text=True,
         timeout=600,
@@ -613,6 +622,11 @@ def main():
         default=None,
         help="Run only this iteration number (for testing)",
     )
+    parser.add_argument(
+        "--dangerously-skip-permissions",
+        action="store_true",
+        help="Bypass permission checks for bash commands. Use when the skill runs scripts.",
+    )
     args = parser.parse_args()
 
     if not args.skill_path.exists():
@@ -625,6 +639,7 @@ def main():
         epsilon=args.epsilon,
         skip_revert=args.skip_revert,
         watchdog_interval=args.watchdog_interval,
+        skip_permissions=args.dangerously_skip_permissions,
     )
 
     # Print final summary

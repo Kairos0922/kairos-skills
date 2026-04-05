@@ -33,7 +33,17 @@ from typing import Optional
 # ---------------------------------------------------------------------------
 
 WORKSPACE_ROOT = Path(__file__).parent.parent.resolve()
+# Default runs root - can be overridden via set_runs_root_from_skill()
 RUNS_ROOT = WORKSPACE_ROOT / "runs"
+
+
+def set_runs_root_from_skill(skill_path: Path) -> None:
+    """Set RUNS_ROOT to be alongside the skill being tested (sibling directory)."""
+    global RUNS_ROOT
+    # Put runs directory next to the skill, e.g.:
+    # skill: /path/to/kairos-collect-signals
+    # runs:  /path/to/kairos-collect-signals-eval/
+    RUNS_ROOT = Path(str(skill_path) + "-eval").resolve()
 
 
 def get_run_dir(skill_name: str, iteration: int) -> Path:
@@ -57,6 +67,7 @@ def spawn_executor(
     eval_case: dict,
     eval_dir: Path,
     timeout: int = 180,
+    skip_permissions: bool = False,
 ) -> dict:
     """
     Spawn executor subagent to run the target skill with eval case input.
@@ -73,6 +84,7 @@ def spawn_executor(
         prompt=prompt,
         skill_path=skill_path,
         timeout=timeout,
+        skip_permissions=skip_permissions,
     )
 
     duration = time.time() - start_time
@@ -151,6 +163,7 @@ def spawn_grader(
     output_json: Optional[dict],
     eval_dir: Path,
     timeout: int = 60,
+    skip_permissions: bool = False,
 ) -> dict:
     """
     Spawn grader subagent to grade the skill output against assertions.
@@ -165,6 +178,7 @@ def spawn_grader(
         prompt=prompt,
         skill_path=skill_path,
         timeout=timeout,
+        skip_permissions=skip_permissions,
     )
 
     duration = time.time() - start_time
@@ -259,13 +273,23 @@ def run_claude_p(
     prompt: str,
     skill_path: Path,
     timeout: int = 60,
+    skip_permissions: bool = False,
 ) -> tuple[str, int]:
     """
     Run claude -p with the given prompt, cwd set to skill_path.
 
+    Args:
+        prompt: The prompt to send to claude.
+        skill_path: Working directory for the claude process.
+        timeout: Timeout in seconds.
+        skip_permissions: If True, add --dangerously-skip-permissions flag
+                          to allow bash command execution.
+
     Returns (stdout, returncode).
     """
     cmd = ["claude", "-p", prompt, "--output-format", "text"]
+    if skip_permissions:
+        cmd.append("--dangerously-skip-permissions")
     env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
 
     try:
@@ -357,7 +381,7 @@ def extract_json(text: str) -> Optional[dict]:
 # Main harness logic
 # ---------------------------------------------------------------------------
 
-def run_harness(skill_path: Path, iteration: int, runs_dir: Optional[Path] = None) -> dict:
+def run_harness(skill_path: Path, iteration: int, runs_dir: Optional[Path] = None, skip_permissions: bool = False) -> dict:
     """
     Run the full evaluation harness for a target skill.
 
@@ -366,6 +390,9 @@ def run_harness(skill_path: Path, iteration: int, runs_dir: Optional[Path] = Non
     global RUNS_ROOT
     if runs_dir:
         RUNS_ROOT = runs_dir
+    else:
+        # By default, put runs alongside the skill being tested (sibling directory)
+        set_runs_root_from_skill(skill_path)
 
     skill_name = skill_path.name
     evals_file = skill_path / "evals" / "evals.json"
@@ -394,7 +421,7 @@ def run_harness(skill_path: Path, iteration: int, runs_dir: Optional[Path] = Non
 
         # Step 1: Spawn executor
         print(f"[harness]   Executing skill...")
-        exec_result = spawn_executor(skill_path, case, eval_dir, timeout=180)
+        exec_result = spawn_executor(skill_path, case, eval_dir, timeout=180, skip_permissions=skip_permissions)
 
         if exec_result["success"]:
             output_json = exec_result["output_json"]
@@ -405,7 +432,7 @@ def run_harness(skill_path: Path, iteration: int, runs_dir: Optional[Path] = Non
 
         # Step 2: Spawn grader
         print(f"[harness]   Grading output...")
-        grading_result = spawn_grader(skill_path, case, output_json, eval_dir, timeout=60)
+        grading_result = spawn_grader(skill_path, case, output_json, eval_dir, timeout=60, skip_permissions=skip_permissions)
 
         if grading_result["pass_rate"] is not None:
             print(
@@ -473,7 +500,12 @@ def main():
         "--runs-dir",
         type=Path,
         default=None,
-        help="Root directory for runs (default: <workspace>/runs)",
+        help="Root directory for runs (default: <skill-path>-eval/, i.e., alongside the skill being tested)",
+    )
+    parser.add_argument(
+        "--dangerously-skip-permissions",
+        action="store_true",
+        help="Bypass permission checks for bash commands. Use when the skill runs scripts.",
     )
     args = parser.parse_args()
 
@@ -481,7 +513,7 @@ def main():
         print(f"Error: skill path does not exist: {args.skill_path}")
         return 1
 
-    summary = run_harness(args.skill_path, args.iteration, args.runs_dir)
+    summary = run_harness(args.skill_path, args.iteration, args.runs_dir, skip_permissions=args.dangerously_skip_permissions)
 
     # Print quick summary
     total_pass = sum(1 for r in summary["results"].values() if r["grading_success"])

@@ -12,7 +12,7 @@ Usage:
     python3 scripts/harness.py --skill-path /path/to/target-skill --iteration 1
 
 Output:
-    runs/<skill-name>/iteration-<N>/eval-<case-id>/
+    <skill-path>-eval/<skill-name>/iteration-<N>/eval-<case-id>/
         ├── output.json          # raw skill output
         ├── grading.json         # pass/fail per assertion + evidence
         └── metrics.json         # timing, token counts

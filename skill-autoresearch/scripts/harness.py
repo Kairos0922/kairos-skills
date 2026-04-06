@@ -77,6 +77,17 @@ def spawn_executor(
     """
     start_time = time.time()
 
+    # If the eval case provides signals, pre-write them to .kairos-temp/signals.json
+    # so the skill skips collect.py and uses these signals directly (for cases 2-10)
+    signals = eval_case.get("signals")
+    if signals:
+        signals_file = skill_path / ".kairos-temp" / "signals.json"
+        signals_file.parent.mkdir(parents=True, exist_ok=True)
+        signals_file.write_text(
+            json.dumps({"signals": signals}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
     # Build the executor prompt
     prompt = build_executor_prompt(eval_case)
 
@@ -130,6 +141,13 @@ def build_executor_prompt(eval_case: dict) -> str:
     """Build the prompt for the executor subagent."""
     case_id = eval_case.get("id", "?")
     user_request = eval_case.get("prompt", "")
+    has_signals = "signals" in eval_case and eval_case["signals"]
+
+    signals_note = (
+        'Note: signals have been pre-written to `.kairos-temp/signals.json` for this eval case. '
+        "When executing the skill, follow SKILL.md's instructions: if `.kairos-temp/signals.json` "
+        "already exists, skip the collect step and use the pre-provided signals directly."
+    ) if has_signals else ""
 
     return f"""You are executing a skill for evaluation (case {case_id}).
 
@@ -137,6 +155,7 @@ def build_executor_prompt(eval_case: dict) -> str:
 1. Read SKILL.md in your current directory to understand the skill
 2. Execute the skill with this user request:
    "{user_request}"
+{f"## {signals_note}" if signals_note else ""}
 
 ## Important constraints
 - Execute the skill exactly as described in SKILL.md

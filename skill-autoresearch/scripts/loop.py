@@ -41,6 +41,9 @@ def git_snapshot(skill_path: Path, iteration: int, message: Optional[str] = None
     Create a git snapshot of the current SKILL.md state.
 
     Runs: git add SKILL.md && git commit
+
+    Returns True if snapshot was created or nothing to commit.
+    Returns False if git operations failed (caller should abort iteration).
     """
     skill_file = skill_path / "SKILL.md"
     if not skill_file.exists():
@@ -58,9 +61,8 @@ def git_snapshot(skill_path: Path, iteration: int, message: Optional[str] = None
             text=True,
         )
         if result.returncode != 0:
-            print(f"[loop] ⚠️  git add failed: {result.stderr}")
-            # Maybe not a git repo - that's OK, skip snapshot
-            return True
+            print(f"[loop] ❌ git add failed: {result.stderr}")
+            return False
 
         # git commit
         result = subprocess.run(
@@ -70,15 +72,21 @@ def git_snapshot(skill_path: Path, iteration: int, message: Optional[str] = None
             text=True,
         )
         if result.returncode != 0:
-            print(f"[loop] ⚠️  git commit failed: {result.stderr}")
-            return True  # Don't fail the loop for this
+            stderr = result.stderr.lower()
+            # "nothing to commit" is acceptable - no changes to snapshot
+            if "nothing to commit" in stderr or "nothing added" in stderr:
+                print(f"[loop] ℹ️  No changes to snapshot (nothing to commit)")
+                return True
+            # Any other commit failure is a real problem
+            print(f"[loop] ❌ git commit failed: {result.stderr}")
+            return False
 
         commit = result.stdout.strip()
         print(f"[loop] 📸 Snapshot created: {commit[:40]}")
         return True
     except Exception as e:
-        print(f"[loop] ⚠️  Git snapshot failed: {e}")
-        return True  # Don't fail the loop
+        print(f"[loop] ❌ Git snapshot exception: {e}")
+        return False
 
 
 def git_revert(skill_path: Path) -> bool:

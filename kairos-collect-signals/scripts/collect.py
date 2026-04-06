@@ -10,6 +10,8 @@ collect.py - 采集信号并输出 JSON
     --limit     返回信号数量上限，默认 100
     --keywords  关键词过滤（可选），多个关键词用空格分隔
     --filter    运行 filter.py 过滤信号（可选）
+    --input     从已有 JSON 文件读取信号（跳过采集），用于 evals
+    --output    输出到指定文件路径（代替 stdout）
 """
 
 import argparse
@@ -31,7 +33,27 @@ def main():
     parser.add_argument("--limit", type=int, default=100, help="返回信号数量上限")
     parser.add_argument("--keywords", type=str, default="", help="关键词过滤（可选）")
     parser.add_argument("--filter", action="store_true", help="运行 filter.py 过滤信号")
+    parser.add_argument("--input", type=str, default="", help="从已有 JSON 文件读取信号（跳过采集）")
+    parser.add_argument("--output", type=str, default="", help="输出到指定文件路径（代替 stdout）")
     args = parser.parse_args()
+
+    # 如果指定了 --input，从文件读取信号（跳过采集），直接进入输出
+    if args.input:
+        if not os.path.exists(args.input):
+            print(f"错误：--input 文件不存在: {args.input}", file=sys.stderr)
+            sys.exit(1)
+        with open(args.input, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        signals = data.get("signals", [])
+        result = {"signals": signals}
+        if args.output:
+            os.makedirs(os.path.dirname(args.output), exist_ok=True)
+            with open(args.output, "w", encoding="utf-8") as f:
+                json.dump(result, f, ensure_ascii=False, indent=2)
+            print(f"信号已从文件读取并写入: {args.output}")
+        else:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
 
     collector = SignalCollector()
     signals = collector.collect_all(tier_filter=args.tier)
@@ -81,7 +103,13 @@ def main():
                 filtered_result = json.load(f)
 
             # 输出过滤后的结果
-            print(json.dumps(filtered_result, ensure_ascii=False, indent=2))
+            if args.output:
+                os.makedirs(os.path.dirname(args.output), exist_ok=True)
+                with open(args.output, "w", encoding="utf-8") as f:
+                    json.dump(filtered_result, f, ensure_ascii=False, indent=2)
+                print(f"过滤后信号已写入: {args.output}")
+            else:
+                print(json.dumps(filtered_result, ensure_ascii=False, indent=2))
 
             # 清理临时文件
             os.remove(temp_input)
@@ -95,7 +123,13 @@ def main():
             sys.exit(1)
     else:
         # 直接输出原始结果
-        print(json.dumps(result, ensure_ascii=False, indent=2))
+        if args.output:
+            os.makedirs(os.path.dirname(args.output), exist_ok=True)
+            with open(args.output, "w", encoding="utf-8") as f:
+                json.dump(result, f, ensure_ascii=False, indent=2)
+            print(f"信号已写入: {args.output}")
+        else:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

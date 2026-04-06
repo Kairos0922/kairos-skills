@@ -358,3 +358,40 @@ python3 scripts/cleanup.py
 3. 将过滤后的 signals（及其分组信息）按格式填入 `{SIGNALS}` 占位符（见 angle_prompt.md 中的信号格式化说明）
 4. 使用自己的 LLM 能力生成角度
 5. 解析 JSON 输出
+
+**跨信号合成（Signal Synthesis）**：
+在 Step 5 生成角度之前，先将过滤后的信号按主题/技术栈分组。每组选取 2-3 个互补信号，优先组合：
+- 不同来源（博客 + 论文）
+- 不同角度（问题 + 解决方案）
+- 不同深度（现象 + 根因）
+
+scripts/synthesize.py 完成分组后，在 angle_prompt.md 中填入每组的信号数组（带 group_id、topic_label、signals_count、source_diversity 字段），每组生成 1-2 个角度。
+
+scripts/synthesize.py — 对过滤后的信号按主题/关键词分组，输出信号组
+
+```json
+[
+  {
+    "group_id": "grp-001",
+    "topic_label": "RAG 多跳问题",
+    "signals_count": 3,
+    "source_diversity": "blog + arxiv",
+    "signals": [
+      {
+        "id": "sig-20260403-001",
+        "content": "实测发现 RAG 在处理多跳问题时准确率下降至 62%...",
+        "source": "Stripe Blog",
+        "type": "technical"
+      },
+      {
+        "id": "sig-20260403-002",
+        "content": "Multi-hop retrieval analysis on open-domain QA...",
+        "source": "ArXiv cs.CL",
+        "type": "paper"
+      }
+    ]
+  }
+]
+```
+
+{SIGNALS}

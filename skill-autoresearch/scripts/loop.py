@@ -78,9 +78,10 @@ def git_snapshot(skill_path: Path, iteration: int, message: Optional[str] = None
             text=True,
         )
         if result.returncode != 0:
-            stderr = result.stderr.lower()
+            # git commit outputs "nothing to commit" to stdout, not stderr
+            combined = (result.stderr + result.stdout).lower()
             # "nothing to commit" is acceptable - no changes to snapshot
-            if "nothing to commit" in stderr or "nothing added" in stderr:
+            if "nothing to commit" in combined or "nothing added" in combined:
                 print(f"[loop] ℹ️  No changes to snapshot (nothing to commit)")
                 return True
             # Any other commit failure is a real problem

@@ -61,6 +61,12 @@ def git_snapshot(skill_path: Path, iteration: int, message: Optional[str] = None
             text=True,
         )
         if result.returncode != 0:
+            stderr = result.stderr.lower()
+            # "nothing added to commit" is acceptable - no changes to snapshot
+            if "nothing added" in stderr:
+                print(f"[loop] ℹ️  No changes to snapshot (nothing to add)")
+                return True
+            # Any other git add failure is a real problem
             print(f"[loop] ❌ git add failed: {result.stderr}")
             return False
 

@@ -8,7 +8,7 @@
 
 默认内置一个领域插件：
 
-- `ai-engineering`
+- `ai-engineering`（精简关键词，聚焦：AI Agent 设计/从开发到生产、Skill 设计/从开发到生产、OpenClaw）
 
 这套架构支持通过配置文件切换垂直领域，也支持通过 adapter 扩展新的数据源类型。
 
@@ -39,6 +39,17 @@
 
 - 使用 `tavily` adapter 或 `discover_sources.py` 时，运行环境必须提供 `TAVILY_API_KEY`
 - 使用 `github-search` adapter 时，运行环境必须安装并可用 `gh` CLI
+
+### 首次使用（密钥配置）
+- 我们不再使用 `.env` 或 `.env.encrypted` 文件存储密钥。
+- 推荐把 `TAVILY_API_KEY` 写入操作系统钥匙串（Keychain）：
+
+```bash
+pip install keyring
+python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/setup_tavily_key.py
+```
+
+说明：运行时会优先读取环境变量 `TAVILY_API_KEY`，如未设置则回退读取系统钥匙串（`service=kairos-collect-signals, user=tavily_api_key`）。
 
 ## 目录结构
 

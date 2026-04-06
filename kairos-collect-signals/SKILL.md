@@ -90,6 +90,8 @@ kairos-collect-signals/
 - `tavily` 通过 `TAVILY_API_KEY` 调用 Tavily Search API
 - 如果某个平台需要原生 API、鉴权、分页或复杂查询，应新增独立 adapter，不要继续堆在 `collector.py`
 - 使用 `tavily` 或 `discover_sources.py` 前，运行环境必须提供 `TAVILY_API_KEY`
+  - 推荐把密钥写入系统钥匙串（Keychain）：
+    `pip install keyring && python3 scripts/setup_tavily_key.py`
 
 如需发现新的官方博客 / feed 地址候选，可运行：
 
@@ -257,6 +259,8 @@ python3 scripts/cleanup.py
 - 新领域至少补齐 `sources.json / keywords.json / high_quality_authors.json / profile.json / topic_rules.json / strategy_binding.json`。
 - 如果要启用 query 型 adapter，领域还应补齐 `search_queries.json`。
 - strategies 目录名必须是小写+连字符，避免下划线。
+ - 初次使用需要配置 `TAVILY_API_KEY`。我们不再使用 `.env.encrypted`，请改用系统钥匙串：
+   `pip install keyring && python3 scripts/setup_tavily_key.py`
 
 ## Validation / 验证
 

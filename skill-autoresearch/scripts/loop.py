@@ -98,31 +98,35 @@ def git_snapshot(skill_path: Path, iteration: int, message: Optional[str] = None
 
 def git_revert(skill_path: Path) -> bool:
     """
-    Revert to the previous SKILL.md state via git reset --hard HEAD~1.
-    If HEAD~1 doesn't exist (first commit), just undo changes manually.
+    Revert SKILL.md to the previous state using git restore.
+    Only reverts SKILL.md, not the entire commit history.
     """
     try:
-        # Check if HEAD~1 exists
-        check = subprocess.run(
-            ["git", "rev-parse", "HEAD~1"],
-            cwd=str(skill_path),
-            capture_output=True,
-            text=True,
-        )
-        if check.returncode != 0:
-            print(f"[loop] ⚠️  Cannot revert: HEAD~1 doesn't exist (first commit)")
-            return False
+        skill_file = skill_path / "SKILL.md"
+        if not skill_file.exists():
+            print(f"[loop] ⚠️  SKILL.md not found, nothing to revert")
+            return True
 
+        # Use git restore to revert SKILL.md to HEAD~1 version
         result = subprocess.run(
-            ["git", "reset", "--hard", "HEAD~1"],
+            ["git", "restore", "--source=HEAD~1", "SKILL.md"],
             cwd=str(skill_path),
             capture_output=True,
             text=True,
         )
         if result.returncode != 0:
-            print(f"[loop] ❌ git revert failed: {result.stderr}")
-            return False
-        print(f"[loop] ↩️  Reverted to previous state")
+            # Try git checkout as fallback
+            result = subprocess.run(
+                ["git", "checkout", "HEAD~1", "--", "SKILL.md"],
+                cwd=str(skill_path),
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                print(f"[loop] ⚠️  git revert failed: {result.stderr}")
+                return False
+
+        print(f"[loop] ↩️  Reverted SKILL.md to previous state")
         return True
     except Exception as e:
         print(f"[loop] ❌ git revert exception: {e}")

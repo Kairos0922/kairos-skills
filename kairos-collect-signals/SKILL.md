@@ -33,19 +33,23 @@ description: |
 
 ### Step 1: 采集信号
 
-使用 `python3 scripts/collect.py` 采集信号：
+**重要：先检查是否已有信号文件。** 如果 `./.kairos-temp/signals.json` 已存在（由 harness 预填充用于 evals），跳过本步骤，直接使用已有信号。
+
+如果信号文件不存在，使用 `python3 scripts/collect.py` 采集信号并保存至 `./.kairos-temp/signals.json`：
 
 ```bash
-# 用户提供了关键词
-python3 scripts/collect.py --tier 1 --limit 100 --keywords "LangChain RAG"
+# 如果 ./.kairos-temp/signals.json 已存在，跳过采集
+# 否则，采集信号并保存：
+python3 scripts/collect.py --tier 1 --limit 100 --output ./.kairos-temp/signals.json
 
-# 用户未提供关键词，使用默认关键词
-python3 scripts/collect.py --tier 1 --limit 100
+# 用户提供了关键词
+python3 scripts/collect.py --tier 1 --limit 100 --keywords "LangChain RAG" --output ./.kairos-temp/signals.json
 ```
 
 - 采集结果保存至 `./.kairos-temp/signals.json`
 - 时效性过滤：只采集 3 天内的内容
 - 单个源失败不影响整体（try/except）
+- **Eval 场景**：harness 会预填充 `./.kairos-temp/signals.json`，此时跳过本步骤
 
 ### Step 2: 读取信号
 

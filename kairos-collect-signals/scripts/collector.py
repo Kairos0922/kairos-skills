@@ -20,7 +20,7 @@ import os
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 
-from scripts.domain_config import DEFAULT_DOMAIN, load_keywords, load_sources
+from scripts.domain_config import DEFAULT_DOMAIN, load_keywords, load_search_queries, load_sources
 from scripts.source_adapters.base import Signal
 from scripts.source_adapters.registry import get_adapter
 
@@ -42,6 +42,7 @@ class SignalCollector:
         keywords_data = load_keywords(domain)
         self.default_keywords = keywords_data.get("default_keywords", self.default_keywords)
         self.recency_days = int(keywords_data.get("recency_days", self.recency_days))
+        self.search_queries = load_search_queries(domain)
 
     def collect_all(self, tier_filter: int = 1) -> List[Signal]:
         """
@@ -64,7 +65,16 @@ class SignalCollector:
 
             try:
                 adapter = get_adapter(source.get("type", "rss"))
-                source_signals = adapter.collect(source, cutoff_date, self.default_keywords)
+                source_signals = adapter.collect(
+                    source,
+                    cutoff_date,
+                    self.default_keywords,
+                    {
+                        "domain": self.domain,
+                        "keywords": self.default_keywords,
+                        "search_queries": self.search_queries,
+                    },
+                )
                 signals.extend(source_signals)
             except Exception:
                 # 单个源失败不影响整体

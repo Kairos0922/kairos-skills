@@ -223,7 +223,9 @@ def check_source_whitelist(signal: Dict[str, Any]) -> Tuple[bool, str]:
     """
     source = signal.get("source", {})
     platform = source.get("platform", "")
+    collector = source.get("collector", "")
     platform_norm = normalize_source_name(platform)
+    collector_norm = normalize_source_name(collector) if collector else ""
 
     # 检查黑名单
     if platform_norm in {normalize_source_name(s) for s in BLACKLIST_SOURCES}:
@@ -232,6 +234,8 @@ def check_source_whitelist(signal: Dict[str, Any]) -> Tuple[bool, str]:
     # 检查白名单
     if platform_norm in WHITELIST_SOURCES:
         return True, "白名单来源"
+    if collector_norm and collector_norm in WHITELIST_SOURCES:
+        return True, f"白名单采集器: {collector}"
 
     # 检查高质量作者（twitter/reddit 等）
     author = source.get("author", "").lower()
@@ -256,7 +260,9 @@ def score_quality_gates(signal: Dict[str, Any]) -> Tuple[bool, Dict[str, float],
     title = signal.get("content", "").split("\n")[0] if signal.get("content") else ""
     source = signal.get("source", {})
     platform = source.get("platform", "")
+    collector = source.get("collector", "")
     platform_norm = normalize_source_name(platform)
+    collector_norm = normalize_source_name(collector) if collector else ""
     author = source.get("author", "")
 
     # 初始化分数
@@ -266,7 +272,7 @@ def score_quality_gates(signal: Dict[str, Any]) -> Tuple[bool, Dict[str, float],
     has_number = bool(re.search(r"\d", content))
 
     # 1. firsthand_experience - 官方博客/个人博客/ArXiv 较高
-    if platform_norm in WHITELIST_SOURCES:
+    if platform_norm in WHITELIST_SOURCES or (collector_norm and collector_norm in WHITELIST_SOURCES):
         scores["firsthand_experience"] = 0.8
         scores["depth_analysis"] = 0.8
     if any(marker.lower() in content_lower for marker in FIRSTHAND_MARKERS) or "I " in content[:100]:

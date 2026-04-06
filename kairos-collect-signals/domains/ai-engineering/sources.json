@@ -121,17 +121,48 @@
       "enabled": true
     },
     {
+      "name": "Hacker News Best",
+      "url": "https://hnrss.org/best",
+      "type": "rss",
+      "tier": 2,
+      "category": "community",
+      "enabled": true
+    },
+    {
       "name": "GitHub Trending",
       "url": "https://github.com/trending.rss",
       "type": "github",
       "tier": 2,
       "category": "community",
       "enabled": true
+    },
+    {
+      "name": "GitHub Repo Search",
+      "url": "",
+      "type": "github-search",
+      "tier": 2,
+      "category": "search",
+      "query_set": "github-emerging-tools",
+      "query_suffix": "AI agent",
+      "limit": 3,
+      "enabled": true
+    },
+    {
+      "name": "Tavily AI Search",
+      "url": "https://api.tavily.com/search",
+      "type": "tavily",
+      "tier": 2,
+      "category": "search",
+      "query_set": "pain-topics",
+      "query_template": "{query}",
+      "max_results": 3,
+      "search_depth": "basic",
+      "enabled": true
     }
   ],
   "meta": {
-    "total_sources": 16,
+    "total_sources": 19,
     "tier_1_count": 11,
-    "tier_2_count": 5
+    "tier_2_count": 8
   }
 }

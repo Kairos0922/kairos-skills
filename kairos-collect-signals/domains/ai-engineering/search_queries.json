@@ -1,0 +1,40 @@
+{
+  "query_sets": {
+    "pain-topics": [
+      "agent memory",
+      "skill evaluation",
+      "self-improvement",
+      "context length",
+      "agent orchestration",
+      "prompt engineering",
+      "vibecoding",
+      "skill decomposition",
+      "agent collaboration",
+      "memory system",
+      "context window",
+      "agent loop",
+      "skill composition",
+      "workflow agent"
+    ],
+    "github-emerging-tools": [
+      "agent memory",
+      "skill evaluation",
+      "self-improvement",
+      "agent orchestration",
+      "prompt engineering",
+      "workflow agent"
+    ],
+    "official-blog-targets": [
+      "OpenAI",
+      "Anthropic",
+      "Google DeepMind",
+      "Hugging Face",
+      "LangChain",
+      "LlamaIndex",
+      "Cursor",
+      "Aider",
+      "Pinecone",
+      "Weaviate"
+    ]
+  }
+}

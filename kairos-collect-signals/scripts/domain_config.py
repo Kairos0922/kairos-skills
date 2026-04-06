@@ -108,6 +108,10 @@ def load_sources(domain: str) -> Dict[str, Any]:
     return load_domain_json(domain, "sources.json", {"sources": []})
 
 
+def load_search_queries(domain: str) -> Dict[str, Any]:
+    return load_domain_json(domain, "search_queries.json", {"query_sets": {}})
+
+
 def load_high_quality_authors(domain: str) -> Dict[str, Any]:
     return load_domain_json(
         domain,

@@ -7,7 +7,8 @@ import hashlib
 import re
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from typing import List
+from typing import Any, Dict, List
+from urllib.parse import urlparse
 
 import feedparser
 
@@ -29,7 +30,13 @@ class Signal:
 class BaseSourceAdapter:
     source_type = "base"
 
-    def collect(self, source: dict, cutoff_date: datetime, keywords: List[str]) -> List[Signal]:
+    def collect(
+        self,
+        source: dict,
+        cutoff_date: datetime,
+        keywords: List[str],
+        context: Dict[str, Any],
+    ) -> List[Signal]:
         raise NotImplementedError
 
 
@@ -43,7 +50,13 @@ class FeedSourceAdapter(BaseSourceAdapter):
     - 以 feed 形式暴露的 GitHub / Reddit / X 镜像源
     """
 
-    def collect(self, source: dict, cutoff_date: datetime, keywords: List[str]) -> List[Signal]:
+    def collect(
+        self,
+        source: dict,
+        cutoff_date: datetime,
+        keywords: List[str],
+        context: Dict[str, Any],
+    ) -> List[Signal]:
         feed = feedparser.parse(source["url"])
         signals: List[Signal] = []
 
@@ -69,6 +82,7 @@ class FeedSourceAdapter(BaseSourceAdapter):
                         "platform": source["name"],
                         "url": entry.get("link", source["url"]),
                         "author": entry.get("author", ""),
+                        "collector": source["name"],
                     },
                     relevance_score=relevance_score,
                     priority=priority,
@@ -135,3 +149,14 @@ class FeedSourceAdapter(BaseSourceAdapter):
         if any(keyword in text for keyword in ["opinion", "think", "believe", "观点"]):
             return "opinion"
         return "trend"
+
+
+def extract_domain_label(url: str) -> str:
+    try:
+        parsed = urlparse(url)
+        host = parsed.netloc.lower()
+        if host.startswith("www."):
+            host = host[4:]
+        return host or "unknown-source"
+    except Exception:
+        return "unknown-source"

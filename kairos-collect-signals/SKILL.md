@@ -18,7 +18,7 @@ description: |
   - `banned_patterns` 只属于策略，不放在领域插件或 references
   - 策略可插拔（strategies/<strategy>/）
 metadata:
-  version: "6.2"
+  version: "6.3"
 ---
 
 # kairos-collect-signals
@@ -50,6 +50,7 @@ kairos-collect-signals/
 │   └── ai-engineering/
 │       ├── profile.json
 │       ├── sources.json
+│       ├── search_queries.json
 │       ├── keywords.json
 │       ├── high_quality_authors.json
 │       ├── strategy_binding.json
@@ -59,7 +60,8 @@ kairos-collect-signals/
 领域插件约定：
 - `profile.json`: 领域说明、默认读者、文章结构、why_now 模板
 - `sources.json`: 当前领域的数据源
-- `sources.json[].type`: 数据源 adapter 类型，当前支持 `rss / github / reddit / x`
+- `sources.json[].type`: 数据源 adapter 类型，当前支持 `rss / github / github-search / reddit / tavily / x`
+- `search_queries.json`: query 型 adapter 使用的领域搜索查询集
 - `keywords.json`: 当前领域的关键词与时效配置
 - `high_quality_authors.json`: 当前领域的高质量作者 / 社区名单
 - `strategy_binding.json`: 当前领域默认绑定的策略、允许的策略、策略级配置覆盖
@@ -77,12 +79,23 @@ kairos-collect-signals/
 当前采集器按 `sources.json[].type` 分发 adapter。已内置：
 - `rss`
 - `github`
+- `github-search`
 - `reddit`
+- `tavily`
 - `x`
 
 注意：
-- 当前这 4 类 adapter 都通过 feed 形式接入
+- `rss / github / reddit / x` 当前都通过 feed 形式接入
+- `github-search` 通过 `gh` CLI 查询 GitHub 仓库
+- `tavily` 通过 `TAVILY_API_KEY` 调用 Tavily Search API
 - 如果某个平台需要原生 API、鉴权、分页或复杂查询，应新增独立 adapter，不要继续堆在 `collector.py`
+- 使用 `tavily` 或 `discover_sources.py` 前，运行环境必须提供 `TAVILY_API_KEY`
+
+如需发现新的官方博客 / feed 地址候选，可运行：
+
+```bash
+python3 scripts/discover_sources.py --domain ai-engineering --output ./.kairos-temp/discovered-sources.json
+```
 
 ```bash
 python3 scripts/collect.py --domain ai-engineering --tier 1 --limit 100 --output ./.kairos-temp/signals.json
@@ -242,6 +255,7 @@ python3 scripts/cleanup.py
 - 对反馈闭环优化类信号，优先输出“闭环为什么跑偏 / 奖励为什么被投机 / verifier 为什么带偏优化方向”这类机制题。
 - 如果你要覆盖 AI 以外的领域，优先新增 `domains/<domain>/`，不要直接改默认 `ai-engineering` 领域。
 - 新领域至少补齐 `sources.json / keywords.json / high_quality_authors.json / profile.json / topic_rules.json / strategy_binding.json`。
+- 如果要启用 query 型 adapter，领域还应补齐 `search_queries.json`。
 - strategies 目录名必须是小写+连字符，避免下划线。
 
 ## Validation / 验证
@@ -256,6 +270,7 @@ python3 scripts/cleanup.py
 - `domains/ai-engineering/profile.json`
 - `domains/ai-engineering/topic_rules.json`
 - `domains/ai-engineering/sources.json`
+- `domains/ai-engineering/search_queries.json`
 - `domains/ai-engineering/keywords.json`
 - `domains/ai-engineering/high_quality_authors.json`
 - `domains/ai-engineering/strategy_binding.json`
@@ -263,10 +278,14 @@ python3 scripts/cleanup.py
 - `scripts/dedup.py`
 - `scripts/filter.py`
 - `scripts/domain_config.py`
+- `scripts/discover_sources.py`
+- `scripts/runtime_env.py`
 - `scripts/analyze.py`
 - `scripts/run_evals.py`
 - `scripts/cleanup.py`
 - `scripts/source_adapters/base.py`
+- `scripts/source_adapters/tavily.py`
+- `scripts/source_adapters/github_search.py`
 - `scripts/source_adapters/registry.py`
 - `scripts/source_adapters/rss.py`
 - `scripts/source_adapters/github.py`

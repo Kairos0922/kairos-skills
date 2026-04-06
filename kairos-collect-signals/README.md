@@ -26,6 +26,7 @@
 - 自然语言选题报告输出
 - 输出中强制包含来源、时间、网址
 - 支持按数据源类型分发采集 adapter
+- 支持 Tavily 搜索与 GitHub 仓库搜索
 - 内置本地回归测试
 
 ## 当前限制
@@ -33,6 +34,11 @@
 - 当前采集器虽然已经是 adapter 架构，但内置的 `rss / github / reddit / x` 仍然走 feed 形态接入
 - 还没有实现原生 `GitHub API / Reddit API / X API`
 - 领域插件默认只内置了一个：`ai-engineering`
+
+## 运行前提
+
+- 使用 `tavily` adapter 或 `discover_sources.py` 时，运行环境必须提供 `TAVILY_API_KEY`
+- 使用 `github-search` adapter 时，运行环境必须安装并可用 `gh` CLI
 
 ## 目录结构
 
@@ -44,6 +50,7 @@ kairos-collect-signals/
 │   └── ai-engineering/
 │       ├── profile.json
 │       ├── sources.json
+│       ├── search_queries.json
 │       ├── keywords.json
 │       ├── high_quality_authors.json
 │       ├── strategy_binding.json
@@ -123,12 +130,16 @@ kairos-collect-signals/
 
 - `rss`
 - `github`
+- `github-search`
 - `reddit`
+- `tavily`
 - `x`
 
 说明：
 
-- 这四类当前都以 feed 形式工作
+- `rss / github / reddit / x` 当前都以 feed 形式工作
+- `github-search` 通过 `gh` CLI 查询仓库
+- `tavily` 通过 `TAVILY_API_KEY` 调用 Tavily Search API
 - 如果以后要接 API、鉴权、分页、搜索，应该新增新的 adapter，而不是堆在 `collector.py`
 
 ## 运行流程
@@ -240,6 +251,15 @@ python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/sc
 - `category`
 - `enabled`
 
+可选字段：
+
+- `query_set`
+- `query_template`
+- `query_suffix`
+- `limit`
+- `max_results`
+- `search_depth`
+
 示例：
 
 ```json
@@ -265,6 +285,25 @@ python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/sc
 
 - `default_keywords`
 - `recency_days`
+
+### `domains/<domain>/search_queries.json`
+
+定义 query 型 adapter 使用的查询集合。
+
+关键结构：
+
+- `query_sets`
+
+示例：
+
+```json
+{
+  "query_sets": {
+    "pain-topics": ["agent memory", "skill evaluation"],
+    "official-blog-targets": ["OpenAI", "Anthropic"]
+  }
+}
+```
 
 ### `domains/<domain>/high_quality_authors.json`
 
@@ -294,6 +333,7 @@ python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/sc
 
 - `profile.json`
 - `sources.json`
+- `search_queries.json`
 - `keywords.json`
 - `high_quality_authors.json`
 - `strategy_binding.json`
@@ -320,7 +360,7 @@ python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/sc
 
 要求：
 
-- 输入 `source / cutoff_date / keywords`
+- 输入 `source / cutoff_date / keywords / context`
 - 输出 `List[Signal]`
 
 ### 3. 注册到 registry
@@ -361,7 +401,7 @@ python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/sc
 - 跨主题信号抽象
 - 默认策略绑定
 - 自然语言报告输出
-- `rss / github / reddit / x` adapter 分发
+- `rss / github / github-search / reddit / tavily / x` adapter 注册与分发
 
 说明：
 
@@ -382,6 +422,8 @@ python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/sc
 - `/Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/collector.py`
 - `/Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/analyze.py`
 - `/Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/filter.py`
+- `/Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/discover_sources.py`
 - `/Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/source_adapters/registry.py`
 - `/Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/domains/ai-engineering/sources.json`
+- `/Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/domains/ai-engineering/search_queries.json`
 - `/Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/domains/ai-engineering/strategy_binding.json`

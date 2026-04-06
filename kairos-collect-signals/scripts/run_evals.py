@@ -60,7 +60,7 @@ def write_feed(path: str, title: str, item_title: str, description: str, author:
 
 
 def run_adapter_smoke_test() -> Dict[str, Any]:
-    expected_types = ["rss", "github", "reddit", "x"]
+    expected_types = ["rss", "github", "github-search", "reddit", "tavily", "x"]
     for source_type in expected_types:
         get_adapter(source_type)
 

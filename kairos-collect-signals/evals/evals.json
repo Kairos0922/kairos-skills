@@ -5,6 +5,20 @@
       "id": 1,
       "name": "基础信号采集",
       "prompt": "帮我看看最近有什么值得写的AI信号",
+      "signals": [
+        {
+          "id": "sig-001",
+          "content": "实测 RAG 在多跳问题下准确率下降至 62%：我们发现了关键原因",
+          "type": "technical",
+          "source": {"platform": "Stripe Blog", "url": "https://stripe.dev"}
+        },
+        {
+          "id": "sig-002",
+          "content": "我们踩坑 LangChain 内存泄漏：三个月定位过程全记录",
+          "type": "case_study",
+          "source": {"platform": "Personal Blog", "url": "https://example.dev"}
+        }
+      ],
       "expected_output": "输出 signals 和 candidate_topics",
       "assertions": [
         "signals 是非空数组",
@@ -68,8 +82,9 @@
       "signals": [
         {
           "id": "sig-004",
-          "content": "Valid technical content",
-          "type": "technical"
+          "content": "我们实测了 Flash Attention 2 在 A100 上的性能：FP16 下吞吐量提升 40%，延迟降低 35%",
+          "type": "technical",
+          "source": {"platform": "HuggingFace Blog", "url": "https://huggingface.co/blog"}
         }
       ],
       "expected_output": "candidate_topics 中 quality_score 应在 0-1 之间",
@@ -113,7 +128,7 @@
         {
           "id": "sig-008",
           "content": "我测试了 5 种 RAG 策略，发现只有 XX 有效...",
-          "source": {"platform": "Personal Blog", "url": "..."}
+          "source": {"platform": "Stripe Blog", "url": "https://stripe.dev/blog"}
         }
       ],
       "expected_output": "应通过质量门控，gate_scores.firsthand_experience >= 0.5",

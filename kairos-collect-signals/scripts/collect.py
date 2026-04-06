@@ -9,6 +9,7 @@ collect.py - 采集信号并输出 JSON
     --tier      数据源 Tier 等级 (1 或 2)，默认 1
     --limit     返回信号数量上限，默认 100
     --keywords  关键词过滤（可选），多个关键词用空格分隔
+    --strategy  可选：过滤时使用的策略目录名，留空则使用领域默认策略
     --filter    运行 filter.py 过滤信号（可选）
     --input     从已有 JSON 文件读取信号（跳过采集），用于 evals
     --output    输出到指定文件路径（代替 stdout）
@@ -25,6 +26,7 @@ SKILL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, SKILL_DIR)
 
 from scripts.collector import SignalCollector
+from scripts.domain_config import DEFAULT_DOMAIN, resolve_strategy
 
 
 def main():
@@ -32,6 +34,8 @@ def main():
     parser.add_argument("--tier", type=int, default=1, help="数据源 Tier 等级 (1 或 2)")
     parser.add_argument("--limit", type=int, default=100, help="返回信号数量上限")
     parser.add_argument("--keywords", type=str, default="", help="关键词过滤（可选）")
+    parser.add_argument("--domain", type=str, default=DEFAULT_DOMAIN, help="领域配置名")
+    parser.add_argument("--strategy", type=str, default="", help="可选：过滤时使用的策略目录名，留空则使用领域默认策略")
     parser.add_argument("--filter", action="store_true", help="运行 filter.py 过滤信号")
     parser.add_argument("--input", type=str, default="", help="从已有 JSON 文件读取信号（跳过采集）")
     parser.add_argument("--output", type=str, default="", help="输出到指定文件路径（代替 stdout）")
@@ -47,7 +51,9 @@ def main():
         signals = data.get("signals", [])
         result = {"signals": signals}
         if args.output:
-            os.makedirs(os.path.dirname(args.output), exist_ok=True)
+            output_dir = os.path.dirname(args.output)
+            if output_dir:
+                os.makedirs(output_dir, exist_ok=True)
             with open(args.output, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2)
             print(f"信号已从文件读取并写入: {args.output}")
@@ -55,8 +61,9 @@ def main():
             print(json.dumps(result, ensure_ascii=False, indent=2))
         return
 
-    collector = SignalCollector()
+    collector = SignalCollector(domain=args.domain)
     signals = collector.collect_all(tier_filter=args.tier)
+    resolved_strategy = resolve_strategy(args.domain, args.strategy)
 
     # 关键词过滤
     if args.keywords:
@@ -94,7 +101,18 @@ def main():
         filter_script = os.path.join(SKILL_DIR, "scripts", "filter.py")
         try:
             subprocess.run(
-                [sys.executable, filter_script, "--input", temp_input, "--output", temp_output],
+                [
+                    sys.executable,
+                    filter_script,
+                    "--domain",
+                    args.domain,
+                    "--strategy",
+                    resolved_strategy,
+                    "--input",
+                    temp_input,
+                    "--output",
+                    temp_output,
+                ],
                 check=True
             )
 
@@ -104,7 +122,9 @@ def main():
 
             # 输出过滤后的结果
             if args.output:
-                os.makedirs(os.path.dirname(args.output), exist_ok=True)
+                output_dir = os.path.dirname(args.output)
+                if output_dir:
+                    os.makedirs(output_dir, exist_ok=True)
                 with open(args.output, "w", encoding="utf-8") as f:
                     json.dump(filtered_result, f, ensure_ascii=False, indent=2)
                 print(f"过滤后信号已写入: {args.output}")
@@ -124,7 +144,9 @@ def main():
     else:
         # 直接输出原始结果
         if args.output:
-            os.makedirs(os.path.dirname(args.output), exist_ok=True)
+            output_dir = os.path.dirname(args.output)
+            if output_dir:
+                os.makedirs(output_dir, exist_ok=True)
             with open(args.output, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2)
             print(f"信号已写入: {args.output}")

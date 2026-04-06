@@ -25,6 +25,12 @@ import re
 import sys
 from typing import Any, Dict, List, Optional, Tuple
 
+from scripts.domain_config import DEFAULT_DOMAIN, DEFAULT_STRATEGY
+from scripts.domain_config import load_banned_patterns as load_strategy_banned_patterns
+from scripts.domain_config import load_high_quality_authors as load_domain_high_quality_authors
+from scripts.domain_config import resolve_strategy
+from scripts.domain_config import load_sources as load_domain_sources
+
 # 将 skill 目录加入 path
 SKILL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, SKILL_DIR)
@@ -33,7 +39,7 @@ sys.path.insert(0, SKILL_DIR)
 # =============================================================================
 # BANNED PATTERNS - 正则匹配，匹配则直接拒绝
 # =============================================================================
-BANNED_PATTERNS = [
+FALLBACK_BANNED_PATTERNS = [
     {
         "name": "hot_news",
         "pattern": r"^.*(刚刚|重磅|突发|震惊|炸裂).*(发布|上线|推出|宣布).*$",
@@ -86,20 +92,6 @@ BANNED_PATTERNS = [
 # SOURCE WHITELIST & BLACKLIST
 # =============================================================================
 
-# 白名单来源（允许进入候选列表）
-WHITELIST_SOURCES = {
-    # 官方技术博客
-    "OpenAI Blog", "Anthropic Blog", "Google DeepMind Blog", "Stripe Blog",
-    # 顶级开发者博客
-    "Andrej Karpathy Blog", "Simon Willison Blog", "Tomasz Tunguz Blog",
-    # 学术论文
-    "ArXiv cs.AI", "ArXiv cs.CL", "ArXiv cs.LG",
-    # 知名技术媒体
-    "The Verge Tech", "Ars Technica", "Wired",
-    # 其他高质量博客
-    "HuggingFace Blog",
-}
-
 # 黑名单来源（直接拒绝）
 BLACKLIST_SOURCES = {
     # 聚合类内容
@@ -109,27 +101,61 @@ BLACKLIST_SOURCES = {
     "机器翻译", "翻译自", "转载",
 }
 
-# 高质量作者列表（从 high_quality_authors.json 加载）
+# 高质量作者列表（从 domains/<domain>/high_quality_authors.json 加载）
 HIGH_QUALITY_AUTHORS: Dict[str, List[str]] = {}
 
+# 运行时加载配置
+BANNED_PATTERNS: List[Dict[str, str]] = []
+WHITELIST_SOURCES: set = set()
 
-def load_high_quality_authors() -> None:
-    """加载高质量作者列表"""
-    global HIGH_QUALITY_AUTHORS
+
+def normalize_source_name(name: str) -> str:
+    return name.strip().lower()
+
+
+def load_banned_patterns(strategy: str) -> None:
+    """加载策略级 banned patterns 配置"""
+    global BANNED_PATTERNS
+    data = load_strategy_banned_patterns(strategy)
+    BANNED_PATTERNS = data.get("banned_patterns", [])
+
+    if not BANNED_PATTERNS:
+        BANNED_PATTERNS = FALLBACK_BANNED_PATTERNS
+
+
+def load_whitelist_sources(domain: str) -> None:
+    """加载领域白名单来源（domains/<domain>/sources.json）"""
+    global WHITELIST_SOURCES
+    loaded = set()
     try:
-        authors_path = os.path.join(SKILL_DIR, "references", "high_quality_authors.json")
-        if os.path.exists(authors_path):
-            with open(authors_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                # 合并 twitter 和 reddit 用户名
-                for platform_data in data.values():
-                    if isinstance(platform_data, list):
-                        for author in platform_data:
-                            if isinstance(author, dict):
-                                username = author.get("username", "")
-                                if username:
-                                    platform = author.get("platform", "unknown")
-                                    HIGH_QUALITY_AUTHORS.setdefault(platform, []).append(username.lower())
+        data = load_domain_sources(domain)
+        for src in data.get("sources", []):
+            if not src.get("enabled", True):
+                continue
+            name = src.get("name", "")
+            if name:
+                loaded.add(normalize_source_name(name))
+    except Exception:
+        pass
+
+    WHITELIST_SOURCES = loaded
+
+
+def load_high_quality_authors(domain: str) -> None:
+    """加载领域级高质量作者列表"""
+    global HIGH_QUALITY_AUTHORS
+    HIGH_QUALITY_AUTHORS = {}
+    try:
+        data = load_domain_high_quality_authors(domain)
+        for platform_name, platform_data in data.items():
+            if not isinstance(platform_data, list):
+                continue
+            for author in platform_data:
+                if not isinstance(author, dict):
+                    continue
+                username = author.get("username", "")
+                if username:
+                    HIGH_QUALITY_AUTHORS.setdefault(platform_name.lower(), []).append(username.lower())
     except Exception:
         pass
 
@@ -148,7 +174,27 @@ QUALITY_GATES = [
 # 每个门控的最小分数
 GATE_MIN_SCORE = 0.5
 # 总分最低要求
-GATE_TOTAL_MIN = 3.0
+GATE_TOTAL_MIN = 2.8
+
+FIRSTHAND_MARKERS = [
+    "实测", "测试了", "benchmark", "实验", "数据", "结果", "排查", "复盘",
+    "我们", "我", "踩坑", "生产环境", "case study", "postmortem",
+]
+UNIQUE_MARKERS = [
+    "我认为", "our approach", "we found", "关键原因", "根因", "教训",
+    "tradeoff", "权衡", "失败", "异常", "踩坑", "反直觉",
+]
+DEPTH_MARKERS = [
+    "algorithm", "architecture", "performance", "latency", "accuracy",
+    "memory", "p99", "吞吐量", "延迟", "准确率", "内存", "根因", "机制",
+    "转化率", "留存", "退款率", "复购率", "客单价", "毛利", "客诉", "完播率",
+]
+PRACTICAL_MARKERS = [
+    "code", "implementation", "开源", "github", "排查", "复盘",
+    "部署", "生产环境", "优化", "回滚", "监控", "benchmark",
+    "上线", "运营", "活动", "社群", "课程", "直播间", "用户", "转化",
+]
+CASE_STUDY_MARKERS = ["踩坑", "复盘", "排查", "教训", "故障", "事故", "生产环境"]
 
 
 def check_banned_patterns(title: str, content: str = "") -> Tuple[bool, Optional[str]]:
@@ -177,24 +223,21 @@ def check_source_whitelist(signal: Dict[str, Any]) -> Tuple[bool, str]:
     """
     source = signal.get("source", {})
     platform = source.get("platform", "")
+    platform_norm = normalize_source_name(platform)
 
     # 检查黑名单
-    if platform in BLACKLIST_SOURCES:
+    if platform_norm in {normalize_source_name(s) for s in BLACKLIST_SOURCES}:
         return False, f"黑名单来源: {platform}"
 
     # 检查白名单
-    if platform in WHITELIST_SOURCES:
+    if platform_norm in WHITELIST_SOURCES:
         return True, "白名单来源"
 
-    # 检查高质量作者（twitter/reddit）
+    # 检查高质量作者（twitter/reddit 等）
     author = source.get("author", "").lower()
-    for platform, authors in HIGH_QUALITY_AUTHORS.items():
+    for platform_name, authors in HIGH_QUALITY_AUTHORS.items():
         if author in authors:
-            return True, f"高质量{platform}作者: {author}"
-
-    # 如果来源是 HN/GitHub Trending，允许（它们有社区筛选）
-    if platform in ["Hacker News", "GitHub Trending"]:
-        return True, "社区筛选来源"
+            return True, f"高质量{platform_name}作者: {author}"
 
     return False, f"未授权来源: {platform}"
 
@@ -213,43 +256,57 @@ def score_quality_gates(signal: Dict[str, Any]) -> Tuple[bool, Dict[str, float],
     title = signal.get("content", "").split("\n")[0] if signal.get("content") else ""
     source = signal.get("source", {})
     platform = source.get("platform", "")
+    platform_norm = normalize_source_name(platform)
     author = source.get("author", "")
 
     # 初始化分数
     scores = {gate: 0.5 for gate in QUALITY_GATES}
 
+    content_lower = content.lower()
+    has_number = bool(re.search(r"\d", content))
+
     # 1. firsthand_experience - 官方博客/个人博客/ArXiv 较高
-    if platform in WHITELIST_SOURCES:
+    if platform_norm in WHITELIST_SOURCES:
         scores["firsthand_experience"] = 0.8
         scores["depth_analysis"] = 0.8
-    if "实测" in content or "我们" in content or "I " in content[:100]:
+    if any(marker.lower() in content_lower for marker in FIRSTHAND_MARKERS) or "I " in content[:100]:
         scores["firsthand_experience"] = max(scores["firsthand_experience"], 0.8)
     if author and author not in ["", "unknown"]:
         scores["firsthand_experience"] = max(scores["firsthand_experience"], 0.7)
-    if any(kw in content.lower() for kw in ["data", "result", "experiment", "benchmark", "test"]):
+    if any(kw in content_lower for kw in ["data", "result", "experiment", "benchmark", "test"]):
         scores["firsthand_experience"] = max(scores["firsthand_experience"], 0.7)
+    if has_number and any(marker.lower() in content_lower for marker in FIRSTHAND_MARKERS):
+        scores["firsthand_experience"] = max(scores["firsthand_experience"], 0.9)
 
     # 2. unique_perspective - 原创内容较高
-    if any(kw in content for kw in ["我认为", "I think", "my view", "our approach"]):
-        scores["unique_perspective"] = 0.8
-    if platform in ["Hacker News", "GitHub Trending"]:
+    if any(marker.lower() in content_lower for marker in UNIQUE_MARKERS):
+        scores["unique_perspective"] = 0.75
+    if platform_norm in {normalize_source_name("Hacker News"), normalize_source_name("GitHub Trending")}:
         scores["unique_perspective"] = 0.6
+    if has_number and any(marker in content for marker in CASE_STUDY_MARKERS):
+        scores["unique_perspective"] = max(scores["unique_perspective"], 0.8)
+    if has_number and any(token in content_lower for token in ["benchmark", "性能", "吞吐量", "延迟", "准确率", "只有"]):
+        scores["unique_perspective"] = max(scores["unique_perspective"], 0.7)
     if "综述" in content or "整理" in content or "翻译" in content:
         scores["unique_perspective"] = 0.3
 
     # 3. depth_analysis - 技术博客/ArXiv 较高
     if "arxiv" in platform.lower() or "research" in platform.lower():
         scores["depth_analysis"] = 0.9
-    if any(kw in content.lower() for kw in ["algorithm", "architecture", "performance", "latency", "accuracy"]):
-        scores["depth_analysis"] = max(scores["depth_analysis"], 0.7)
-    if len(content) > 500:
+    if any(marker.lower() in content_lower for marker in DEPTH_MARKERS):
+        scores["depth_analysis"] = max(scores["depth_analysis"], 0.75)
+    if len(content) > 500 or (has_number and any(marker.lower() in content_lower for marker in DEPTH_MARKERS)):
         scores["depth_analysis"] = max(scores["depth_analysis"], 0.6)
 
-    # 4. practical_value - 工具类/教程类较高，但排除 fluff
+    # 4. practical_value - 不只奖励教程，也奖励复盘、排障、部署、优化
     if any(kw in content for kw in ["how to", "tutorial", "guide", "教程", "指南"]):
         if not any(kw in title for kw in ["入门", "新手", "从零开始"]):
             scores["practical_value"] = 0.8
-    if any(kw in content for kw in ["code", "implementation", "开源", "github"]):
+    if any(marker.lower() in content_lower for marker in PRACTICAL_MARKERS):
+        scores["practical_value"] = max(scores["practical_value"], 0.7)
+    if has_number and any(marker in content for marker in CASE_STUDY_MARKERS):
+        scores["practical_value"] = max(scores["practical_value"], 0.85)
+    if has_number and any(token in content_lower for token in ["benchmark", "性能", "吞吐量", "延迟", "准确率", "测试了"]):
         scores["practical_value"] = max(scores["practical_value"], 0.7)
 
     # 降低 fluff 类内容的分数
@@ -257,6 +314,11 @@ def score_quality_gates(signal: Dict[str, Any]) -> Tuple[bool, Dict[str, float],
     if any(kw in title for kw in fluff_keywords):
         for gate in scores:
             scores[gate] *= 0.5
+
+    # 生产问题/复盘类信号通常直接对应高质量问题导向选题，适当整体加权
+    if any(marker in content for marker in CASE_STUDY_MARKERS):
+        scores["unique_perspective"] = max(scores["unique_perspective"], 0.7)
+        scores["practical_value"] = max(scores["practical_value"], 0.8)
 
     total = sum(scores.values())
 
@@ -266,15 +328,21 @@ def score_quality_gates(signal: Dict[str, Any]) -> Tuple[bool, Dict[str, float],
     return passes, scores, total
 
 
-def filter_signals(signals: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], Dict[str, int]]:
+def filter_signals(
+    signals: List[Dict[str, Any]],
+    domain: str = DEFAULT_DOMAIN,
+    strategy: str = DEFAULT_STRATEGY,
+) -> Tuple[List[Dict[str, Any]], Dict[str, int]]:
     """
     对信号列表应用所有过滤规则。
 
     Returns:
         (filtered_signals, rejection_stats)
     """
-    if not HIGH_QUALITY_AUTHORS:
-        load_high_quality_authors()
+    resolved_strategy = resolve_strategy(domain, strategy)
+    load_banned_patterns(resolved_strategy)
+    load_whitelist_sources(domain)
+    load_high_quality_authors(domain)
 
     filtered = []
     stats = {
@@ -317,9 +385,17 @@ def filter_signals(signals: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]],
 
 def main():
     parser = argparse.ArgumentParser(description="信号过滤")
+    parser.add_argument("--domain", default=DEFAULT_DOMAIN, help="领域配置名")
+    parser.add_argument("--strategy", default="", help="可选：策略目录名，留空则使用领域默认策略")
     parser.add_argument("--input", required=True, help="输入 JSON 文件路径")
     parser.add_argument("--output", required=True, help="输出 JSON 文件路径")
     args = parser.parse_args()
+
+    # 加载配置
+    resolved_strategy = resolve_strategy(args.domain, args.strategy)
+    load_banned_patterns(resolved_strategy)
+    load_whitelist_sources(args.domain)
+    load_high_quality_authors(args.domain)
 
     # 确保输入文件存在
     if not os.path.exists(args.input):
@@ -336,7 +412,7 @@ def main():
     print(f"开始过滤：共 {original_count} 条信号")
 
     # 过滤
-    filtered_signals, stats = filter_signals(signals)
+    filtered_signals, stats = filter_signals(signals, domain=args.domain, strategy=args.strategy)
     filtered_count = len(filtered_signals)
 
     # 输出统计
@@ -347,16 +423,21 @@ def main():
     print(f"    - Banned Pattern: {stats['banned_pattern']}")
     print(f"    - 来源未授权: {stats['source_not_whitelisted']}")
     print(f"    - 质量门控未通过: {stats['quality_gate_failed']}")
+    print(f"  使用策略: {resolved_strategy}")
 
     # 保存结果
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+    output_dir = os.path.dirname(args.output)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
     output_data = {
         "signals": filtered_signals,
         "meta": {
             "original_count": original_count,
             "filtered_count": filtered_count,
             "rejection_stats": stats,
-            "filter_time": __import__("datetime").datetime.now().isoformat()
+            "filter_time": __import__("datetime").datetime.now().isoformat(),
+            "domain": args.domain,
+            "strategy": resolved_strategy,
         }
     }
 

@@ -1,0 +1,49 @@
+{
+  "banned_patterns": [
+    {
+      "name": "hot_news",
+      "pattern": "^.*(刚刚|重磅|突发|震惊|炸裂).*(发布|上线|推出|宣布).*$",
+      "description": "热点炒作类标题"
+    },
+    {
+      "name": "predictions",
+      "pattern": "^.*(十大|预测|展望|趋势).*\\d{4}年|来年.*趋势|必火.*$",
+      "description": "预测类标题"
+    },
+    {
+      "name": "generic_overview",
+      "pattern": "^.*(一文读懂|全面解读|快速入门|分钟学会|一张图读懂).*$",
+      "description": "二道贩子概述"
+    },
+    {
+      "name": "anxiety_marketing",
+      "pattern": "^.*(AI取代.*职业|将被淘汰|即将消失|逆天|颠覆认知|太卷了).*$",
+      "description": "焦虑营销"
+    },
+    {
+      "name": "translation_fluff",
+      "pattern": "^.*(让我们深入|值得注意的是|本文将探讨|翻译自).*$",
+      "description": "机器翻译泛滥"
+    },
+    {
+      "name": "tool_list",
+      "pattern": "^.*(工具推荐|必备神器|10款.*工具|超级好用.*工具).*$",
+      "description": "工具推荐堆砌"
+    },
+    {
+      "name": "tutorial_fluff",
+      "pattern": "^.*(从零开始|新手必看|入门教程|上手指南|小白.*必学).*$",
+      "description": "入门教程泛滥"
+    },
+    {
+      "name": "ai_generated",
+      "pattern": "^.*(首先|其次|最后|总之).{0,15}(我们可以看到|研究表明).*$",
+      "description": "AI 生成套话"
+    },
+    {
+      "name": "clickbait",
+      "pattern": "^.*(竟然|居然|万万没想到|99%的人都不知道|绝了).*$",
+      "description": "标题党特征"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "default_strategy": "problem-solving",
+  "allowed_strategies": [
+    "problem-solving"
+  ],
+  "strategy_overrides": {
+    "problem-solving": {
+      "config": {}
+    }
+  }
+}

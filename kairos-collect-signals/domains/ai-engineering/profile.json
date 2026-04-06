@@ -1,0 +1,35 @@
+{
+  "domain": "ai-engineering",
+  "label": "AI 垂直领域技术类",
+  "description": "默认领域插件。面向 AI 工程、Agent、RAG、模型应用与系统优化类公众号选题。",
+  "default_target_reader": "AI 工程师与技术负责人",
+  "article_shapes": {
+    "failure": "问题复盘型",
+    "tradeoff": "权衡拆解型",
+    "scaling_issue": "系统拆解型",
+    "unexpected_behavior": "反常识分析型"
+  },
+  "why_now_templates": {
+    "failure": "这类问题正在从 demo 走向生产，读者需要的不是概念介绍，而是失败为什么会发生。",
+    "tradeoff": "这类话题正在持续被讨论，但真正有价值的是收益背后的成本与副作用。",
+    "scaling_issue": "很多方案只在小规模成立，生产化后暴露瓶颈的经验对公众号读者有长期价值。",
+    "unexpected_behavior": "反直觉行为往往能带来认知升级，是公众号里更容易形成传播的题型。"
+  },
+  "reader_segments": [
+    {
+      "name": "ai-engineer",
+      "target_reader": "AI 工程师",
+      "keywords": ["生产环境", "延迟", "吞吐量", "内存", "RAG", "Agent", "部署", "benchmark"]
+    },
+    {
+      "name": "tech-lead",
+      "target_reader": "技术负责人",
+      "keywords": ["tradeoff", "成本", "稳定性", "上线", "回滚", "质量", "效率"]
+    },
+    {
+      "name": "indie-builder",
+      "target_reader": "独立开发者",
+      "keywords": ["开源", "aider", "cursor", "copilot", "workflow", "自动化"]
+    }
+  ]
+}

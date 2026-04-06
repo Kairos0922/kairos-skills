@@ -1,397 +1,280 @@
 ---
 name: kairos-collect-signals
 description: |
-  选题信号采集与角度生成 Skill。当需要确定文章方向、寻找写作灵感时使用。
+  通用的微信公众号选题 Skill。通过“张力 → 因果 → 结构 → 选题卡”把信号转化为可写选题。
 
   触发场景：
   - "帮我看看最近有什么值得写的"
-  - "我想找找某个方向的独特角度"
-  - "最近有什么热门话题值得关注"
-  - "帮我确定一个写作方向"
-  - "有什么信号值得关注"
+  - "我想找某个方向的独特角度"
+  - "有什么有问题意识的选题可以写"
+  - "从信号里提炼机制和结构"
+  - "做一轮选题方向扫描"
 
   注意：
-  - 关键词可配置（references/keywords.json），适用于任意领域
-  - 数据源可插拔（references/sources.json）
-  - Agent 使用自己的 LLM 能力生成角度
+  - 引擎是通用的，默认内置 `ai-engineering` 领域插件
+  - 垂直领域通过 `domains/<domain>/` 的配置文件可插拔接入
+  - 默认策略由 `domains/<domain>/strategy_binding.json` 决定，切换领域即可切换默认策略
+  - `sources / keywords / high_quality_authors` 只属于领域插件，不做共享
+  - `banned_patterns` 只属于策略，不放在领域插件或 references
+  - 策略可插拔（strategies/<strategy>/）
+metadata:
+  version: "6.2"
 ---
 
 # kairos-collect-signals
 
-## 目的
+## Purpose / 目的
 
-采集选题信号，为微信公众号生成候选主题和独特角度。关键词和数据源均可配置，适用于任何领域（AI、产品、运营，投资等）。
+从多源信号中提取认知张力，推导因果机制与结构模式，输出真正可用的公众号选题卡。
+Skill 本体是通用引擎；某个垂直领域只通过配置文件接入，不把领域逻辑写死在核心流程里。
 
-## 何时使用
+## When to use / 何时使用
 
-- 用户要求寻找写作灵感或方向
-- 用户要求分析当前有哪些值得写的信号
-- 用户要求确定文章选题角度
-- 用户提供了初步方向，需要深入信号分析
+- 需要从近期信号中找“问题意识”的选题
+- 需要提炼机制/结构，而非热点罗列
+- 需要基于失败、权衡、异常的具体写作角度
+- 需要为某个垂直领域快速挂载数据源、关键词、读者画像、选题偏好
 
-## 核心流程
+## Files / 目录结构
 
-### Step 1: 采集信号
-
-**重要：先检查是否已有信号文件。** 如果 `./.kairos-temp/signals.json` 已存在（由 harness 预填充用于 evals），跳过本步骤，直接使用已有信号。
-
-如果信号文件不存在，使用 `python3 scripts/collect.py` 采集信号并保存至 `./.kairos-temp/signals.json`：
-
-```bash
-# 如果 ./.kairos-temp/signals.json 已存在，跳过采集
-# 否则，采集信号并保存：
-python3 scripts/collect.py --tier 1 --limit 100 --output ./.kairos-temp/signals.json
-
-# 用户提供了关键词
-python3 scripts/collect.py --tier 1 --limit 100 --keywords "LangChain RAG" --output ./.kairos-temp/signals.json
+```text
+kairos-collect-signals/
+├── SKILL.md
+├── scripts/
+├── strategies/
+│   └── problem-solving/
+│       ├── banned_patterns.json
+│       ├── config.json
+│       └── *.md
+├── domains/
+│   └── ai-engineering/
+│       ├── profile.json
+│       ├── sources.json
+│       ├── keywords.json
+│       ├── high_quality_authors.json
+│       ├── strategy_binding.json
+│       └── topic_rules.json
 ```
 
-- 采集结果保存至 `./.kairos-temp/signals.json`
-- 时效性过滤：只采集 3 天内的内容
-- 单个源失败不影响整体（try/except）
-- **Eval 场景**：harness 会预填充 `./.kairos-temp/signals.json`，此时跳过本步骤
+领域插件约定：
+- `profile.json`: 领域说明、默认读者、文章结构、why_now 模板
+- `sources.json`: 当前领域的数据源
+- `sources.json[].type`: 数据源 adapter 类型，当前支持 `rss / github / reddit / x`
+- `keywords.json`: 当前领域的关键词与时效配置
+- `high_quality_authors.json`: 当前领域的高质量作者 / 社区名单
+- `strategy_binding.json`: 当前领域默认绑定的策略、允许的策略、策略级配置覆盖
+- `topic_rules.json`: 焦点覆盖、读者细分、结构偏好、why_now 模板
 
-### Step 2: 读取信号
+## Core workflow / 核心流程
 
-读取 `./.kairos-temp/signals.json`，理解每个信号的内容和来源。
+1. 选择领域插件
+默认领域为 `ai-engineering`。若接入新领域，优先在 `domains/<domain>/` 下补齐配置文件，而不是改核心脚本。
+默认策略由 `domains/<domain>/strategy_binding.json` 自动解析，通常只切换 `domain` 即可。
 
-### Step 3: 去重
+2. 信号采集
+如果 `./.kairos-temp/signals.json` 已存在（evals 或 harness 预填充），跳过采集。
+
+当前采集器按 `sources.json[].type` 分发 adapter。已内置：
+- `rss`
+- `github`
+- `reddit`
+- `x`
+
+注意：
+- 当前这 4 类 adapter 都通过 feed 形式接入
+- 如果某个平台需要原生 API、鉴权、分页或复杂查询，应新增独立 adapter，不要继续堆在 `collector.py`
+
+```bash
+python3 scripts/collect.py --domain ai-engineering --tier 1 --limit 100 --output ./.kairos-temp/signals.json
+python3 scripts/collect.py --domain ai-engineering --tier 1 --limit 100 --keywords "LangChain RAG" --output ./.kairos-temp/signals.json
+```
+
+3. 去重
 
 ```bash
 python3 scripts/dedup.py --input ./.kairos-temp/signals.json --output ./.kairos-temp/signals-deduped.json
 ```
 
-### Step 4: 过滤信号
+4. 过滤信号（必须执行）
+使用 `scripts/filter.py`。来源白名单与高质量作者来自 `domains/<domain>/`；禁用模式来自 `strategies/<strategy>/banned_patterns.json`。
 
-应用以下规则，按顺序执行：
-
-**规则 1 - Banned Patterns（直接拒绝）**
-
-使用正则匹配，匹配则直接拒绝：
-
-| 模式 | 类型 | 正则 |
-|------|------|------|
-| 热点炒作 | hot_news | `^.*(刚刚\|重磅\|突发\|震惊\|炸裂).*(发布\|上线\|推出\|宣布).*$` |
-| 预测类标题 | predictions | `^.*(十大\|预测\|展望\|趋势).*\d{4}年\|来年.*趋势\|必火.*$` |
-| 二道贩子概述 | generic_overview | `^.*(一文读懂\|全面解读\|快速入门\|分钟学会\|一张图读懂).*$` |
-| 焦虑营销 | anxiety_marketing | `^.*(AI取代.*职业\|将被淘汰\|即将消失\|逆天\|颠覆认知\|太卷了).*$` |
-| 机器翻译泛滥 | translation_fluff | `^.*(让我们深入\|值得注意的是\|本文将探讨\|翻译自).*$` |
-| 工具推荐堆砌 | tool_list | `^.*(工具推荐\|必备神器\|10款.*工具\|超级好用.*工具).*$` |
-| 入门教程泛滥 | tutorial_fluff | `^.*(从零开始\|新手必看\|入门教程\|上手指南\|小白.*必学).*$` |
-| AI生成特征 | ai_generated | `^.*(首先\|其次\|最后\|总之).{0,15}(我们可以看到\|研究表明).*$` |
-| 标题党特征 | clickbait | `^.*(竟然\|居然\|万万没想到\|99%的人都不知道\|绝了).*$` |
-
-**规则 2 - Source Whitelist（来源白名单）**
-
-仅以下来源可进入候选列表：
-
-| 来源类型 | 示例 | 状态 |
-|----------|------|------|
-| 官方技术博客 | OpenAI Blog, Anthropic Blog, Google DeepMind, Stripe Blog | ✅ 白名单 |
-| 顶级开发者博客 | Andrej Karpathy, Tomasz Tunguz, Simon Willison | ✅ 白名单 |
-| 学术论文 | ArXiv (cs.AI/CL/LG), ACL, NeurIPS | ✅ 白名单 |
-| 知名技术媒体 | The Verge Tech, Ars Technica, Wired | ✅ 白名单 |
-| 高质量社交作者 | 见 `references/high_quality_authors.json` | ✅ 白名单 |
-| 聚合类内容 | 程序员日报, 开发者头条, 知乎日报 | ❌ 禁止 |
-| 资讯类翻译 | 机器翻译的海外资讯 | ❌ 禁止 |
-
-**规则 3 - Quality Gates（质量门控）**
-
-每项 >= 0.5 分且总分 >= 3 才通过：
-
-| 门控 | 标准 |
-|------|------|
-| 一手经验 | 是否有作者亲身测试、实验、数据或案例 |
-| 独特观点 | 是否有差异化视角 |
-| 深度分析 | 是否有技术深度 |
-| 实战价值 | 是否可落地 |
-
-**实验性 - 跨信号合成（Signal Synthesis）**：
-
-在 Step 5 生成角度之前，先将过滤后的信号按主题/技术栈分组。每组选取 2-3 个互补信号，优先组合：
-- 不同来源（博客 + 论文）
-- 不同角度（问题 + 解决方案）
-- 不同深度（现象 + 根因）
-
-这样可以从信号组合中生成比单一信号更丰富的角度。
-
-### Step 5: 生成角度
-
-1. 读取 `references/angle_prompt.md`
-2. 将过滤后的 signals 按格式填入 `{SIGNALS}
-
-## Few-Shot 示例
-
-### ✅ 好角度示例
-
-```json
-{
-  "topic": "RAG 延迟 3 秒：一次生产环境 P99 优化的完整复盘",
-  "angle_hint": "从具体延迟数字切入，有完整排查过程",
-  "type": "case_study",
-  "differentiation": "基于真实生产问题，有具体数据和解决过程",
-  "chase_trend": false,
-  "quality_score": 0.85,
-  "gate_scores": {
-    "firsthand_experience": 0.9,
-    "unique_perspective": 0.8,
-    "depth_analysis": 0.85,
-    "practical_value": 0.9
-  },
-  "angle": "从 3 秒延迟的具体 case 切入，展示完整的问题定位 → 方案选型 → 效果验证过程"
-}
+```bash
+python3 scripts/filter.py --domain ai-engineering --input ./.kairos-temp/signals-deduped.json --output ./.kairos-temp/signals-filtered.json
 ```
 
-### ❌ 坏角度示例
+5. 载入策略
+策略目录必须符合命名规范（小写 + 连字符）。默认策略通过 `domains/<domain>/strategy_binding.json` 决定；仅在需要高级覆盖时显式传 `--strategy`。
 
-```json
-{
-  "topic": "2026 年 AI 十大趋势预测",
-  "angle_hint": "从行业趋势切入",
-  "type": "trend_analysis",
-  "differentiation": "综合多方观点",
-  "chase_trend": true,
-  "quality_score": 0.3,
-  "gate_scores": {
-    "firsthand_experience": 0.1,
-    "unique_perspective": 0.2,
-    "depth_analysis": 0.3,
-    "practical_value": 0.2
-  },
-  "angle": "预测未来发展方向",
-  "reject_reason": "预测类标题，缺少数理依据"
-}
+读取：
+- `strategies/{strategy}/banned_patterns.json`
+- `strategies/{strategy}/config.json`
+- `strategies/{strategy}/tension_prompt.md`
+- `strategies/{strategy}/causal_prompt.md`
+- `strategies/{strategy}/abstraction_prompt.md`
+- `strategies/{strategy}/angle_prompt.md`
+
+6. 张力检测（Tension Detection）
+使用 `tension_prompt.md` 对 `signals-filtered.json` 进行张力提取，输出：
+
+```
+./.kairos-temp/tensions.json
 ```
 
-### ✅ 合格角度示例
+规则：
+- 必须有 expectation vs reality
+- tension_strength >= config.tension_filter.min_strength
+- 无张力则丢弃
 
-```json
-{
-  "topic": "HuggingFace Transformers 4.40 的 attention 优化分析",
-  "angle_hint": "从代码层面切入，有实测数据支撑",
-  "type": "technical_explainer",
-  "differentiation": "基于官方 release notes 和实测对比",
-  "chase_trend": false,
-  "quality_score": 0.75,
-  "gate_scores": {
-    "firsthand_experience": 0.6,
-    "unique_perspective": 0.7,
-    "depth_analysis": 0.85,
-    "practical_value": 0.8
-  },
-  "angle": "深入分析 SDPA 和 Flash Attention 2 的实现差异，以及在不同硬件上的实测性能对比"
-}
-```` 占位符（见 angle_prompt.md 中的信号格式化说明）
-3. 使用自己的 LLM 能力生成角度
-4. 解析 JSON 输出
+7. 因果推导（Causal Derivation）
+使用 `causal_prompt.md`，输出：
 
-### Step 6: 输出结果
+```
+./.kairos-temp/causal_chains.json
+```
 
-输出 JSON 格式，字段见下方输出 schema。
+规则：
+- 必须给出机制和因果链
+- 无因果链则丢弃
 
-### Step 7: 清理临时文件（最后执行）
+8. 结构抽象（Abstraction）
+使用 `abstraction_prompt.md`，输出：
+
+```
+./.kairos-temp/patterns.json
+```
+
+9. 选题生成（Topic Generation）
+使用 `angle_prompt.md` 基于 patterns 生成自然语言选题报告。内部可以保留结构化中间结果，但最终输出必须是自然语言，而不是 JSON：
+
+```
+./.kairos-temp/topic-report.md
+```
+
+10. 本地回归测试（推荐）
+开发或优化 skill 时，使用启发式分析脚本与 evals 做回归验证：
+
+```bash
+python3 scripts/run_evals.py
+```
+
+如需对单个 signals 文件做结构化分析，可运行：
+
+```bash
+python3 scripts/analyze.py --domain ai-engineering --input ./.kairos-temp/signals.json --output ./.kairos-temp/topic-report.md
+python3 scripts/analyze.py --domain ai-engineering --strategy problem-solving --input ./.kairos-temp/signals.json --output ./.kairos-temp/topic-report.md
+```
+
+11. 输出结果
+输出 Markdown 自然语言报告。如果没有形成可写选题，也必须输出自然语言说明为什么没有选题。
+
+12. 清理
+最后执行清理，删除 `./.kairos-temp/`。
 
 ```bash
 python3 scripts/cleanup.py
 ```
 
-删除 `./.kairos-temp/` 目录。
-
----
-
-## 输入
+## Input / 输入
 
 ```json
 {
-  "keywords": "LLM RAG",    // 可选：用户提供的关键词
-  "tier": 1,                // 可选：采集 tier（默认 1）
-  "limit": 100              // 可选：信号数量限制（默认 100）
+  "domain": "ai-engineering",   // 可选：领域插件名（默认 ai-engineering）
+  "keywords": "LLM RAG",        // 可选：用户关键词
+  "tier": 1,                    // 可选：采集 tier（默认 1）
+  "limit": 100,                 // 可选：信号数量限制（默认 100）
+  "strategy": "problem-solving", // 可选：策略目录名；留空则从 strategy_binding.json 自动解析
+  "domain_context": {}          // 可选：未来用于传递垂直领域额外上下文
 }
 ```
 
-## 输出
+## Output / 输出
 
-```json
-{
-  "signals": [
-    {
-      "id": "sig-20260403-xxxx",
-      "type": "trend",
-      "content": "信号描述",
-      "source": {
-        "platform": "OpenAI Blog",
-        "url": "https://...",
-        "author": ""
-      },
-      "relevance_score": 0.85,
-      "priority": "P0",
-      "published_at": "2026-04-03T10:00:00+08:00"
-    }
-  ],
-  "candidate_topics": [
-    {
-      "topic": "CoT 不是银弹：三个致命盲区",
-      "angle_hint": "从'实际失效场景'切入",
-      "source_signals": ["sig-20260403-xxxx"],
-      "signals_count": 1,
-      "synthesized_group": false,
-      "type": "technical_explainer",
-      "quality_score": 0.85,
-      "gate_scores": {
-        "firsthand_experience": 0.9,
-        "unique_perspective": 0.8,
-        "depth_analysis": 0.85,
-        "practical_value": 0.8
-      },
-      "differentiation": "基于实测，有独特一手经验",
-      "chase_trend": false,
-      "worth_writing": true,
-      "reject_reason": null,
-      "angle": "从实测失效场景切入"
-    }
-  ],
-  "meta": {
-    "total_signals": 150,
-    "signals_filtered": 130,
-    "rejected_reasons": {
-      "banned_pattern": 45,
-      "quality_gate_failed": 60,
-      "source_not_whitelisted": 25
-    },
-    "synthesis_stats": {
-      "total_groups": 0,
-      "synthesized_angles": 0,
-      "avg_signals_per_synthesized_angle": 0
-    },
-    "candidate_topics_count": 5,
-    "collection_time": "2026-04-03T10:00:00+08:00"
-  }
-}
+最终输出必须是自然语言报告，例如：
+
+```md
+# 微信公众号选题报告
+
+领域：ai-engineering
+策略：problem-solving
+扫描信号数：40
+过滤后信号数：8
+形成选题数：2
+
+以下是本轮可写的选题：
+
+## 选题 1
+选题题面：RAG 为什么会在多跳问题里失效：一次围绕准确率下降 19% 的排查复盘
+要回答的问题：为什么 RAG 系统会在关键场景中失效，而且这种失效不是偶发事件？
+为什么现在值得写：很多团队都在上线 RAG，但大多数讨论只讲方案，不讲为什么会慢、为什么会失效。
+核心洞察：真实约束会把被忽略的系统假设放大成显性故障。
+建议切口：从多跳问题、长上下文和排查路径切入。
+目标读者：AI 工程师
+文章形态：问题复盘型
+来源：OpenAI Blog
+时间：2026-04-03T10:00:00+08:00
+网址：https://openai.com/blog/example
+支撑依据：
+- 实测 RAG 在多跳问题下准确率下降至 62%
+- 来源: OpenAI Blog
+- 时间: 2026-04-03T10:00:00+08:00
+- 网址: https://openai.com/blog/example
+- 机制: 真实约束会把被忽略的系统假设放大成显性故障。
 ```
 
----
+## Examples / 示例
 
-## 关键文件
+输入：
+"帮我看看最近有什么值得写的信号"
 
-| 文件 | 说明 |
-|------|------|
-| `scripts/collect.py` | 信号采集脚本 |
-| `scripts/dedup.py` | 去重脚本 |
-| `scripts/cleanup.py` | 临时文件清理脚本 |
-| `references/sources.json` | 数据源配置 |
-| `references/keywords.json` | 关键词配置 |
-| `references/high_quality_authors.json` | 高质量社交作者白名单 |
-| `references/angle_prompt.md` | 角度生成 Prompt 模板 |
+输出：
+- 输出是一份自然语言选题报告
+- 每个选题都必须带 `来源 / 时间 / 网址`
+- 如果没有网址，也要明确写出 `网址：未提供`
 
----
+## Gotchas / 注意事项
 
-## 注意事项
+- 没有张力就没有选题，不能硬生成。
+- 没有因果链就不输出结果，避免伪机制。
+- 选题必须来源于 failure 或 tradeoff，禁止综述与趋势预测。
+- 最终输出不能是 JSON，必须是自然语言报告。
+- 每个选题都必须写清楚 `来源 / 时间 / 网址`，其中网址如果存在必须完整带出。
+- 内部可以保留结构化中间结果用于测试，但对外输出必须是自然语言。
+- 对反馈闭环优化类信号，优先输出“闭环为什么跑偏 / 奖励为什么被投机 / verifier 为什么带偏优化方向”这类机制题。
+- 如果你要覆盖 AI 以外的领域，优先新增 `domains/<domain>/`，不要直接改默认 `ai-engineering` 领域。
+- 新领域至少补齐 `sources.json / keywords.json / high_quality_authors.json / profile.json / topic_rules.json / strategy_binding.json`。
+- strategies 目录名必须是小写+连字符，避免下划线。
 
-1. **先清理再输出**：Step 7 清理临时文件是最后一步，在输出结果之后执行
-2. **正则使用 `^` 和 `$`**：确保匹配整行，避免部分匹配导致误判
-3. **时区处理**：published_at 使用 ISO 8601 格式，带时区（+08:00）
-4. **去重依据**：基于内容哈希去重，保留最新发布的信号
-5. **Quality Gates 由 Agent 判断**：使用 LLM 能力评估每项门控
+## Validation / 验证
 
----
+- `tensions` 中必须同时包含 expectation 与 reality。
+- `causal_chains.causal_chain` 必须是因果序列。
+- 自然语言报告必须至少包含 `选题题面 / 要回答的问题 / 为什么现在值得写 / 核心洞察 / 目标读者 / 来源 / 时间 / 网址`。
+- 优化后运行 `python3 scripts/run_evals.py`，应确保关键 case 通过。
 
-## 示例
+## Files / 关键文件
 
-**输入**：用户说 "我想找找最近有什么值得写的 AI 信号"
-
-**输出**：
-```json
-{
-  "signals": [...],
-  "candidate_topics": [
-    {
-      "topic": "LangChain 内存泄漏的根因分析",
-      "angle_hint": "从生产环境踩坑切入，有一手数据",
-      "quality_score": 0.88,
-      "worth_writing": true
-    }
-  ],
-  "meta": {...}
-}
-```
-
-## 角度要求
-
-每个角度必须满足以下**必要条件**：
-
-1. **具体数字或场景**：标题/切入角度必须包含具体数据（延迟 ms、% 提升、token 数等）或具体场景（生产问题、实测过程）
-   - ❌ "RAG 优化策略" → ✅ "RAG 延迟从 2s 降至 300ms 的优化路径"
-   - ❌ "AI Agent 发展趋势" → ✅ "我们在 5 个生产环境部署 Agent 后的教训总结"
-
-2. **一手信息源**：信号来源必须是作者亲身经历，不能是编译/翻译/综述
-   - ❌ "据报道..." "有人认为..." "综合多方观点..."
-   - ✅ "我们测试了..." "踩坑记录：..."
-
-3. **拒绝泛泛而谈**：不能是"XX 是什么/为什么重要"类型的主题
-   - ❌ "一文读懂 LLM"
-   - ❌ "AI Agent 入门指南"
-   - ✅ 必须有具体切入角度和差异点
-
-## 额外质量检查
-
-生成每个候选角度前，自问：
-1. **这个角度普通人能写吗？** 如果能，拒绝（因为没有差异化）
-2. **有具体数据或案例支撑吗？** 如果没有，拒绝
-3. **这个角度 3 年后还有价值吗？** 如果只是追当下热点，拒绝
-4. **信号内容支持这个角度吗？** 如果角度从信号内容中推导不出，拒绝
-
-"default_keywords": [
-    "LLM", "RAG", "LangChain", "AI Agent", "Agentic AI",
-    "machine learning", "neural network", "embedding",
-    "Claude", "GPT-4", "GPT-4o", "Gemini", "Llama", "transformer",
-    "prompt engineering", "fine-tuning", "RLHF",
-    "vector database", "embedding", "pinecone", "weaviate",
-    "AI coding", "cursor", "copilot", "aider",
-    "vibe coding", "MCP", "model context protocol",
-    "LangGraph", "LlamaIndex", "dspy"
-  ]
-
-### Step 5: 生成角度
-
-1. 读取 `references/angle_prompt.md`
-2. **实验性 - 合成信号组**：如果过滤后的 signals >= 5 个，先按主题/技术栈分组，选取互补的 2-3 个信号为一组。每组生成 1-2 个角度
-3. 将过滤后的 signals（及其分组信息）按格式填入 `{SIGNALS}` 占位符（见 angle_prompt.md 中的信号格式化说明）
-4. 使用自己的 LLM 能力生成角度
-5. 解析 JSON 输出
-
-**跨信号合成（Signal Synthesis）**：
-在 Step 5 生成角度之前，先将过滤后的信号按主题/技术栈分组。每组选取 2-3 个互补信号，优先组合：
-- 不同来源（博客 + 论文）
-- 不同角度（问题 + 解决方案）
-- 不同深度（现象 + 根因）
-
-scripts/synthesize.py 完成分组后，在 angle_prompt.md 中填入每组的信号数组（带 group_id、topic_label、signals_count、source_diversity 字段），每组生成 1-2 个角度。
-
-scripts/synthesize.py — 对过滤后的信号按主题/关键词分组，输出信号组
-
-```json
-[
-  {
-    "group_id": "grp-001",
-    "topic_label": "RAG 多跳问题",
-    "signals_count": 3,
-    "source_diversity": "blog + arxiv",
-    "signals": [
-      {
-        "id": "sig-20260403-001",
-        "content": "实测发现 RAG 在处理多跳问题时准确率下降至 62%...",
-        "source": "Stripe Blog",
-        "type": "technical"
-      },
-      {
-        "id": "sig-20260403-002",
-        "content": "Multi-hop retrieval analysis on open-domain QA...",
-        "source": "ArXiv cs.CL",
-        "type": "paper"
-      }
-    ]
-  }
-]
-```
-
-{SIGNALS}
+- `domains/ai-engineering/profile.json`
+- `domains/ai-engineering/topic_rules.json`
+- `domains/ai-engineering/sources.json`
+- `domains/ai-engineering/keywords.json`
+- `domains/ai-engineering/high_quality_authors.json`
+- `domains/ai-engineering/strategy_binding.json`
+- `scripts/collect.py`
+- `scripts/dedup.py`
+- `scripts/filter.py`
+- `scripts/domain_config.py`
+- `scripts/analyze.py`
+- `scripts/run_evals.py`
+- `scripts/cleanup.py`
+- `scripts/source_adapters/base.py`
+- `scripts/source_adapters/registry.py`
+- `scripts/source_adapters/rss.py`
+- `scripts/source_adapters/github.py`
+- `scripts/source_adapters/reddit.py`
+- `scripts/source_adapters/x.py`
+- `strategies/problem-solving/banned_patterns.json`
+- `strategies/problem-solving/config.json`
+- `strategies/problem-solving/tension_prompt.md`
+- `strategies/problem-solving/causal_prompt.md`
+- `strategies/problem-solving/abstraction_prompt.md`
+- `strategies/problem-solving/angle_prompt.md`

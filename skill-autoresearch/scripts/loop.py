@@ -529,7 +529,7 @@ def run_harness(skill_path: Path, iteration: int, run_dir: Path, skip_permission
         cmd,
         capture_output=True,
         text=True,
-        timeout=600,
+        timeout=1800,  # 30 min for 10 eval cases
     )
     if result.returncode != 0:
         print(f"[loop] ⚠️  Harness failed: {result.stderr[:200]}")

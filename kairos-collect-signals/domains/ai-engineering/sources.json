@@ -143,7 +143,7 @@
       "tier": 2,
       "category": "search",
       "query_set": "github-emerging-tools",
-      "query_suffix": "AI agent",
+      "query_suffix": "in:name,description",
       "limit": 3,
       "enabled": true
     },
@@ -157,6 +157,15 @@
       "query_template": "{query}",
       "max_results": 3,
       "search_depth": "basic",
+      "exclude_domains": [
+        "youtube.com",
+        "medium.com",
+        "linkedin.com",
+        "36kr.com",
+        "zhihu.com",
+        "bilibili.com",
+        "toutiao.com"
+      ],
       "enabled": true
     }
   ],

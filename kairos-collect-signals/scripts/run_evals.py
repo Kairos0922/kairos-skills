@@ -12,6 +12,7 @@ import json
 import os
 import sys
 import tempfile
+from datetime import datetime, timezone
 from typing import Any, Dict, List
 
 SKILL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,7 +34,7 @@ RSS_FIXTURE = """<?xml version="1.0" encoding="UTF-8"?>
       <title>{item_title}</title>
       <link>{item_link}</link>
       <description>{description}</description>
-      <pubDate>Mon, 07 Apr 2026 10:00:00 GMT</pubDate>
+      <pubDate>{pub_date}</pubDate>
       <author>{author}</author>
     </item>
   </channel>
@@ -46,6 +47,7 @@ def has_signal(result: Dict[str, Any], signal_id: str) -> bool:
 
 
 def write_feed(path: str, title: str, item_title: str, description: str, author: str) -> None:
+    pub_date = datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT")
     with open(path, "w", encoding="utf-8") as f:
         f.write(
             RSS_FIXTURE.format(
@@ -54,6 +56,7 @@ def write_feed(path: str, title: str, item_title: str, description: str, author:
                 item_title=item_title,
                 item_link="https://example.com/item",
                 description=description,
+                pub_date=pub_date,
                 author=author,
             )
         )
@@ -71,10 +74,10 @@ def run_adapter_smoke_test() -> Dict[str, Any]:
             "reddit": os.path.join(temp_dir, "reddit.xml"),
             "x": os.path.join(temp_dir, "x.xml"),
         }
-        write_feed(feed_paths["rss"], "RSS Feed", "RAG benchmark improved", "RAG benchmark with latency data", "author-rss")
-        write_feed(feed_paths["github"], "GitHub Feed", "RAG issue analysis", "RAG production debugging notes", "author-github")
-        write_feed(feed_paths["reddit"], "Reddit Feed", "RAG retention tradeoff", "RAG tradeoff with refund rate", "author-reddit")
-        write_feed(feed_paths["x"], "X Feed", "RAG workflow recap", "RAG production recap with metrics", "author-x")
+        write_feed(feed_paths["rss"], "RSS Feed", "AI Agent benchmark improved", "AI Agent benchmark with latency data", "author-rss")
+        write_feed(feed_paths["github"], "GitHub Feed", "AI Agent issue analysis", "AI Agent production debugging notes", "author-github")
+        write_feed(feed_paths["reddit"], "Reddit Feed", "AI Agent retention tradeoff", "AI Agent tradeoff with refund rate", "author-reddit")
+        write_feed(feed_paths["x"], "X Feed", "AI Agent workflow recap", "AI Agent production recap with metrics", "author-x")
 
         sources_path = os.path.join(temp_dir, "sources.json")
         with open(sources_path, "w", encoding="utf-8") as f:

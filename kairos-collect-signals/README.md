@@ -6,6 +6,54 @@
 
 `信号采集 -> 去重 -> 过滤 -> 张力 -> 因果 -> 抽象 -> 选题报告`
 
+## 60 秒上手
+
+第一次跑之前，先把 `TAVILY_API_KEY` 放进本地系统钥匙串：
+
+```bash
+pip install keyring
+python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/setup_tavily_key.py
+```
+
+然后直接执行一轮完整流程：
+
+```bash
+python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/collect.py \
+  --domain ai-engineering \
+  --tier 2 \
+  --limit 80 \
+  --output /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/.kairos-temp/signals.json
+
+python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/dedup.py \
+  --input /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/.kairos-temp/signals.json \
+  --output /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/.kairos-temp/signals-deduped.json
+
+python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/filter.py \
+  --domain ai-engineering \
+  --input /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/.kairos-temp/signals-deduped.json \
+  --output /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/.kairos-temp/signals-filtered.json
+
+python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/analyze.py \
+  --domain ai-engineering \
+  --input /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/.kairos-temp/signals-filtered.json \
+  --output /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/.kairos-temp/topic-report.md
+```
+
+当前默认领域已经收敛到三类高价值关注点：
+
+- `AI Agent` 设计、开发到生产落地
+- `Skill` 设计、开发到生产落地
+- `OpenClaw`
+
+OpenClaw cron（allowlist 模式）建议使用单命令入口：
+
+```bash
+python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/scripts/run_pipeline.py \
+  --domain ai-engineering \
+  --tier 1 \
+  --limit 100
+```
+
 默认内置一个领域插件：
 
 - `ai-engineering`（精简关键词，聚焦：AI Agent 设计/从开发到生产、Skill 设计/从开发到生产、OpenClaw）
@@ -50,6 +98,7 @@ python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/sc
 ```
 
 说明：运行时会优先读取环境变量 `TAVILY_API_KEY`，如未设置则回退读取系统钥匙串（`service=kairos-collect-signals, user=tavily_api_key`）。
+缺少密钥时，不会导致整个采集器崩溃，但 `tavily` 相关搜索源会被跳过。
 
 ## 目录结构
 
@@ -151,6 +200,7 @@ kairos-collect-signals/
 - `rss / github / reddit / x` 当前都以 feed 形式工作
 - `github-search` 通过 `gh` CLI 查询仓库
 - `tavily` 通过 `TAVILY_API_KEY` 调用 Tavily Search API
+- `tavily` 已添加噪声域排除，优先减少视频站、内容农场和泛社媒结果
 - 如果以后要接 API、鉴权、分页、搜索，应该新增新的 adapter，而不是堆在 `collector.py`
 
 ## 运行流程
@@ -310,8 +360,8 @@ python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-collect-signals/sc
 ```json
 {
   "query_sets": {
-    "pain-topics": ["agent memory", "skill evaluation"],
-    "official-blog-targets": ["OpenAI", "Anthropic"]
+    "pain-topics": ["self-improving AI agent", "skill evaluation failure", "OpenClaw"],
+    "official-blog-targets": ["OpenAI", "Anthropic", "OpenClaw"]
   }
 }
 ```

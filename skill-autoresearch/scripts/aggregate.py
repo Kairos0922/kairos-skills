@@ -143,7 +143,7 @@ def compute_benchmark(run_dir: Path) -> dict:
         }
 
     mean_pr = statistics.mean(valid_pass_rates)
-    stddev = statistics.stdev(valid_pass_rates) if len(valid_pass_rates) > 1 else 0.0
+    stddev = statistics.pstdev(valid_pass_rates) if len(valid_pass_rates) > 1 else 0.0
     median_pr = statistics.median(valid_pass_rates) if valid_pass_rates else None
 
     return {
@@ -209,7 +209,6 @@ def check_assertion_quality(benchmark: dict) -> dict:
     for case in per_case:
         for exp in case.get("expectations", []):
             text = exp.get("text", "").lower()
-            evidence = exp.get("evidence", "").lower()
             # Check for borderline semantic language
             if any(word in text for word in ["可能", "也许", "是否", "够不够", "判断"]):
                 borderline_count += 1

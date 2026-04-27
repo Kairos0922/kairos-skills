@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>宋氏美学公众号排版概念稿</title>
+  <style>
+    :root {
+      --bg: #f3efe7;
+      --paper: #faf7f0;
+      --paper-2: #f6f0e6;
+      --ink: #2e2923;
+      --ink-soft: #534b42;
+      --muted: #8e8172;
+      --line: #ddd2c4;
+      --line-soft: #e9e0d4;
+      --accent: #b79f84;
+      --shadow: 0 20px 50px rgba(80, 64, 47, 0.07);
+      --cjk: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif;
+      --latin: Baskerville, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, "Times New Roman", serif;
+      --mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(212, 198, 180, 0.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(187, 169, 146, 0.12), transparent 24%),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--cjk);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .stage {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 56px 24px 72px;
+      display: grid;
+      grid-template-columns: 320px minmax(320px, 430px);
+      gap: 44px;
+      align-items: start;
+      justify-content: center;
+    }
+
+    .board {
+      padding: 28px 26px;
+      background: rgba(250, 247, 240, 0.8);
+      border: 1px solid rgba(221, 210, 196, 0.9);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+    }
+
+    .board h1 {
+      margin: 0 0 14px;
+      font-size: 28px;
+      line-height: 1.45;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      color: #201a14;
+    }
+
+    .board p {
+      margin: 0 0 16px;
+      font-size: 15px;
+      line-height: 1.95;
+      color: var(--ink-soft);
+    }
+
+    .token {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .token-label {
+      margin: 0 0 8px;
+      font-family: var(--latin);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .token-value {
+      margin: 0 0 12px;
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--ink);
+    }
+
+    .swatches {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .swatch {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .phone {
+      position: sticky;
+      top: 32px;
+      padding: 12px;
+      border-radius: 34px;
+      background: linear-gradient(180deg, #302b27, #1c1916);
+      box-shadow: 0 28px 70px rgba(44, 35, 26, 0.22);
+    }
+
+    .phone-screen {
+      overflow: hidden;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #f8f4ec, #f5efe6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .article {
+      padding: 28px 24px 36px;
+    }
+
+    .kicker {
+      margin: 0 0 18px;
+      font-family: var(--latin);
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .title {
+      margin: 0 0 12px;
+      font-size: 28px;
+      line-height: 1.45;
+      letter-spacing: 0.03em;
+      font-weight: 600;
+      color: #211b16;
+    }
+
+    .title-sub {
+      margin: 0 0 26px;
+      font-size: 13px;
+      line-height: 1.9;
+      color: var(--muted);
+    }
+
+    .hero {
+      margin: 0 0 14px;
+      aspect-ratio: 4 / 3.2;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.1), rgba(0,0,0,0.03)),
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,0.5), transparent 24%),
+        linear-gradient(180deg, #d7c9b5 0%, #baa58a 42%, #8e7760 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+    }
+
+    .hero::after {
+      content: "留白、纸感、温润的光";
+      position: absolute;
+      left: 24px;
+      bottom: 20px;
+      color: rgba(255,255,255,0.92);
+      font-size: 15px;
+      line-height: 1.7;
+      letter-spacing: 0.08em;
+    }
+
+    .caption {
+      width: 86%;
+      margin: 0 auto 28px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      font-size: 12.5px;
+      line-height: 1.8;
+      text-align: center;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .lead,
+    .body,
+    .quote,
+    .section-title,
+    .list,
+    .meta,
+    .code,
+    .table-card {
+      margin: 0 0 18px;
+    }
+
+    .lead {
+      font-size: 16px;
+      line-height: 2;
+      color: #39322b;
+    }
+
+    .lead .latin,
+    .body .latin,
+    .list .latin,
+    .quote .latin,
+    .meta .latin {
+      font-family: var(--latin);
+      color: #312b25;
+      letter-spacing: 0.02em;
+    }
+
+    .body {
+      font-size: 15.5px;
+      line-height: 1.98;
+      color: #433b34;
+    }
+
+    .section {
+      margin: 28px 0 24px;
+      padding-top: 2px;
+    }
+
+    .section-num {
+      margin: 0 0 6px;
+      font-family: var(--latin);
+      font-size: 38px;
+      line-height: 1;
+      letter-spacing: 0.1em;
+      color: #d3c7b8;
+    }
+
+    .section-title {
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+      line-height: 1.8;
+      font-weight: 700;
+      color: #241e18;
+      letter-spacing: 0.05em;
+    }
+
+    .quote {
+      padding: 16px 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.32), rgba(255,255,255,0.1)), var(--paper-2);
+      border-left: 3px solid #c8b59f;
+      border-radius: 14px;
+      font-size: 15px;
+      line-height: 1.95;
+      color: #5a5148;
+    }
+
+    .list {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      column-gap: 10px;
+      align-items: start;
+      font-size: 15px;
+      line-height: 1.95;
+      color: #403831;
+    }
+
+    .marker {
+      font-family: var(--latin);
+      color: #9a8d7d;
+      text-align: center;
+    }
+
+    .code-label {
+      margin: 26px 0 8px;
+      font-family: var(--latin);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .code {
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: #efe7da;
+      border: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.82;
+      color: #322d28;
+      white-space: pre-wrap;
+    }
+
+    .table-card {
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.32), rgba(255,255,255,0.08)), var(--paper-2);
+      border: 1px solid var(--line);
+    }
+
+    .table-label {
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--latin);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .table-value {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 15px;
+      line-height: 1.9;
+      color: #3f3831;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 28px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      width: 52px;
+      border-top: 1px solid var(--line);
+    }
+
+    .divider span {
+      font-family: var(--latin);
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      color: #c2b4a4;
+    }
+
+    @media (max-width: 980px) {
+      .stage {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .phone {
+        position: static;
+        max-width: 454px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .stage {
+        padding: 24px 12px 40px;
+      }
+
+      .board {
+        padding: 22px 18px;
+      }
+
+      .article {
+        padding: 24px 20px 32px;
+      }
+
+      .title {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="board">
+      <h1>宋氏美学公众号概念稿</h1>
+      <p>这不是最终微信可粘贴代码，而是一张先定气质的视觉稿。目标不是“网页感”，而是像一页被认真编排过的宋版长文：安静、克制、温润，有留白，也有秩序。</p>
+
+      <div class="token">
+        <p class="token-label">Direction</p>
+        <p class="token-value">卷页感、低对比、细边线、暖纸色、宋体为主，西文只负责平衡节奏，不喧宾夺主。</p>
+      </div>
+
+      <div class="token">
+        <p class="token-label">Typography</p>
+        <p class="token-value">中文以宋体承接气质；英文与数字使用温润的旧式衬线，控制在略小一档的视觉权重里。</p>
+      </div>
+
+      <div class="token">
+        <p class="token-label">Palette</p>
+        <p class="token-value">整体以米白、纸棕、墨褐为主，只保留非常轻的暖金感，不使用跳色。</p>
+        <div class="swatches">
+          <span class="swatch" style="background:#f3efe7;"></span>
+          <span class="swatch" style="background:#faf7f0;"></span>
+          <span class="swatch" style="background:#ddd2c4;"></span>
+          <span class="swatch" style="background:#8e8172;"></span>
+          <span class="swatch" style="background:#2e2923;"></span>
+        </div>
+      </div>
+
+      <div class="token">
+        <p class="token-label">Reading Feel</p>
+        <p class="token-value">手机阅读时，标题要稳，题注要轻，列表要整齐，章节要有起承转合，而不是每个模块都在强调自己。</p>
+      </div>
+    </section>
+
+    <section class="phone">
+      <div class="phone-screen">
+        <article class="article">
+          <p class="kicker">Editorial WeChat Layout</p>
+          <h2 class="title">宋式留白里的文章节奏</h2>
+          <p class="title-sub">让 <span class="latin">Chinese serif</span> 做主角，让英文、数字与结构都退到恰到好处的位置。</p>
+
+          <div class="hero"></div>
+          <p class="caption">图注不直接贴在图片下方，而是像题下注一样轻轻落下，成为视觉呼吸的一部分。</p>
+
+          <p class="lead">这是一种偏“册页”的公众号风格。不是强烈的装饰，不是刻意的古风，而是在 <span class="latin">mobile reading</span> 场景里，让文字本身显得从容、雅致、有秩序。</p>
+
+          <div class="divider"><span>··</span></div>
+
+          <section class="section">
+            <p class="section-num">01</p>
+            <p class="section-title">标题与正文之间，应该是一种缓慢展开的关系</p>
+          </section>
+
+          <p class="body">主标题不需要上方横线，也不需要过重的装饰。它应该像卷首题名一样，稳稳地落在页面上，用字体、留白与行气建立存在感，而不是用视觉技巧去“叫喊”。</p>
+
+          <div class="quote">如果一篇文章已经有好内容，那么排版要做的是“护住内容”，不是抢在内容前面先发声。</div>
+
+          <div class="list">
+            <span class="marker">•</span>
+            <span>无序列表的圆点要与文字中线共处一条秩序线上，不能漂，也不能顶出去。</span>
+          </div>
+          <div class="list">
+            <span class="marker">1.</span>
+            <span>有序列表的数字宽度要统一，和项目符号共用同一列，页面才会安静。</span>
+          </div>
+          <div class="list">
+            <span class="marker">2.</span>
+            <span>像 <span class="latin">AI Agent</span>、<span class="latin">Python 3.12</span> 这样的西文与数字，需要自然嵌进宋体节奏里。</span>
+          </div>
+
+          <p class="code-label">Code Sample</p>
+          <pre class="code">render(article)
+  .tone("song-dynasty-editorial")
+  .balance("cjk-latin-numeric")
+  .spacing("mobile-first")</pre>
+
+          <div class="table-card">
+            <span class="table-label">Section</span>
+            <span class="table-value">图片题注</span>
+            <span class="table-label">Mood</span>
+            <span class="table-value">轻、细、后退半步，不和正文争主次。</span>
+            <span class="table-label">Goal</span>
+            <span class="table-value">让读者在手机上持续阅读时，眼睛始终是舒服的。</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

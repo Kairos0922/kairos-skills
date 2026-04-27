@@ -11,6 +11,8 @@ This repository contains reusable skills that enhance AI coding agents (Claude C
 | Skill | Description |
 |-------|-------------|
 | [skill-autoresearch](./skill-autoresearch/) | Automatically optimize any agent skill through edit → eval → keep/revert loops |
+| [kairos-collect-signals](./kairos-collect-signals/) | 通用的微信公众号选题 Skill，把多源信号转换成可写的公众号选题卡 |
+| [kairos-wechat-typeset](./kairos-wechat-typeset/) | 把标准 Markdown 文章转换成适合微信公众号编辑器粘贴的内联样式 HTML |
 
 ---
 

@@ -39,6 +39,9 @@ Output ONLY this JSON (no markdown fences, no explanation):
 3. **Respect the existing structure** — don't rewrite the whole SKILL.md, make targeted changes.
 4. **Based on grading feedback** — if assertions about missing fields are failing, focus on field structure; if semantic assertions fail, focus on decision logic.
 5. **No over-engineering** — don't add features that aren't tested by existing assertions.
+6. **Prefer replacements over additions** — tighten or rewrite existing guidance before appending new sections.
+7. **Treat evals as fixed** — optimize the skill prompt, not the assertions, harness, or scripts.
+8. **Control complexity** — if your idea noticeably increases SKILL.md length, explain why the failing assertions justify it.
 
 ## Examples
 
@@ -88,8 +91,9 @@ Goal: improve the hot news filtering to match grader expectations.
 1. Read SKILL.md in your current directory
 2. Read the grading feedback from `grading_summary.txt` if it exists
 3. Read history from `history.json` if it exists
-4. Decide on one focused experimental idea
-5. Output the JSON
+4. Look for the smallest prompt change that can address the most important failures
+5. Decide on one focused experimental idea
+6. Output the JSON
 
 ## Important
 

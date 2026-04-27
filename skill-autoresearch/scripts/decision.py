@@ -28,6 +28,13 @@ PLATEAU_LIMIT = 3       # consecutive no-improvement iterations before stop
 MAX_ITERATIONS = 50     # hard upper bound
 
 
+def format_pass_rate(value: Optional[float]) -> str:
+    """Format pass rates safely for CLI output."""
+    if value is None:
+        return "N/A"
+    return f"{value:.1%}"
+
+
 def decide(
     current_pass_rate: float,
     running_best: float,
@@ -58,7 +65,7 @@ def decide(
             "decision": "keep",
             "is_new_best": True,
             "delta": delta,
-            "message": f"New best! {current_pass_rate:.1%} > {running_best:.1%} + {epsilon:.1%}",
+            "message": f"New best! {format_pass_rate(current_pass_rate)} > {format_pass_rate(running_best)} + {format_pass_rate(epsilon)}",
         }
     elif delta >= -epsilon:
         # Within noise margin - keep but not new best
@@ -66,7 +73,7 @@ def decide(
             "decision": "keep",
             "is_new_best": False,
             "delta": delta,
-            "message": f"Within noise margin. {current_pass_rate:.1%} vs best {running_best:.1%}",
+            "message": f"Within noise margin. {format_pass_rate(current_pass_rate)} vs best {format_pass_rate(running_best)}",
         }
     else:
         # Worse than running best by more than epsilon
@@ -74,7 +81,11 @@ def decide(
             "decision": "revert",
             "is_new_best": False,
             "delta": delta,
-            "message": f"Revert. {current_pass_rate:.1%} < {running_best:.1%} - {epsilon:.1%} (delta={delta:.1%})",
+            "message": (
+                f"Revert. {format_pass_rate(current_pass_rate)} < "
+                f"{format_pass_rate(running_best)} - {format_pass_rate(epsilon)} "
+                f"(delta={format_pass_rate(delta)})"
+            ),
         }
 
 
@@ -100,9 +111,6 @@ def should_stop(
     if running_best >= 1.0:
         return True, "Perfect score achieved (100%)"
 
-    if running_best >= 0.95:
-        return True, f"Excellent score achieved ({running_best:.1%})"
-
     if current_pass_rate is None:
         return True, "No valid grading for multiple consecutive cases"
 
@@ -126,7 +134,7 @@ def update_running_best(
 
 def load_history(run_dir: Path) -> dict:
     """Load history.json from run directory."""
-    history_path = run_dir / "history.json"
+    history_path = run_dir.parent / "history.json"
     if history_path.exists():
         try:
             return json.loads(history_path.read_text(encoding="utf-8"))
@@ -141,7 +149,7 @@ def load_history(run_dir: Path) -> dict:
 
 def save_history(run_dir: Path, history: dict) -> Path:
     """Save history.json to run directory."""
-    history_path = run_dir / "history.json"
+    history_path = run_dir.parent / "history.json"
     history_path.write_text(json.dumps(history, indent=2, ensure_ascii=False), encoding="utf-8")
     return history_path
 
@@ -242,7 +250,11 @@ def main():
     else:
         print(f"[decision] Decision: {decision_result['decision'].upper()}")
         print(f"[decision] {decision_result['message']}")
-        print(f"[decision] Current: {current_pr:.1%}, Best: {running_best:.1%}, Delta: {decision_result['delta']:+.1%}")
+        print(
+            f"[decision] Current: {format_pass_rate(current_pr)}, "
+            f"Best: {format_pass_rate(running_best)}, "
+            f"Delta: {decision_result['delta']:+.1%}"
+        )
 
     # Update running best if keep
     if decision_result["decision"] == "keep":
@@ -251,7 +263,7 @@ def main():
 
         if is_new_best:
             plateau_count = 0
-            print(f"[decision] ⭐ New running best: {new_running_best:.1%}")
+            print(f"[decision] ⭐ New running best: {format_pass_rate(new_running_best)}")
         else:
             plateau_count += 1
             print(f"[decision] Plateaus since improvement: {plateau_count}")

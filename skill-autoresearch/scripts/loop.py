@@ -5,15 +5,14 @@ scripts/loop.py — Main Optimization Loop
 Orchestrates the full edit → eval → keep/revert cycle.
 
 Workflow per iteration:
-1. Snapshot: git add + commit current SKILL.md
-2. Idea: autorelop subagent proposes experimental idea
-3. Apply: apply proposed changes to SKILL.md
-4. Harness: run harness.py → get grading
-5. Aggregate: run aggregate.py → get benchmark
-6. Decision: run decision.py → keep/revert/stop
-7. If revert: git reset --hard HEAD~1
-8. If keep: continue to next iteration
-9. If stop: exit
+1. Snapshot the current SKILL.md state
+2. Ask autorelop for one focused experiment
+3. Apply the proposed changes to SKILL.md
+4. Run harness.py to evaluate the skill
+5. Run aggregate.py to compute benchmark metrics
+6. Keep or revert the experimental changes
+7. Optionally run watchdog.py
+8. Record history + results.tsv
 
 Usage:
     python3 scripts/loop.py --skill-path /path/to/target-skill --max-iterations 20
@@ -22,203 +21,303 @@ Usage:
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
-import re
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 WORKSPACE_ROOT = Path(__file__).parent.parent.resolve()
 RUNS_ROOT = WORKSPACE_ROOT / "runs"
+MAX_CONSECUTIVE_FAILURES = 3
+RESULTS_HEADER = "\t".join([
+    "iteration",
+    "decision",
+    "pass_rate",
+    "running_best",
+    "delta",
+    "is_new_best",
+    "effective_epsilon",
+    "stddev",
+    "skill_lines_before",
+    "skill_lines_after",
+    "skill_line_delta",
+    "stop_reason",
+])
+
+
+def format_pass_rate(value: Optional[float]) -> str:
+    """Format pass_rate values for logs and context text."""
+    if value is None:
+        return "N/A"
+    return f"{value:.1%}"
+
+
+def resolve_runs_root(skill_path: Path) -> Path:
+    """Store run artifacts alongside the target skill, not inside this skill repo."""
+    return Path(f"{skill_path}-eval").resolve()
+
+
+def load_json(path: Path, default: Optional[dict] = None) -> dict:
+    """Load a JSON file with a safe default."""
+    if not path.exists():
+        return default or {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return default or {}
+
+
+def save_json(path: Path, payload: dict) -> None:
+    """Write a JSON file with consistent formatting."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def load_history(runs_root: Path, skill_name: str, skill_path: Path, max_iterations: int, epsilon: float) -> dict:
+    """Load existing history or initialize a new one for this run root."""
+    history_path = runs_root / "history.json"
+    history = load_json(history_path, {})
+    if history:
+        history.setdefault("skill_name", skill_name)
+        history.setdefault("skill_path", str(skill_path))
+        history["max_iterations"] = max_iterations
+        history["epsilon"] = epsilon
+        history.setdefault("iterations", [])
+        history.setdefault("running_best", 0.0)
+        history.setdefault("plateau_count", 0)
+        return history
+
+    return {
+        "skill_name": skill_name,
+        "skill_path": str(skill_path),
+        "max_iterations": max_iterations,
+        "epsilon": epsilon,
+        "iterations": [],
+        "running_best": 0.0,
+        "plateau_count": 0,
+    }
+
+
+def save_history(runs_root: Path, history: dict) -> Path:
+    """Persist cumulative history.json."""
+    history_path = runs_root / "history.json"
+    save_json(history_path, history)
+    return history_path
+
+
+def append_results_row(runs_root: Path, record: dict) -> Path:
+    """Append a compact TSV row for quick manual inspection."""
+    results_path = runs_root / "results.tsv"
+    if not results_path.exists():
+        results_path.write_text(f"{RESULTS_HEADER}\n", encoding="utf-8")
+
+    row = "\t".join([
+        str(record.get("iteration", "")),
+        str(record.get("decision", "")),
+        format_pass_rate(record.get("pass_rate")),
+        format_pass_rate(record.get("running_best")),
+        format_pass_rate(record.get("delta")),
+        "yes" if record.get("is_new_best") else "no",
+        format_pass_rate(record.get("effective_epsilon")),
+        format_pass_rate(record.get("stddev")),
+        str(record.get("skill_lines_before", "")),
+        str(record.get("skill_lines_after", "")),
+        str(record.get("skill_line_delta", "")),
+        str(record.get("stop_reason", "") or ""),
+    ])
+    with results_path.open("a", encoding="utf-8") as handle:
+        handle.write(f"{row}\n")
+    return results_path
+
+
+def compute_skill_metrics(skill_path: Path) -> dict:
+    """Measure current SKILL.md size so complexity growth is visible in history."""
+    skill_file = skill_path / "SKILL.md"
+    content = skill_file.read_text(encoding="utf-8")
+    return {
+        "line_count": len(content.splitlines()),
+        "char_count": len(content),
+    }
+
+
+def get_latest_grading_summary(runs_root: Path, before_iteration: int) -> str:
+    """Return the most recent grading summary text from an earlier iteration."""
+    for candidate in sorted(runs_root.glob("iteration-*/grading_summary.txt"), key=lambda p: p.parent.name, reverse=True):
+        try:
+            iteration_num = int(candidate.parent.name.split("-")[1])
+        except (IndexError, ValueError):
+            continue
+        if iteration_num < before_iteration:
+            return candidate.read_text(encoding="utf-8")
+    return ""
 
 
 # ---------------------------------------------------------------------------
 # Git utilities
 # ---------------------------------------------------------------------------
 
-def git_snapshot(skill_path: Path, iteration: int, message: Optional[str] = None) -> bool:
+def git_head_ref(skill_path: Path) -> Optional[str]:
+    """Return the current HEAD SHA for the target repo."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=str(skill_path),
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            return None
+        return result.stdout.strip()
+    except Exception:
+        return None
+
+
+def git_snapshot(skill_path: Path, iteration: int, message: Optional[str] = None) -> Optional[str]:
     """
-    Create a git snapshot of the current SKILL.md state.
+    Snapshot the current SKILL.md state and return the restore ref.
 
-    Runs: git add SKILL.md && git commit
-
-    Returns True if snapshot was created or nothing to commit.
-    Returns False if git operations failed (caller should abort iteration).
+    The returned ref is the commit we should restore SKILL.md from if the
+    experiment is rejected.
     """
     skill_file = skill_path / "SKILL.md"
     if not skill_file.exists():
         print(f"[loop] ❌ SKILL.md not found at {skill_file}")
-        return False
+        return None
 
     msg = message or f"autoresearch iteration-{iteration} snapshot"
 
     try:
-        # git add
-        result = subprocess.run(
+        add_result = subprocess.run(
             ["git", "add", "SKILL.md"],
             cwd=str(skill_path),
             capture_output=True,
             text=True,
         )
-        if result.returncode != 0:
-            stderr = result.stderr.lower()
-            # "nothing added to commit" is acceptable - no changes to snapshot
-            if "nothing added" in stderr:
-                print(f"[loop] ℹ️  No changes to snapshot (nothing to add)")
-                return True
-            # Any other git add failure is a real problem
-            print(f"[loop] ❌ git add failed: {result.stderr}")
-            return False
+        if add_result.returncode != 0:
+            print(f"[loop] ❌ git add failed: {add_result.stderr}")
+            return None
 
-        # git commit
-        result = subprocess.run(
+        commit_result = subprocess.run(
             ["git", "commit", "-m", msg],
             cwd=str(skill_path),
             capture_output=True,
             text=True,
         )
-        if result.returncode != 0:
-            # git commit outputs "nothing to commit" to stdout, not stderr
-            combined = (result.stderr + result.stdout).lower()
-            # "nothing to commit" is acceptable - no changes to snapshot
-            if "nothing to commit" in combined or "nothing added" in combined:
-                print(f"[loop] ℹ️  No changes to snapshot (nothing to commit)")
-                return True
-            # Any other commit failure is a real problem
-            print(f"[loop] ❌ git commit failed: {result.stderr}")
-            return False
+        combined = (commit_result.stdout + commit_result.stderr).lower()
+        if commit_result.returncode == 0:
+            print(f"[loop] 📸 Snapshot created for iteration {iteration}")
+        elif "nothing to commit" in combined or "nothing added" in combined:
+            print(f"[loop] ℹ️  No new snapshot commit needed; reusing current HEAD")
+        else:
+            print(f"[loop] ❌ git commit failed: {commit_result.stderr}")
+            return None
 
-        commit = result.stdout.strip()
-        print(f"[loop] 📸 Snapshot created: {commit[:40]}")
-        return True
-    except Exception as e:
-        print(f"[loop] ❌ Git snapshot exception: {e}")
-        return False
+        head_ref = git_head_ref(skill_path)
+        if not head_ref:
+            print("[loop] ❌ Could not resolve HEAD after snapshot")
+            return None
+        return head_ref
+    except Exception as exc:
+        print(f"[loop] ❌ Git snapshot exception: {exc}")
+        return None
 
 
-def git_revert(skill_path: Path) -> bool:
-    """
-    Revert SKILL.md to the previous state using git restore.
-    Only reverts SKILL.md, not the entire commit history.
-    """
+def git_restore_skill(skill_path: Path, restore_ref: str) -> bool:
+    """Restore SKILL.md to a known-good ref without touching unrelated files."""
     try:
-        skill_file = skill_path / "SKILL.md"
-        if not skill_file.exists():
-            print(f"[loop] ⚠️  SKILL.md not found, nothing to revert")
-            return True
-
-        # Use git restore to revert SKILL.md to HEAD~1 version
         result = subprocess.run(
-            ["git", "restore", "--source=HEAD~1", "SKILL.md"],
+            ["git", "restore", "--source", restore_ref, "--staged", "--worktree", "--", "SKILL.md"],
             cwd=str(skill_path),
             capture_output=True,
             text=True,
         )
         if result.returncode != 0:
-            # Try git checkout as fallback
             result = subprocess.run(
-                ["git", "checkout", "HEAD~1", "--", "SKILL.md"],
+                ["git", "checkout", restore_ref, "--", "SKILL.md"],
                 cwd=str(skill_path),
                 capture_output=True,
                 text=True,
             )
             if result.returncode != 0:
-                print(f"[loop] ⚠️  git revert failed: {result.stderr}")
+                print(f"[loop] ⚠️  Restore failed: {result.stderr}")
                 return False
 
-        print(f"[loop] ↩️  Reverted SKILL.md to previous state")
+        print(f"[loop] ↩️  Restored SKILL.md to snapshot {restore_ref[:8]}")
         return True
-    except Exception as e:
-        print(f"[loop] ❌ git revert exception: {e}")
-        return False
-
-
-def git_is_dirty(skill_path: Path) -> bool:
-    """Check if SKILL.md has uncommitted changes."""
-    try:
-        result = subprocess.run(
-            ["git", "diff", "--name-only", "HEAD"],
-            cwd=str(skill_path),
-            capture_output=True,
-            text=True,
-        )
-        return bool(result.stdout.strip())
-    except:
+    except Exception as exc:
+        print(f"[loop] ❌ Restore exception: {exc}")
         return False
 
 
 # ---------------------------------------------------------------------------
-# Autorelop: spawn subagent to propose experimental idea
+# Autorelop: spawn subagent to propose an experimental idea
 # ---------------------------------------------------------------------------
 
-def run_autorelop(skill_path: Path, run_dir: Path, iteration: int) -> Optional[dict]:
-    """
-    Spawn the autorelop subagent to propose an experimental idea.
+def build_autorelop_prompt(skill_path: Path, runs_root: Path, iteration: int) -> str:
+    """Compose the autorelop prompt from the prompt file plus recent feedback."""
+    agent_prompt_path = WORKSPACE_ROOT / "agents" / "autorelop.md"
+    base_prompt = agent_prompt_path.read_text(encoding="utf-8").strip() if agent_prompt_path.exists() else ""
+    history = load_json(runs_root / "history.json", {"iterations": []})
+    latest_grading_summary = get_latest_grading_summary(runs_root, before_iteration=iteration)
 
-    Returns the parsed JSON with changes, or None on failure.
-    """
-    # Prepare context files for the autorelop agent
-    # 1. Grading summary (if exists from previous iteration)
-    history_path = run_dir / "history.json"
-    grading_summary_path = run_dir / "grading_summary.txt"
+    context_sections = []
 
-    context_parts = []
+    iterations = history.get("iterations", [])
+    if iterations:
+        lines = []
+        for item in iterations[-5:]:
+            idea = item.get("idea") or item.get("experimental_idea") or "(no description)"
+            line = (
+                f"- iter {item.get('iteration', '?')}: "
+                f"pass_rate={format_pass_rate(item.get('pass_rate'))}, "
+                f"decision={item.get('decision', '?')}, "
+                f"idea={idea}"
+            )
+            if item.get("stop_reason"):
+                line += f", stop_reason={item['stop_reason']}"
+            lines.append(line)
+        context_sections.append("## Recent Iteration History\n" + "\n".join(lines))
 
-    # Add grading summary if available
-    if grading_summary_path.exists():
-        context_parts.append(f"\n\n## Previous Grading Feedback\n{grading_summary_path.read_text()}")
+    if latest_grading_summary:
+        context_sections.append("## Latest Grading Summary\n" + latest_grading_summary.strip())
 
-    # Add history if available
-    if history_path.exists():
-        try:
-            history = json.loads(history_path.read_text())
-            iterations = history.get("iterations", [])
-            if iterations:
-                context_parts.append(f"\n\n## Iteration History\n")
-                for it in iterations[-5:]:  # last 5
-                    pr = it.get("pass_rate")
-                    decision = it.get("decision", "?")
-                    idea = it.get("experimental_idea", "(no description)")
-                    context_parts.append(
-                        f"  iter {it['iteration']}: pass_rate={pr:.1% if pr else 'N/A'}, decision={decision}"
-                    )
-        except:
-            pass
+    context_sections.append(
+        "\n".join([
+            "## Optimization Constraints",
+            "- Optimize only `SKILL.md` in the target skill directory.",
+            "- Treat `evals/evals.json` and the harness as fixed for this loop.",
+            "- Prefer replacing or tightening existing instructions over appending new sections.",
+            "- Avoid untested complexity growth unless the failing assertions clearly require it.",
+        ])
+    )
 
-    context = "".join(context_parts)
+    context_text = "\n\n".join(section for section in context_sections if section)
 
-    prompt = f"""You are the autorelop agent for skill-autoresearch iteration {iteration}.
+    return f"""{base_prompt}
 
-{context}
+## Current Iteration
+- iteration: {iteration}
+- target_skill_dir: {skill_path}
 
-## Your task
-1. Read SKILL.md in your current directory
-2. Propose ONE experimental idea (2-4 related changes serving one goal)
-3. Output ONLY this JSON:
+{context_text}
 
-{{
-  "experimental_idea": "brief description of the goal",
-  "changes": [
-    {{
-      "location": "where to change (section/line)",
-      "current": "current text (or N/A)",
-      "proposed": "new text",
-      "reason": "why this helps"
-    }}
-  ],
-  "expected_impact": "expected result",
-  "risks": ["risk1", "risk2"]
-}}
+Return ONLY the JSON proposal."""
 
-IMPORTANT: Output ONLY the JSON. No markdown fences, no explanation."""
 
-    # Run via claude -p with autorelop agent
+def run_autorelop(skill_path: Path, runs_root: Path, iteration: int) -> Optional[dict]:
+    """Spawn the autorelop subagent to propose one focused experiment."""
+    prompt = build_autorelop_prompt(skill_path, runs_root, iteration)
     cmd = [
-        "claude", "-p", prompt,
-        "--output-format", "text",
-        "--add-dir", str(skill_path),
+        "claude",
+        "-p",
+        prompt,
+        "--output-format",
+        "text",
+        "--add-dir",
+        str(skill_path),
     ]
-    env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+    env = {key: value for key, value in os.environ.items() if key != "CLAUDECODE"}
 
     try:
         result = subprocess.run(
@@ -231,79 +330,92 @@ IMPORTANT: Output ONLY the JSON. No markdown fences, no explanation."""
         )
         stdout = result.stdout.strip()
     except subprocess.TimeoutExpired:
-        print(f"[loop] ⚠️  autorelop timed out")
+        print("[loop] ⚠️  autorelop timed out")
         return None
-    except Exception as e:
-        print(f"[loop] ⚠️  autorelop failed: {e}")
+    except Exception as exc:
+        print(f"[loop] ⚠️  autorelop failed: {exc}")
         return None
 
-    # Extract JSON
-    json_match = re.search(r'\{[\s\S]*\}', stdout)
+    json_match = re.search(r"\{[\s\S]*\}", stdout)
     if not json_match:
-        print(f"[loop] ⚠️  autorelop didn't return valid JSON")
+        print("[loop] ⚠️  autorelop did not return valid JSON")
         print(f"[loop]   Raw output: {stdout[:300]}")
         return None
 
     try:
         idea = json.loads(json_match.group())
-        # Validate structure
-        if "changes" not in idea or "experimental_idea" not in idea:
-            print(f"[loop] ⚠️  autorelop returned invalid structure")
-            return None
-        return idea
-    except json.JSONDecodeError as e:
-        print(f"[loop] ⚠️  autorelop JSON parse failed: {e}")
+    except json.JSONDecodeError as exc:
+        print(f"[loop] ⚠️  autorelop JSON parse failed: {exc}")
         return None
+
+    if "experimental_idea" not in idea or "changes" not in idea:
+        print("[loop] ⚠️  autorelop returned invalid structure")
+        return None
+
+    return idea
 
 
 # ---------------------------------------------------------------------------
 # Apply changes to SKILL.md
 # ---------------------------------------------------------------------------
 
-def apply_changes(skill_path: Path, changes: list) -> bool:
-    """
-    Apply proposed changes to SKILL.md.
+def insert_after_location(content: str, location: str, proposed: str) -> tuple[str, bool]:
+    """Insert proposed text immediately after a case-insensitive location match."""
+    if not location:
+        return content, False
 
-    Each change has: location, current, proposed, reason.
-    """
+    idx = content.lower().find(location.lower())
+    if idx < 0:
+        return content, False
+
+    line_end = content.find("\n", idx)
+    if line_end < 0:
+        line_end = len(content)
+
+    insertion = proposed.rstrip("\n")
+    updated = content[: line_end + 1] + insertion + "\n" + content[line_end + 1 :]
+    return updated, True
+
+
+def apply_changes(skill_path: Path, changes: list[dict[str, Any]]) -> bool:
+    """Apply proposed changes to SKILL.md using conservative text edits."""
     skill_file = skill_path / "SKILL.md"
-    content = skill_file.read_text(encoding="utf-8")
-
-    lines = content.split("\n")
-    applied = 0
+    original_content = skill_file.read_text(encoding="utf-8")
+    content = original_content
+    applied_count = 0
 
     for change in changes:
-        location = change.get("location", "")
-        current = change.get("current", "")
-        proposed = change.get("proposed", "")
+        location = str(change.get("location", "") or "").strip()
+        current = str(change.get("current", "") or "").strip()
+        proposed = str(change.get("proposed", "") or "").rstrip()
 
         if not proposed:
             continue
+        if current and current != "N/A" and current == proposed:
+            continue
 
-        # Simple line-based replacement
-        # Try to find "current" text in the content
+        applied = False
+
         if current and current != "N/A" and current in content:
-            # Replace first occurrence with context
             content = content.replace(current, proposed, 1)
-            applied += 1
-        elif proposed:
-            # Just append to the end or find location
-            if location.lower() in content.lower():
-                # Insert after the location section
-                idx = content.lower().find(location.lower())
-                # Find end of that line
-                endline = content.find("\n", idx)
-                if endline > 0:
-                    content = content[:endline + 1] + proposed + "\n" + content[endline + 1:]
-                    applied += 1
-            else:
-                # Append at the end
-                content = content.rstrip() + "\n\n" + proposed + "\n"
-                applied += 1
+            applied = True
+        else:
+            content, applied = insert_after_location(content, location, proposed)
+
+        if not applied and proposed not in content:
+            content = content.rstrip() + "\n\n" + proposed + "\n"
+            applied = True
+
+        if applied:
+            applied_count += 1
+
+    if content == original_content:
+        print(f"[loop] ⚠️  Proposed changes were a no-op ({applied_count}/{len(changes)} applied)")
+        return False
 
     skill_file.write_text(content, encoding="utf-8")
-    print(f"[loop] ✅ Applied {applied}/{len(changes)} changes to SKILL.md")
-    return applied > 0
+    print(f"[loop] ✅ Applied {applied_count}/{len(changes)} proposed changes to SKILL.md")
+    return applied_count > 0
 
 
 # ---------------------------------------------------------------------------
@@ -318,293 +430,297 @@ def run_loop(
     watchdog_interval: int = 5,
     skip_permissions: bool = False,
 ) -> dict:
-    """
-    Run the full optimization loop.
-    """
+    """Run the full optimization loop."""
     skill_name = skill_path.name
-    print(f"[loop] Starting authorsearch loop for: {skill_name}")
-    print(f"[loop] Max iterations: {max_iterations}, epsilon: {epsilon}, watchdog_interval: {watchdog_interval}")
+    runs_root = resolve_runs_root(skill_path)
+    runs_root.mkdir(parents=True, exist_ok=True)
 
-    # Initialize run directory
-    iteration = 0
-    running_best = 0.0
-    plateau_count = 0
+    print(f"[loop] Starting autoresearch loop for: {skill_name}")
+    print(
+        f"[loop] Max iterations: {max_iterations}, "
+        f"epsilon: {epsilon:.1%}, watchdog_interval: {watchdog_interval}"
+    )
+
+    history = load_history(runs_root, skill_name, skill_path, max_iterations, epsilon)
+    running_best = history.get("running_best", 0.0)
+    plateau_count = history.get("plateau_count", 0)
     consecutive_failures = 0
-    history = {
-        "skill_name": skill_name,
-        "skill_path": str(skill_path),
-        "max_iterations": max_iterations,
-        "epsilon": epsilon,
-        "iterations": [],
-        "running_best": 0.0,
-        "plateau_count": 0,
-    }
+    iteration = 0
 
     while iteration < max_iterations:
         iteration += 1
-        print(f"\n{'='*60}")
-        print(f"[loop] === Iteration {iteration}/{max_iterations} ===")
-        print(f"{'='*60}")
-
-        # New behavior: put runs alongside the skill being tested (sibling directory)
-        # e.g., /path/to/kairos-collect-signals-eval/iteration-1/
-        skill_runs_root = Path(str(skill_path) + "-eval").resolve()
-        run_dir = skill_runs_root / f"iteration-{iteration}"
+        run_dir = runs_root / f"iteration-{iteration}"
         run_dir.mkdir(parents=True, exist_ok=True)
 
-        # Step 1: Git snapshot BEFORE making changes
-        if not git_snapshot(skill_path, iteration):
-            print(f"[loop] ❌ Snapshot failed, aborting iteration")
+        print(f"\n{'=' * 60}")
+        print(f"[loop] === Iteration {iteration}/{max_iterations} ===")
+        print(f"{'=' * 60}")
+
+        skill_metrics_before = compute_skill_metrics(skill_path)
+        snapshot_ref = git_snapshot(skill_path, iteration)
+        if not snapshot_ref:
+            consecutive_failures += 1
+            print(f"[loop] ❌ Snapshot failed ({consecutive_failures}/{MAX_CONSECUTIVE_FAILURES})")
+            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                raise SystemExit(1)
             continue
 
-        # Step 2: Run autorelop to get experimental idea
-        print(f"[loop] Running autorelop agent...")
-        idea = run_autorelop(skill_path, run_dir, iteration)
+        print("[loop] Running autorelop agent...")
+        idea = run_autorelop(skill_path, runs_root, iteration)
         if not idea:
             consecutive_failures += 1
-            print(f"[loop] ⚠️  autorelop failed ({consecutive_failures}/3), skipping to next iteration")
-            git_revert(skill_path)  # Undo any partial changes
-            if consecutive_failures >= 3:
-                print(f"[loop] ❌ CRASH: {consecutive_failures} consecutive failures — exiting")
-                sys.exit(1)
+            print(f"[loop] ⚠️  autorelop failed ({consecutive_failures}/{MAX_CONSECUTIVE_FAILURES})")
+            git_restore_skill(skill_path, snapshot_ref)
+            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                raise SystemExit(1)
             continue
 
         print(f"[loop] 💡 Experimental idea: {idea.get('experimental_idea', 'N/A')}")
-        for i, change in enumerate(idea.get("changes", []), 1):
-            print(f"[loop]    Change {i}: {change.get('location', '?')}")
+        for idx, change in enumerate(idea.get("changes", []), 1):
+            print(f"[loop]    Change {idx}: {change.get('location', '?')}")
 
-        # Step 3: Apply changes
-        changes = idea.get("changes", [])
-        if not apply_changes(skill_path, changes):
+        if not apply_changes(skill_path, idea.get("changes", [])):
             consecutive_failures += 1
-            print(f"[loop] ⚠️  No changes applied ({consecutive_failures}/3), skipping iteration")
-            git_revert(skill_path)
-            if consecutive_failures >= 3:
-                print(f"[loop] ❌ CRASH: {consecutive_failures} consecutive failures — exiting")
-                sys.exit(1)
+            print(f"[loop] ⚠️  No usable changes applied ({consecutive_failures}/{MAX_CONSECUTIVE_FAILURES})")
+            git_restore_skill(skill_path, snapshot_ref)
+            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                raise SystemExit(1)
             continue
 
-        # Save idea proposal
-        idea_path = run_dir / "idea_proposal.json"
-        idea_path.write_text(json.dumps(idea, indent=2, ensure_ascii=False), encoding="utf-8")
+        skill_metrics_after = compute_skill_metrics(skill_path)
+        idea["skill_metrics_before"] = skill_metrics_before
+        idea["skill_metrics_after"] = skill_metrics_after
+        save_json(run_dir / "idea_proposal.json", idea)
 
-        # Step 4: Run harness
-        print(f"[loop] Running harness...")
+        print("[loop] Running harness...")
         harness_ok = run_harness(skill_path, iteration, run_dir, skip_permissions=skip_permissions)
         if not harness_ok:
             consecutive_failures += 1
-            print(f"[loop] ⚠️  Harness failed ({consecutive_failures}/3), reverting")
-            git_revert(skill_path)
-            if consecutive_failures >= 3:
-                print(f"[loop] ❌ CRASH: {consecutive_failures} consecutive failures — exiting")
-                sys.exit(1)
+            print(f"[loop] ⚠️  Harness failed ({consecutive_failures}/{MAX_CONSECUTIVE_FAILURES})")
+            git_restore_skill(skill_path, snapshot_ref)
+            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                raise SystemExit(1)
             continue
 
-        # Step 5: Run aggregate
-        print(f"[loop] Running aggregate...")
         benchmark_path = run_dir / "benchmark.json"
         if not benchmark_path.exists():
             consecutive_failures += 1
-            print(f"[loop] ❌ No benchmark.json after harness ({consecutive_failures}/3)")
-            git_revert(skill_path)
-            if consecutive_failures >= 3:
-                print(f"[loop] ❌ CRASH: {consecutive_failures} consecutive failures — exiting")
-                sys.exit(1)
+            print(f"[loop] ❌ Missing benchmark.json ({consecutive_failures}/{MAX_CONSECUTIVE_FAILURES})")
+            git_restore_skill(skill_path, snapshot_ref)
+            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                raise SystemExit(1)
             continue
 
-        # Step 6: Run decision
-        print(f"[loop] Making decision...")
-        benchmark = json.loads(benchmark_path.read_text())
-        current_pr = benchmark.get("benchmark", {}).get("mean_pass_rate")
+        benchmark_payload = load_json(benchmark_path, {})
+        benchmark = benchmark_payload.get("benchmark", {})
+        quality = benchmark_payload.get("quality", {})
+        current_pr = benchmark.get("mean_pass_rate")
+        stddev = benchmark.get("stddev") or 0.0
+        effective_epsilon = max(epsilon, 2 * stddev) if stddev else epsilon
+        if effective_epsilon > epsilon:
+            print(
+                f"[loop] ℹ️  Effective epsilon this round: {effective_epsilon:.1%} "
+                f"(base={epsilon:.1%}, stddev={stddev:.1%})"
+            )
 
-        # Auto-compute epsilon from grading variance if stddev is significant
-        stddev = benchmark.get("benchmark", {}).get("stddev", 0)
-        if stddev > 0:
-            computed_epsilon = max(epsilon, 2 * stddev)
-            if computed_epsilon > epsilon:
-                print(f"[loop] ℹ️  Epsilon auto-adjusted: {epsilon:.1%} → {computed_epsilon:.1%} (2× stddev={stddev:.1%})")
-                epsilon = computed_epsilon
+        consecutive_failures = 0
 
-        # Make decision
-        consecutive_failures = 0  # Reset on successful iteration
-        delta = (current_pr or 0) - running_best
-        if current_pr is not None and current_pr >= running_best + epsilon:
-            decision = "keep"
-            is_new_best = delta > epsilon
-        elif current_pr is not None and current_pr >= running_best - epsilon:
-            decision = "keep"
-            is_new_best = False
-        else:
+        if current_pr is None:
             decision = "revert"
             is_new_best = False
+            delta = None
+        else:
+            delta = current_pr - running_best
+            if current_pr > running_best + effective_epsilon:
+                decision = "keep"
+                is_new_best = True
+            elif current_pr >= running_best - effective_epsilon:
+                decision = "keep"
+                is_new_best = False
+            else:
+                decision = "revert"
+                is_new_best = False
 
-        # Update running_best before stop check (so even if we stop, best is recorded)
-        plateau_count = 0 if is_new_best else plateau_count + 1
-        running_best = current_pr if is_new_best else running_best
+        if decision == "keep":
+            if is_new_best and current_pr is not None:
+                running_best = current_pr
+                plateau_count = 0
+            else:
+                plateau_count += 1
+        else:
+            plateau_count += 1
 
-        # Step 6: Run watchdog every watchdog_interval rounds
-        watchdog_triggered = False
-        watchdog_reason = ""
-        if iteration > 0 and iteration % watchdog_interval == 0:
-            print(f"[loop] Running watchdog LLM Judge...")
-            watchdog_result = run_watchdog(skill_path, run_dir, iteration, watchdog_interval)
+        watchdog_result = None
+        watchdog_stop_reason = ""
+        if watchdog_interval and iteration % watchdog_interval == 0:
+            print("[loop] Running watchdog LLM Judge...")
+            watchdog_result = run_watchdog(skill_path, run_dir, watchdog_interval)
             if watchdog_result:
                 assessment = watchdog_result.get("judge", {}).get("assessment", "unknown")
-                should_stop = watchdog_result.get("judge", {}).get("should_stop", False)
                 print(f"[loop] Watchdog assessment: {assessment}")
-                if should_stop:
-                    watchdog_triggered = True
-                    watchdog_reason = watchdog_result.get("judge", {}).get("stop_reason", "watchdog stop")
-                    print(f"[loop] 🐕 Watchdog recommends STOP: {watchdog_reason}")
+                if watchdog_result.get("judge", {}).get("should_stop"):
+                    watchdog_stop_reason = watchdog_result["judge"].get("stop_reason", "watchdog stop")
+                    print(f"[loop] 🐕 Watchdog recommends stop: {watchdog_stop_reason}")
 
-        # Check stop conditions
-        stop = False
+        restored = False
+        if decision == "keep":
+            print(
+                f"[loop] ✅ KEEP (pass_rate={format_pass_rate(current_pr)}, "
+                f"best={format_pass_rate(running_best)})"
+            )
+        else:
+            print(
+                f"[loop] ↩️  REVERT (pass_rate={format_pass_rate(current_pr)} "
+                f"vs best={format_pass_rate(running_best)})"
+            )
+            if skip_revert:
+                print("[loop]    Dry run mode: leaving experimental change in place")
+            else:
+                restored = git_restore_skill(skill_path, snapshot_ref)
+
         stop_reason = ""
-        if watchdog_triggered:
-            stop = True
-            stop_reason = f"Watchdog: {watchdog_reason}"
+        if watchdog_stop_reason:
+            stop_reason = f"Watchdog: {watchdog_stop_reason}"
+        elif current_pr is None:
+            stop_reason = "No valid grading"
         elif running_best >= 1.0:
-            stop = True
             stop_reason = "Perfect score"
         elif plateau_count >= 3:
-            stop = True
             stop_reason = "Plateau"
         elif iteration >= max_iterations:
-            stop = True
             stop_reason = "Max iterations"
-        elif current_pr is None:
-            stop = True
-            stop_reason = "No valid grading"
 
-        if stop:
-            print(f"[loop] 🛑 STOP: {stop_reason}")
-            decision = "stop"
-            history["iterations"].append({
-                "iteration": iteration,
-                "pass_rate": current_pr,
-                "running_best": running_best,
-                "decision": decision,
-                "reason": stop_reason,
-                "idea": idea.get("experimental_idea"),
-            })
-            break
-
-        # Record iteration
-        if decision == "keep":
-            print(f"[loop] ✅ KEEP (pass_rate={current_pr:.1%}, best={running_best:.1%})")
-            history["iterations"].append({
-                "iteration": iteration,
-                "pass_rate": current_pr,
-                "running_best": running_best,
-                "decision": "keep",
-                "is_new_best": is_new_best,
-                "idea": idea.get("experimental_idea"),
-            })
-        else:
-            print(f"[loop] ↩️  REVERT (pass_rate={current_pr:.1%} < {running_best:.1%})")
-            if not skip_revert:
-                git_revert(skill_path)
-            history["iterations"].append({
-                "iteration": iteration,
-                "pass_rate": current_pr,
-                "running_best": running_best,
-                "decision": "revert",
-                "idea": idea.get("experimental_idea"),
-            })
-
+        record = {
+            "iteration": iteration,
+            "pass_rate": current_pr,
+            "running_best": running_best,
+            "decision": decision,
+            "is_new_best": is_new_best,
+            "delta": delta,
+            "effective_epsilon": effective_epsilon,
+            "stddev": stddev,
+            "idea": idea.get("experimental_idea"),
+            "benchmark_path": str(benchmark_path),
+            "quality_score": quality.get("quality_score"),
+            "quality_warnings": quality.get("warnings", []),
+            "skill_lines_before": skill_metrics_before["line_count"],
+            "skill_lines_after": skill_metrics_after["line_count"],
+            "skill_line_delta": skill_metrics_after["line_count"] - skill_metrics_before["line_count"],
+            "stop_reason": stop_reason or None,
+            "restored": restored,
+            "watchdog_assessment": (
+                watchdog_result.get("judge", {}).get("assessment")
+                if watchdog_result else None
+            ),
+        }
+        history["iterations"].append(record)
         history["running_best"] = running_best
         history["plateau_count"] = plateau_count
-        history["epsilon"] = epsilon  # May have been auto-computed from stddev
+        history["epsilon"] = epsilon
+        history["last_effective_epsilon"] = effective_epsilon
+        if stop_reason:
+            history["stop_reason"] = stop_reason
 
-        # Save history
-        history_path = run_dir.parent / "history.json"
-        history_path.write_text(json.dumps(history, indent=2, ensure_ascii=False), encoding="utf-8")
+        save_history(runs_root, history)
+        append_results_row(runs_root, record)
 
-    print(f"\n[loop] ✅ Loop complete. Best pass_rate: {running_best:.1%}")
+        if stop_reason:
+            print(f"[loop] 🛑 STOP: {stop_reason}")
+            break
+
+    print(f"\n[loop] ✅ Loop complete. Best pass_rate: {format_pass_rate(history['running_best'])}")
     return history
 
 
 def run_harness(skill_path: Path, iteration: int, run_dir: Path, skip_permissions: bool = False) -> bool:
-    """Run harness.py and aggregate.py. Return success status."""
-    script_path = WORKSPACE_ROOT / "scripts" / "harness.py"
-
-    # Step 1: Run harness
+    """Run harness.py and aggregate.py for a single iteration."""
+    harness_path = WORKSPACE_ROOT / "scripts" / "harness.py"
     cmd = [
-        sys.executable, str(script_path),
-        "--skill-path", str(skill_path),
-        "--iteration", str(iteration),
+        sys.executable,
+        str(harness_path),
+        "--skill-path",
+        str(skill_path),
+        "--iteration",
+        str(iteration),
+        "--runs-dir",
+        str(run_dir.parent),
     ]
     if skip_permissions:
         cmd.append("--dangerously-skip-permissions")
+
     result = subprocess.run(
         cmd,
         capture_output=True,
         text=True,
-        timeout=1800,  # 30 min for 10 eval cases
+        timeout=1800,
     )
     if result.returncode != 0:
-        print(f"[loop] ⚠️  Harness failed: {result.stderr[:200]}")
+        combined = "\n".join(part for part in [result.stdout.strip(), result.stderr.strip()] if part)
+        print(f"[loop] ⚠️  Harness failed: {combined[:600]}")
         return False
 
-    # Step 2: Run aggregate
     aggregate_path = WORKSPACE_ROOT / "scripts" / "aggregate.py"
-    result = subprocess.run(
-        [sys.executable, str(aggregate_path),
-         "--run-dir", str(run_dir)],
+    aggregate_result = subprocess.run(
+        [
+            sys.executable,
+            str(aggregate_path),
+            "--run-dir",
+            str(run_dir),
+        ],
         capture_output=True,
         text=True,
         timeout=60,
     )
-    if result.returncode != 0:
-        print(f"[loop] ⚠️  Aggregate failed: {result.stderr[:200]}")
+    if aggregate_result.returncode != 0:
+        combined = "\n".join(
+            part for part in [aggregate_result.stdout.strip(), aggregate_result.stderr.strip()] if part
+        )
+        print(f"[loop] ⚠️  Aggregate failed: {combined[:600]}")
         return False
 
     return True
 
 
-def run_watchdog(
-    skill_path: Path,
-    run_dir: Path,
-    iteration: int,
-    watchdog_interval: int = 5,
-) -> Optional[dict]:
-    """
-    Run watchdog.py and return the watchdog result dict, or None on failure.
-    """
+def run_watchdog(skill_path: Path, run_dir: Path, watchdog_interval: int = 5) -> Optional[dict]:
+    """Run watchdog.py and return its saved report, if available."""
     watchdog_path = WORKSPACE_ROOT / "scripts" / "watchdog.py"
     result = subprocess.run(
-        [sys.executable, str(watchdog_path),
-         "--skill-path", str(skill_path),
-         "--run-dir", str(run_dir),
-         "--rounds-since", str(watchdog_interval),
-         "--watchdog-interval", str(watchdog_interval)],
+        [
+            sys.executable,
+            str(watchdog_path),
+            "--skill-path",
+            str(skill_path),
+            "--run-dir",
+            str(run_dir),
+            "--rounds-since",
+            str(watchdog_interval),
+            "--watchdog-interval",
+            str(watchdog_interval),
+        ],
         capture_output=True,
         text=True,
         timeout=180,
     )
     if result.returncode not in (0, 2):
-        # exit code 2 means "stop the loop" — still return the result
-        print(f"[loop] ⚠️  Watchdog failed: {result.stderr[:200]}")
+        combined = "\n".join(part for part in [result.stdout.strip(), result.stderr.strip()] if part)
+        print(f"[loop] ⚠️  Watchdog failed: {combined[:600]}")
         return None
 
-    # Parse watchdog result from stdout or find the report
-    # The watchdog script saves a report to run_dir/watchdog_report_r{N}.json
-    watchdog_reports = sorted(run_dir.glob("watchdog_report_*.json"), key=lambda p: p.stat().st_mtime)
-    if watchdog_reports:
-        latest = watchdog_reports[-1]
-        try:
-            return json.loads(latest.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, IOError):
-            pass
+    reports = sorted(run_dir.glob("watchdog_report_*.json"), key=lambda path: path.stat().st_mtime)
+    if not reports:
+        return None
 
-    return None
+    try:
+        return json.loads(reports[-1].read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
 
 
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description="Run the skill-autoresearch optimization loop")
     parser.add_argument(
         "--skill-path",
@@ -622,24 +738,24 @@ def main():
         "--epsilon",
         type=float,
         default=0.05,
-        help="Epsilon for keep/revert decision (default: 0.05)",
+        help="Base epsilon for keep/revert decisions (default: 0.05)",
     )
     parser.add_argument(
         "--skip-revert",
         action="store_true",
-        help="Skip actual git revert (dry run mode)",
+        help="Skip actual file restore when an experiment is rejected",
     )
     parser.add_argument(
         "--watchdog-interval",
         type=int,
         default=5,
-        help="Run watchdog every N iterations (default: 5, 0 to disable)",
+        help="Run watchdog every N iterations (default: 5, 0 disables it)",
     )
     parser.add_argument(
         "--single-iteration",
         type=int,
         default=None,
-        help="Run only this iteration number (for testing)",
+        help="Run at most N iterations total (legacy testing flag)",
     )
     parser.add_argument(
         "--dangerously-skip-permissions",
@@ -661,16 +777,16 @@ def main():
         skip_permissions=args.dangerously_skip_permissions,
     )
 
-    # Print final summary
-    print(f"\n=== Final Summary ===")
+    print("\n=== Final Summary ===")
     print(f"Total iterations: {len(history['iterations'])}")
-    print(f"Final running_best: {history['running_best']:.1%}")
-    for it in history["iterations"]:
-        pr = it.get("pass_rate")
-        decision = it["decision"].upper()
-        idea = it.get("idea", "")[:50]
-        pr_str = f"{pr:.1%}" if pr is not None else "N/A"
-        print(f"  iter {it['iteration']}: {decision} ({pr_str}) - {idea}")
+    print(f"Final running_best: {format_pass_rate(history['running_best'])}")
+    if history.get("stop_reason"):
+        print(f"Stop reason: {history['stop_reason']}")
+    for item in history["iterations"]:
+        print(
+            f"  iter {item['iteration']}: {item['decision'].upper()} "
+            f"({format_pass_rate(item.get('pass_rate'))}) - {item.get('idea', '')[:60]}"
+        )
 
     return 0
 

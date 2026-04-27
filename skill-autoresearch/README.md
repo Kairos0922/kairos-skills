@@ -12,14 +12,13 @@
 ┌─────────────────────────────────────────────────────────────┐
 │  Iteration N                                                │
 │                                                             │
-│  1. Git snapshot (git add + commit)                        │
+│  1. Snapshot current SKILL.md via git                      │
 │  2. Autorelop proposes 2–4 related changes                 │
 │  3. Apply changes to SKILL.md                              │
 │  4. Harness runs all eval cases → grading                  │
 │  5. Aggregate → mean pass_rate                             │
 │  6. Decision: keep / revert / stop                         │
-│       │                                                    │
-│       │  if revert: git reset --hard HEAD~1                │
+│       │  if revert: restore SKILL.md to snapshot ref       │
 │       ▼                                                    │
 └─────────────────────────────────────────────────────────────┘
        │
@@ -28,7 +27,7 @@
   Next iteration...
 ```
 
-Every **keep** decision updates the running best. Every **revert** discards the changes via `git reset --hard HEAD~1`. This means you can sleep while the system experiments — if it breaks something, it automatically reverts.
+Every **keep** decision updates the running best. Every **revert** restores only the target `SKILL.md` to the snapshot ref, so the loop can reject bad experiments without resetting unrelated files in the repo.
 
 ---
 
@@ -49,6 +48,14 @@ LLM grading has variance. To avoid thrashing:
 - `epsilon = 0.05` (5%) — noise tolerance
 - Improvements < 5% don't update running_best
 - A **revert** only triggers when pass_rate drops below `running_best - epsilon`
+
+### Autoresearch Constraints
+
+To stay close to the original autoresearch philosophy, this skill keeps the search space intentionally narrow:
+- Only the target `SKILL.md` is edited.
+- The eval suite is treated as fixed for the loop.
+- `grading_summary.txt`, `history.json`, and `results.tsv` make every iteration reviewable.
+- Skill size is tracked per iteration so complexity growth is visible to the watchdog and to humans.
 
 ### Watchdog
 
@@ -128,21 +135,24 @@ python3 scripts/loop.py \
 
 ## Output
 
-After each iteration:
+Artifacts are written alongside the target skill in `<skill-path>-eval/`:
 
 ```
-runs/<skill-name>/
-├── iteration-0/
-│   ├── eval-1/
-│   │   ├── output.json              # Raw skill output
-│   │   ├── grading.json             # Pass/fail per assertion
-│   │   └── output.structured.json   # Parsed JSON
-│   ├── benchmark.json               # Aggregated results
-│   ├── history.json                # All iterations so far
-│   └── idea_proposal.json          # What autorelop proposed
+<skill-path>-eval/
+├── results.tsv                     # one-line summary per iteration
+├── history.json                    # cumulative history
 ├── iteration-1/
+│   ├── eval-1/
+│   │   ├── output.json              # raw model output
+│   │   ├── output.envelope.json     # executor wrapper (if present)
+│   │   ├── output.structured.json   # unwrapped skill output
+│   │   ├── grading.json             # pass/fail per assertion
+│   │   └── metrics.json             # execution + grading timings
+│   ├── benchmark.json               # aggregated results
+│   ├── grading_summary.txt          # concise failure summary for next round
+│   └── idea_proposal.json           # what autorelop proposed
+├── iteration-2/
 │   └── ...
-└── history.json                     # Cumulative history
 ```
 
 ---

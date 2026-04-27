@@ -20,7 +20,7 @@ Given a **target skill** (`SKILL.md` + `evals/evals.json`), automatically run op
 Each iteration executes:
 
 ```
-1. Snapshot: git add + commit current SKILL.md
+1. Snapshot: save the current `SKILL.md` state via git
 2. Autorelop: Propose ONE experimental idea (2-4 related changes)
 3. Apply: Modify SKILL.md with proposed changes
 4. Harness: Run all eval cases → grading.json per case
@@ -28,7 +28,7 @@ Each iteration executes:
 6. Decision:
    - pass_rate > running_best + epsilon (5%) → KEEP (new best)
    - pass_rate >= running_best - epsilon → KEEP (within noise)
-   - pass_rate < running_best - epsilon → REVERT (git reset --hard HEAD~1)
+   - pass_rate < running_best - epsilon → REVERT (restore `SKILL.md` to the snapshot ref)
 7. Watchdog: Every N iterations, LLM Judge evaluates if optimization is heading the right direction
 ```
 
@@ -49,6 +49,14 @@ Example of a good idea:
 Because LLM grading has variance (especially on semantic assertions), we use epsilon-greedy:
 - `epsilon = 0.05` (5%) — default noise tolerance
 - Improvements < 5% are treated as "within noise" and don't update running_best
+
+### Search Space Discipline
+
+To stay aligned with the original autoresearch idea:
+- Only the target `SKILL.md` is edited inside the loop
+- `evals/evals.json` is treated as fixed measurement, not something the optimizer can patch
+- `grading_summary.txt`, `history.json`, and `results.tsv` make each iteration auditable
+- Skill size is tracked so complexity growth is visible to the watchdog
 
 ### Watchdog
 
@@ -92,7 +100,7 @@ result = subprocess.run([
     "--watchdog-interval", "5"
 ], capture_output=True, text=True)
 
-history = json.loads(open("runs/<skill>/history.json").read())
+history = json.loads(open("/path/to/target-skill-eval/history.json").read())
 print(f"Final best: {history['running_best']:.1%}")
 ```
 
@@ -124,20 +132,23 @@ The target skill must have:
 
 ## Output
 
-After each iteration:
+Artifacts are written alongside the target skill in `<skill-path>-eval/`:
 ```
-runs/<skill-name>/
-├── iteration-0/
-│   ├── eval-1/
-│   │   ├── output.json          # raw skill output
-│   │   ├── grading.json        # pass/fail per assertion
-│   │   └── metrics.json        # timing info
-│   ├── benchmark.json           # aggregated results
-│   ├── history.json             # all iterations
-│   └── idea_proposal.json       # what autorelop proposed
+<skill-path>-eval/
+├── results.tsv                    # one-line summary per iteration
+├── history.json                   # cumulative history
 ├── iteration-1/
+│   ├── eval-1/
+│   │   ├── output.json           # raw model output
+│   │   ├── output.envelope.json  # executor wrapper (if present)
+│   │   ├── output.structured.json # unwrapped skill output
+│   │   ├── grading.json          # pass/fail per assertion
+│   │   └── metrics.json          # timing info
+│   ├── benchmark.json            # aggregated results
+│   ├── grading_summary.txt       # compact failure summary for autorelop/watchdog
+│   └── idea_proposal.json        # what autorelop proposed
+├── iteration-2/
 │   └── ...
-└── history.json                 # cumulative history
 ```
 
 ## Configuration
@@ -146,7 +157,7 @@ runs/<skill-name>/
 |-----------|---------|-------------|
 | `--epsilon` | 0.05 | Noise tolerance for keep/revert |
 | `--max-iterations` | 50 | Hard stop after N iterations |
-| `--watchdog-interval` | 5 | Run watchdog every N iterations |
+| `--watchdog-interval` | 5 | Run watchdog every N iterations (0 to disable) |
 | `--skip-revert` | false | Dry-run mode (don't actually revert) |
 
 ## Assertions Best Practices

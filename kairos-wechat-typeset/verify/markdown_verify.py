@@ -6,6 +6,7 @@ import re
 from typing import Any, Dict, List, Sequence
 
 from art_direction.hierarchy import heading_hierarchy_findings
+from renderer.blocks import ALLOWED_KAIROS_COMPONENTS
 from semantic.analyze import analyze_blocks, text_of
 
 
@@ -59,6 +60,12 @@ def _block_contract_findings(blocks: Sequence[Dict[str, Any]]) -> List[str]:
 
         if block_type == "heading" and int(block.get("level", 1)) > 3:
             findings.append(f"Heading near block {index} is deeper than ###; keep layout Markdown to H1-H3.")
+
+        if block_type == "unknown_component":
+            allowed = ", ".join(sorted(ALLOWED_KAIROS_COMPONENTS))
+            findings.append(
+                f"Unknown Kairos component '{block.get('name', '')}' near block {index}; allowed components: {allowed}."
+            )
 
         if block_type == "paragraph" and len(text) > 240:
             findings.append(f"Paragraph near block {index} is very long; split it before rendering.")

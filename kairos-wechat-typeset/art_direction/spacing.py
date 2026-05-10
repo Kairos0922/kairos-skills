@@ -55,6 +55,9 @@ def resolve_spacing(
         if component_name == "lead":
             top = 0
             bottom = paragraph + 2
+        elif component_name == "insight":
+            top = max(10, paragraph - 4)
+            bottom = paragraph + 6
         elif component_name == "pullquote":
             top = quote_breathing
             bottom = quote_breathing

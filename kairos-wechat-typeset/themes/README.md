@@ -2,6 +2,8 @@
 
 Themes are developer-maintained design systems. Users select one registered built-in theme during the workflow, but they cannot provide custom colors, CSS, HTML templates, runtime theme files, or arbitrary theme paths.
 
+Themes implement the shared semantic component contract in [`../COMPONENTS.md`](../COMPONENTS.md). Expanding a theme should mean giving the same component matrix a deliberate visual treatment, not adding new user syntax or one-off decorative blocks.
+
 ## Add a Theme
 
 1. Create `themes/<theme-id>/DESIGN.md`.
@@ -13,7 +15,7 @@ Themes are developer-maintained design systems. Users select one registered buil
 
 ## Required Files
 
-- `DESIGN.md`: human-readable theme philosophy, fit, tokens, component rules, mobile rules, and quality gates.
+- `DESIGN.md`: human-readable theme philosophy, fit, semantic component rules, mobile rules, and quality gates.
 - `<theme-id>.json`: deterministic visual philosophy, constraints, rhythm, components, and tokens consumed by `scripts/render.py`.
 - `registry.json`: the only source of themes visible to users.
 
@@ -27,14 +29,14 @@ Each JSON theme must define:
 - `constraints`: one accent color, highlight frequency limit, component variant limit, and forbidden visual moves.
 - `art_direction`: deterministic defaults for spacing scale, emphasis mode, visual density, and section rhythm.
 - `rhythm`: paragraph gap, heading top/bottom, quote breathing, and section break values.
-- `components`: bounded component variants, maximum 3 per component.
+- `components`: bounded semantic component variants, maximum 3 per component.
 
 ## Theme Polishing Workflow
 
 Theme quality comes from a repeatable design pass, not one-off CSS edits.
 
 1. Define the theme thesis in `DESIGN.md`: audience, mood, typography, color limits, forbidden moves, and component language.
-2. Decide whether the visual target is a normal Markdown block or a Kairos component. Markdown owns article semantics; components own body-safe magazine layout such as lead, pullquote, figure, soft-list, and closing-note.
+2. Decide whether the visual target is a normal Markdown block or a Kairos semantic component. Markdown owns technical article structure; semantic components own body-safe magazine expression such as lead, insight, pullquote, figure, soft-list, and closing-note.
 3. Tune the deterministic tokens in `themes/<theme-id>.json`: fonts, ink, paper, one accent color, rhythm, shape, and component variants.
 4. Render the theme's real article fixture:
 
@@ -50,7 +52,7 @@ python3 scripts/render.py \
 6. Promote the reviewed result into `goldens/<theme-id>-style.html`.
 7. Re-run HTML verification and inspect 390px and 430px mobile previews.
 
-Use a realistic article fixture to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, quote, NOTE/TIP/WARNING, Kairos lead, pullquote, figure, soft-list, closing-note, image caption, code block, table fallback, divider, and escaped raw HTML.
+Use a realistic article fixture to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, steps, quote, NOTE/TIP/WARNING, Kairos lead, insight, pullquote, figure, soft-list, closing-note, image caption, code block, table fallback, divider, and escaped raw HTML.
 
 `goldens/song-style.html` is rendered from `fixtures/agent-skills-technical-article.md` so the Song reference stays close to a real technical article instead of a synthetic component matrix.
 

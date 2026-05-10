@@ -130,9 +130,9 @@ kairos-wechat-typeset/
     └── verify.py
 ```
 
-`themes/<theme-id>.json` 是确定性视觉契约，`themes/<theme-id>/DESIGN.md` 是人工设计说明，`goldens/` 是最高视觉参照。
+`COMPONENTS.md` 是语义组件契约，`themes/<theme-id>.json` 是确定性视觉契约，`themes/<theme-id>/DESIGN.md` 是人工设计说明，`goldens/` 是最高视觉参照。
 
-## V2 Pipeline
+## V3 Pipeline
 
 ```text
 Markdown path / Markdown text / non-Markdown text
@@ -141,19 +141,20 @@ Markdown path / Markdown text / non-Markdown text
   -> Optional layout Markdown
   -> Ask user to choose a built-in theme
   -> Semantic Analysis
+  -> Semantic Component Contract
   -> Art Direction
   -> Rhythm Engine
-  -> Layout Resolver
-  -> Deterministic Renderer
+  -> Theme Component Renderer
   -> WeChat Verify + Editorial Verify
   -> Versioned output under ~/.wechat-typeset
 ```
 
 ## LLM 与脚本分工
 
-- LLM 只优化 Markdown 与白名单 Kairos 组件语法：标题层级、段落节奏、重点句、引用、列表、分隔线、导语、摘引、图文、收束。
+- LLM 只优化 Markdown 与白名单 Kairos 组件语法：标题层级、段落节奏、重点句、引用、列表、步骤、分隔线、导语、洞察、摘引、图文、收束。
 - LLM 不生成 HTML、不写 CSS、不新增任意自定义标签，不决定 typography、spacing、layout。
 - 脚本负责确定性执行：输入归一化、保存/验证 `layout.md`、解析 Markdown、加载主题、分析语义、解析节奏、输出全内联 HTML、执行验证。
+- 语义组件不是装饰模块，而是内容在微信公众号正文中的最佳表达方式。
 
 如果用户不选择优化布局，脚本不输出 `layout.md`，直接使用当前 Markdown 渲染，并只做 safety verify。如果输入不是 Markdown，脚本会先做最小 Markdown 标准化。
 
@@ -167,13 +168,19 @@ Markdown path / Markdown text / non-Markdown text
 - `> [!NOTE]` / `> [!TIP]` / `> [!WARNING]`
 - `## 01 标题` 数字章节标题
 
-## Kairos 组件语法
+## 语义组件
 
-普通 Markdown 承载文章语义；Kairos 组件承载公众号正文里需要稳定复现的杂志版式。组件仍然是 Markdown 输入，不允许写 HTML、CSS、`style` 或 `class`。
+普通 Markdown 承载技术文章的基础元素：标题、正文、表格、代码块、行内代码、加粗、斜体、删除线、划线、列表、步骤、Quote、Insight、Divider 和图片。Kairos 语义组件承载 Markdown 难以稳定表达的公众号正文杂志感。组件仍然是 Markdown 输入，不允许写 HTML、CSS、`style` 或 `class`。
+
+语义组件用于回答“这段内容最适合如何被读者接收”，而不是“这里要加什么装饰”。完整契约见 [`COMPONENTS.md`](COMPONENTS.md)。
 
 ```markdown
 :::lead
 导语段，用于正文开头建立文章气息。
+:::
+
+:::insight
+真正稳定的不是样式，而是样式背后的语义契约。
 :::
 
 :::pullquote
@@ -196,6 +203,13 @@ Markdown path / Markdown text / non-Markdown text
 ```
 
 微信公众号正文不能控制平台标题、封面图、账号信息、菜单和外部页面背景。`song` 的正文组件只追求单列阅读里的宋式杂志气质，不做印章、自由定位或封面式大标题。
+
+## 质量目标
+
+- 稳定输出：白名单语义组件、全内联样式、无任意 HTML/CSS。
+- 快速扩主题：每个主题实现同一套组件矩阵，而不是为每篇文章临场补样式。
+- 高级感：靠语义选择、留白、阅读节奏、克制强调和图文关系建立，不靠堆装饰。
+- 移动端适配：表格降级为堆叠信息卡，代码块不依赖横向滚动，图片始终移动端安全。
 
 ## 验证
 

@@ -84,12 +84,13 @@ def analyze_block(block: Dict[str, Any], index: int, total: int) -> Dict[str, An
         component_name = str(block.get("name", ""))
         intent = {
             "lead": "opening",
+            "insight": "insight",
             "pullquote": "quote",
             "figure": "media",
             "soft-list": "structured",
             "closing-note": "closing",
         }.get(component_name, "body")
-        importance = "high" if component_name in {"lead", "pullquote"} else "medium"
+        importance = "high" if component_name in {"lead", "insight", "pullquote"} else "medium"
     elif block_type == "paragraph":
         if full_emphasis or highlight_count or re.search(r"(关键|核心|真正|必须|注意|结论|因此|所以)", text):
             intent = "insight"

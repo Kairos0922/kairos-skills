@@ -20,7 +20,7 @@
       "id": "kairos-wechat-typeset",
       "path": "kairos-wechat-typeset",
       "status": "runnable",
-      "summary": "Deterministic Markdown-to-WeChat editorial HTML design system.",
+      "summary": "Deterministic Markdown-to-WeChat semantic editorial component system.",
       "entrypoints": [
         "SKILL.md",
         "scripts/typeset.py",

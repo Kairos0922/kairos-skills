@@ -1,7 +1,7 @@
 ---
 name: kairos-wechat-typeset
 description: |
-  把标准 Markdown 文章转换成适合微信公众号编辑器粘贴的多主题内联 HTML。该 Skill 是确定性的 WeChat Editorial Design System：用人工定义的视觉母版、主题哲学、节奏引擎和校验规则，稳定复现高级、精致、有品牌感的公众号排版。
+  把标准 Markdown 文章转换成适合微信公众号编辑器粘贴的多主题内联 HTML。该 Skill 是确定性的 WeChat Semantic Editorial Design System：用语义组件、人工定义的视觉母版、主题哲学、节奏引擎和校验规则，稳定复现高级、精致、有品牌感的公众号排版。
 
   触发场景：
   - “把这篇 md 排成公众号样式”
@@ -17,22 +17,23 @@ metadata:
 
 ## Purpose / 目的
 
-将标准 Markdown `.md` 文件转换为微信公众号编辑器友好的 HTML。目标不是 Markdown Renderer，也不是临场 HTML Generator，而是 WeChat Editorial Design Skill：先人工定义高级感，再让系统稳定复现。
+将标准 Markdown `.md` 文件转换为微信公众号编辑器友好的 HTML。目标不是 Markdown Renderer，也不是临场 HTML Generator，而是 WeChat Semantic Editorial Design Skill：先定义内容的最佳语义表达，再由主题组件稳定复现高级感。
 
 - 人工精修的视觉母版
 - 主题级视觉哲学，而不是颜色包
-- 确定性的节奏、层级、间距和组件约束
+- 确定性的语义组件、节奏、层级、间距和主题约束
 - 所有样式内联，尽量避免被微信编辑器打散
 
 ## Core Principle / 核心原则
 
-高级感来自人工定义的视觉系统，不来自 AI 即兴发挥。
+高级感来自人工定义的语义组件和视觉系统，不来自 AI 即兴发挥。语义组件不是装饰模块，而是内容在微信公众号正文中的最佳表达方式。
 
-- LLM：只做编辑判断，包括结构、标题层级、重点句、引用、列表、分隔节奏，以及少量受控 Kairos 组件语法。
+- LLM：只做编辑判断，包括结构、标题层级、重点句、引用、列表、步骤、分隔节奏，以及少量受控 Kairos 组件语法。
 - Semantic System：输出 importance、intent、density、should_split 等语义信号。
+- Semantic Component Contract：把 Markdown 和 Kairos 组件语法映射为稳定组件矩阵。
 - Art Direction Layer：根据主题哲学和文章类型解析 spacing_scale、emphasis_mode、visual_density、section_rhythm。
 - Rhythm Engine：控制阅读节奏、breathing space、visual momentum。
-- Layout Resolver / Renderer：把 layout decision 编译成微信兼容 inline HTML。
+- Theme Component Renderer：把语义组件和 layout decision 编译成微信兼容 inline HTML。
 - Verify：同时检查 HTML 兼容性和 editorial quality。
 
 LLM 不得直接生成 HTML、CSS、`style`、`class`、任意自定义标签或用户自定义主题。Markdown 无法稳定表达的正文杂志组件，必须使用白名单 Kairos 组件语法，由 renderer 编译成主题组件。
@@ -54,6 +55,8 @@ Ask: choose built-in theme from registry
         ↓
 Semantic Analysis
         ↓
+Semantic Component Contract
+        ↓
 Art Direction
         ↓
 Rhythm Engine
@@ -74,7 +77,7 @@ Versioned output under ~/.wechat-typeset
 3. 询问用户是否需要优化布局。
 4. 如果用户选择“是”，由 agent/LLM 先生成规范化布局 Markdown：
    - LLM 只输出 Markdown 与白名单 Kairos 组件语法。
-   - 可使用 `## 01 标题`、`==重点==`、`> [!NOTE]`、分割线、图片、列表、表格，以及 `:::lead`、`:::pullquote`、`:::figure`、`:::soft-list`、`:::closing-note`。
+   - 可使用 `## 01 标题`、`==重点==`、`> [!NOTE]`、分割线、图片、列表、步骤、表格，以及 `:::lead`、`:::insight`、`:::pullquote`、`:::figure`、`:::soft-list`、`:::closing-note`。
    - 不新增事实，不改写用户核心观点，不生成 HTML。
    - 输出 `layout.md`，并通过 Markdown 合约验证。
    - 脚本的 `--optimize-layout yes` 只负责保存和验证 `layout.md`；没有外部布局稿时只做 deterministic normalization fallback，不能替代人工/LLM 编辑判断。
@@ -179,11 +182,15 @@ article.md
 
 ## Kairos Components / 受控正文组件
 
-普通 Markdown 负责文章语义；Kairos 组件负责 Markdown 难以稳定表达的公众号正文版式。组件只表达语义，不允许 HTML、CSS、`style`、`class` 或任意自定义标签。
+普通 Markdown 负责技术文章基础元素：标题、正文、表格、代码块、行内代码、加粗、斜体、删除线、划线、列表、步骤、Quote、Insight、Divider 和图片。Kairos 组件负责 Markdown 难以稳定表达的公众号正文杂志感。组件只表达语义，不允许 HTML、CSS、`style`、`class` 或任意自定义标签。完整契约见 `COMPONENTS.md`。
 
 ```markdown
 :::lead
 导语段，用于正文开头建立文章气息。
+:::
+
+:::insight
+真正稳定的不是样式，而是样式背后的语义契约。
 :::
 
 :::pullquote

@@ -21,10 +21,12 @@ if str(SKILL_ROOT) not in sys.path:
 
 from art_direction.mood import select_art_direction
 from art_direction.rhythm import build_rhythm_plan
+from renderer.blocks import ALLOWED_KAIROS_COMPONENTS
 from renderer.compiler import compile_plan
 from semantic.analyze import analyze_blocks
 from verify.editorial_verify import verify_editorial_blocks
 from verify.html_verify import verify_html
+from verify.markdown_verify import verify_markdown_safety
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
 UNORDERED_RE = re.compile(r"^(\s*)[-+*]\s+(.*)$")
@@ -38,7 +40,7 @@ LATIN_WORD_RE = r"[A-Za-z0-9]+(?:[A-Za-z0-9./_:+%#@-]*[A-Za-z0-9])?"
 COMPONENT_OPEN_RE = re.compile(r"^:::\s*([A-Za-z][A-Za-z0-9_-]*)\s*$")
 COMPONENT_CLOSE_RE = re.compile(r"^:::\s*$")
 FIGURE_IMAGE_RE = re.compile(r"^!\[([^\]]*)\]\(([^)]+)\)\s*$")
-SUPPORTED_COMPONENTS = {"lead", "pullquote", "figure", "soft-list", "closing-note"}
+SUPPORTED_COMPONENTS = ALLOWED_KAIROS_COMPONENTS
 CHINESE_NUMERALS = {
     "01": "一",
     "02": "二",
@@ -237,7 +239,11 @@ def spacing_from_layout(layout: Optional[Dict[str, Any]], fallback_bottom: int) 
 
 def parse_component_payload(name: str, lines: Sequence[str]) -> Dict[str, Any]:
     if name not in SUPPORTED_COMPONENTS:
-        return {"type": "paragraph", "text": merge_lines([f":::{name}", *lines, ":::"])}
+        return {
+            "type": "unknown_component",
+            "name": name,
+            "text": merge_lines([f":::{name}", *lines, ":::"]),
+        }
 
     cleaned = [line.rstrip() for line in lines]
     if name == "figure":
@@ -771,6 +777,30 @@ class Renderer:
             style = self.base_p(spacing)
         return f'<p style="{style}">{self.render_inline(text)}</p>'
 
+    def render_component_insight(self, text: str, layout: Optional[Dict[str, Any]] = None) -> str:
+        spacing = spacing_from_layout(layout, self.rhythm("paragraph_gap", 22) + 4)
+        if self.is_theme("song"):
+            style = (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 2; "
+                f"color: {self.c('ink')}; text-align: left; letter-spacing: 0; font-weight: 700; "
+                f"border-left: 2px solid {self.c('accent')}; padding-left: 14px;"
+            )
+        elif self.is_theme("mimo"):
+            style = (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.9; "
+                f"color: {self.c('ink')}; text-align: left; letter-spacing: 0; font-weight: 700; "
+                f"border-left: 4px solid {self.c('accent')}; padding: 12px 16px; "
+                f"background-color: {self.c('surface')}; border-radius: {self.radius()};"
+            )
+        else:
+            style = (
+                f"{self.base_p(spacing)} font-weight: 700; color: {self.c('ink')}; "
+                f"border-left: 3px solid {self.c('accent')}; padding-left: 14px;"
+            )
+        return f'<p style="{style}">{self.render_inline(text)}</p>'
+
     def render_component_pullquote(self, text: str, layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("quote_breathing", 18))
         if self.is_theme("song"):
@@ -864,6 +894,8 @@ class Renderer:
         name = str(block.get("name", ""))
         if name == "lead":
             return [self.render_component_lead(str(block.get("text", "")), layout)]
+        if name == "insight":
+            return [self.render_component_insight(str(block.get("text", "")), layout)]
         if name == "pullquote":
             return [self.render_component_pullquote(str(block.get("text", "")), layout)]
         if name == "figure":
@@ -1256,7 +1288,19 @@ def render_markdown_text(
     density: Optional[str] = None,
     tone: Optional[str] = None,
 ) -> str:
+    safety_findings = verify_markdown_safety(markdown)
+    if safety_findings:
+        raise ValueError("; ".join(safety_findings))
     blocks = parse_blocks(markdown)
+    unknown_components = [
+        str(block.get("name", ""))
+        for block in blocks
+        if block.get("type") == "unknown_component"
+    ]
+    if unknown_components:
+        allowed = ", ".join(sorted(ALLOWED_KAIROS_COMPONENTS))
+        names = ", ".join(sorted(set(unknown_components)))
+        raise ValueError(f"Unknown Kairos component(s): {names}. Allowed components: {allowed}.")
     semantics = analyze_blocks(blocks)
     art_direction = select_art_direction(theme, article_type=article_type, density=density, tone=tone)
     plans = build_rhythm_plan(blocks, semantics, theme, art_direction)

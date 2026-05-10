@@ -69,7 +69,12 @@
   },
   "components": {
     "paragraph": { "variants": ["default", "dense", "lead"] },
+    "lead": { "variants": ["report-opening"] },
     "insight": { "variants": ["accent-bar", "metric", "minimal-tech"] },
+    "pullquote": { "variants": ["technical"] },
+    "figure": { "variants": ["captioned"] },
+    "softlist": { "variants": ["structured"] },
+    "closingnote": { "variants": ["quiet"] },
     "quote": { "variants": ["gray-surface", "note", "warning"] },
     "summary": { "variants": ["structured", "compact", "closing"] },
     "divider": { "variants": ["rule", "section-gap", "technical"] },

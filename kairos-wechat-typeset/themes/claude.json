@@ -69,7 +69,12 @@
   },
   "components": {
     "paragraph": { "variants": ["default", "lead", "compact"] },
+    "lead": { "variants": ["calm-opening"] },
     "insight": { "variants": ["soft-surface", "sentence", "closing"] },
+    "pullquote": { "variants": ["quiet"] },
+    "figure": { "variants": ["captioned"] },
+    "softlist": { "variants": ["clean"] },
+    "closingnote": { "variants": ["quiet"] },
     "quote": { "variants": ["weak-border", "note", "warning"] },
     "summary": { "variants": ["clean", "numbered", "closing"] },
     "divider": { "variants": ["hairline", "breath", "section"] },

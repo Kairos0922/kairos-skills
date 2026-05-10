@@ -2,70 +2,70 @@
   "id": "song",
   "name": "Song Aesthetic",
   "name_zh": "宋式美学",
-  "description": "Chinese editorial reading system inspired by Song books, calligraphic whitespace, warm paper, and slow long-form rhythm.",
+  "description": "Modern Chinese mobile editorial system built on Source Han Serif, restrained ink, compact rhythm, and Song-style warmth.",
   "content_width": 640,
   "philosophy": {
     "mood": "literary",
     "density": "airy",
-    "rhythm": "slow",
+    "rhythm": "mobile",
     "hierarchy": "soft"
   },
   "constraints": {
     "accent_color_count": 1,
     "highlight_frequency_max": 0.08,
     "component_variants_max": 3,
-    "forbidden": ["card-heavy layout", "color CTA", "strong shadow", "multiple accent colors", "high-contrast blocks"]
+    "forbidden": ["card-heavy layout", "color CTA", "strong shadow", "multiple accent colors", "high-contrast blocks", "gradient", "large tinted backgrounds"]
   },
   "art_direction": {
     "article_type": "literary",
-    "spacing_scale": 1.12,
+    "spacing_scale": 1.0,
     "emphasis_mode": "restrained",
     "visual_density": "low",
-    "section_rhythm": "editorial"
+    "section_rhythm": "mobile-editorial"
   },
   "body": {
-    "background": "#f6f1e8",
-    "padding": "32px 18px 54px 18px"
+    "background": "#fbf8f2",
+    "padding": "28px 18px 48px 18px"
   },
   "fonts": {
-    "cjk": "'Songti SC', 'STSong', 'Noto Serif CJK SC', 'Source Han Serif SC', SimSun, serif",
+    "cjk": "'Source Han Serif SC', 'Noto Serif CJK SC', 'Songti SC', 'STSong', SimSun, serif",
     "latin": "'Baskerville', 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif",
     "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
   },
   "colors": {
-    "ink": "#241d18",
-    "text": "#413a33",
-    "muted": "#867a6e",
-    "soft": "#d4c7b7",
-    "line": "#d9ccbc",
-    "line_soft": "#e1d6c8",
-    "surface": "#f4ede3",
-    "surface_alt": "#efe6da",
-    "accent": "#8a6b3f",
-    "warning": "#a16f35",
-    "warning_bg": "#f7eee0",
-    "code_text": "#302a24"
+    "ink": "#1f1914",
+    "text": "#3f3932",
+    "muted": "#80766b",
+    "soft": "#c8b8a4",
+    "line": "#cdbfae",
+    "line_soft": "#e4d8c8",
+    "surface": "#f6f0e7",
+    "surface_alt": "#f1e8dc",
+    "accent": "#8f3f2b",
+    "warning": "#8f3f2b",
+    "warning_bg": "#fbf8f2",
+    "code_text": "#2f2923"
   },
   "typography": {
-    "title_size": "30px",
-    "title_line": "1.45",
-    "body_size": "17px",
-    "body_line": "2.0",
-    "section_num_size": "42px",
-    "section_title_size": "23px",
-    "small_size": "13px",
-    "code_size": "12.5px"
+    "title_size": "18px",
+    "title_line": "1.72",
+    "body_size": "16px",
+    "body_line": "2.06",
+    "section_num_size": "18px",
+    "section_title_size": "18px",
+    "small_size": "16px",
+    "code_size": "16px"
   },
   "rhythm": {
-    "paragraph_gap": 28,
-    "heading_top": 54,
-    "heading_bottom": 30,
-    "quote_breathing": 46,
-    "section_break": 62
+    "paragraph_gap": 22,
+    "heading_top": 28,
+    "heading_bottom": 18,
+    "quote_breathing": 14,
+    "section_break": 22
   },
   "shape": {
-    "radius": "6px",
-    "image_radius": "6px"
+    "radius": "2px",
+    "image_radius": "4px"
   },
   "components": {
     "paragraph": { "variants": ["default", "lead", "quiet"] },

@@ -41,6 +41,7 @@ def resolve_spacing(
     heading_bottom = rhythm_value(theme, "heading_bottom", 24)
     quote_breathing = rhythm_value(theme, "quote_breathing", 34)
     section_break = rhythm_value(theme, "section_break", 46)
+    is_song = str(theme.get("id")) == "song"
 
     top = 0
     bottom = paragraph
@@ -54,10 +55,10 @@ def resolve_spacing(
         bottom = quote_breathing
     elif block_type == "divider":
         top = section_break
-        bottom = max(30, section_break - 6)
+        bottom = max(14 if is_song else 30, section_break - 6)
     elif block_type in {"code", "table"}:
-        top = max(28, paragraph + 10)
-        bottom = max(30, paragraph + 8)
+        top = max(22, paragraph + 4) if is_song else max(28, paragraph + 10)
+        bottom = max(22, paragraph + 2) if is_song else max(30, paragraph + 8)
     elif block_type == "list":
         top = 0
         bottom = max(12, paragraph - 8)
@@ -68,11 +69,24 @@ def resolve_spacing(
         bottom += 8
     if previous and previous.get("type") == "heading" and block_type == "paragraph":
         top = 0
+    if (
+        is_song
+        and previous
+        and previous.get("type") == "divider"
+        and block_type == "heading"
+    ):
+        top = max(6, int(round(heading_top * 0.36)))
     if following and following.get("type") == "divider":
         bottom = max(16, bottom - 8)
+    if (
+        is_song
+        and block_type == "divider"
+        and following
+        and following.get("type") == "heading"
+    ):
+        bottom = max(10, int(round(section_break * 0.4)))
 
     return {
         "top": scaled(top, art_direction),
         "bottom": scaled(bottom, art_direction, minimum=8 if block_type != "heading" else 0),
     }
-

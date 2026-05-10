@@ -26,12 +26,14 @@
         "scripts/typeset.py",
         "scripts/render.py",
         "scripts/verify.py",
-        "scripts/verify_markdown.py"
+        "scripts/verify_markdown.py",
+        "scripts/audit_visual.py"
       ],
       "validation": [
         "python3 scripts/render.py --list-themes",
         "python3 scripts/typeset.py --check",
         "python3 scripts/verify.py --input goldens/song-style.html",
+        "python3 scripts/audit_visual.py --input goldens/song-style.html --allowed-font-size 16px --allowed-font-size 18px --max-margin-px 44",
         "python3 scripts/verify.py --input goldens/mimo-style.html",
         "python3 scripts/verify.py --input goldens/claude-style.html"
       ]

@@ -187,6 +187,16 @@ python3 scripts/verify_markdown.py \
   --input layout.md
 ```
 
+审计渲染后的视觉库存：
+
+```bash
+python3 scripts/audit_visual.py \
+  --input goldens/song-style.html \
+  --allowed-font-size 16px \
+  --allowed-font-size 18px \
+  --max-margin-px 44
+```
+
 ## 开发者新增主题
 
 见 [`themes/README.md`](themes/README.md)。新增主题需要：
@@ -194,5 +204,5 @@ python3 scripts/verify_markdown.py \
 1. 新建 `themes/<theme-id>/DESIGN.md`
 2. 新建 `themes/<theme-id>.json`
 3. 注册到 `themes/registry.json`
-4. 使用开发者自备 Markdown 样例渲染完整 HTML
-5. 通过 `--verify`、检查 `goldens/` 对齐度，并进行移动端预览
+4. 使用 `fixtures/visual-matrix.md` 渲染完整 HTML
+5. 通过 `--verify`、`scripts/audit_visual.py`、检查 `goldens/` 对齐度，并进行移动端预览

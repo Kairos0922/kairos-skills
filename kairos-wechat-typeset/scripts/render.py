@@ -385,6 +385,13 @@ class Renderer:
 
     def title_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
         spacing = spacing or {"top": 0, "bottom": 34}
+        if self.is_theme("song"):
+            return (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], max(spacing['bottom'], 44))}; "
+                f"padding: 0; font-family: {self.f('cjk')}; font-size: {self.t('title_size')}; "
+                f"line-height: {self.t('title_line')}; font-weight: 700; color: {self.c('ink')}; "
+                "text-align: left; letter-spacing: 0;"
+            )
         return (
             f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
             f"font-size: {self.t('title_size')}; line-height: {self.t('title_line')}; font-weight: 700; "
@@ -403,6 +410,12 @@ class Renderer:
                 f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
                 "font-size: 20px; line-height: 1; font-weight: 600; "
                 f"letter-spacing: 0.08em; color: {self.c('soft')}; text-align: left;"
+            )
+        if self.is_theme("song"):
+            return (
+                f"max-width: {self.width}px; margin: {top}px auto 10px auto; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('section_num_size')}; line-height: 1.4; font-weight: 600; "
+                f"letter-spacing: 0.14em; color: {self.c('accent')}; text-align: left;"
             )
         return (
             f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
@@ -425,6 +438,13 @@ class Renderer:
                 f"color: {self.c('ink')}; text-align: left; border-bottom: 1px solid {self.c('line_soft')}; "
                 "padding-bottom: 9px; letter-spacing: 0;"
             )
+        if self.is_theme("song"):
+            return (
+                f"max-width: {self.width}px; margin: 0 auto {bottom}px auto; padding: 0; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('section_title_size')}; line-height: 1.56; "
+                "font-weight: 700; color: "
+                f"{self.c('ink')}; text-align: left; letter-spacing: 0;"
+            )
         return (
             f"max-width: {self.width}px; margin: 0 auto {bottom}px auto; font-family: {self.f('cjk')}; "
             f"font-size: {self.t('section_title_size')}; line-height: 1.88; font-weight: 600; "
@@ -434,6 +454,13 @@ class Renderer:
 
     def subtitle_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
         spacing = spacing or {"top": 36, "bottom": 22}
+        if self.is_theme("song"):
+            return (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('section_title_size')}; line-height: 1.72; font-weight: 700; "
+                f"color: {self.c('ink')}; text-align: left; padding-left: 12px; "
+                f"border-left: 2px solid {self.c('line')}; letter-spacing: 0;"
+            )
         return (
             f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
             f"font-size: {self.t('section_title_size')}; line-height: 1.88; font-weight: 700; "
@@ -455,9 +482,9 @@ class Renderer:
     def quote_p(self, border: str, background: Optional[str] = None, text: Optional[str] = None) -> str:
         if self.is_theme("song"):
             return (
-                f"display: block; padding: 8px 0 8px 18px; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('body_size')}; line-height: 1.96; text-align: left; "
-                f"background-color: transparent; border-left: 2px solid {border}; border-radius: 0; "
+                f"display: block; padding: 12px 0 12px 20px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: 2.02; text-align: left; "
+                f"background-color: transparent; border-left: 1px solid {border}; border-radius: 0; "
                 f"color: {text or self.c('text')};"
             )
         if self.is_theme("mimo"):
@@ -483,6 +510,12 @@ class Renderer:
         )
 
     def code_meta_p(self, top: int) -> str:
+        if self.is_theme("song"):
+            return (
+                f"max-width: {self.width}px; margin: {top}px auto 9px auto; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
+                "text-align: left; letter-spacing: 0.12em;"
+            )
         return (
             f"max-width: {self.width}px; margin: {top}px auto 10px auto; font-family: {self.f('mono')}; "
             f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
@@ -490,6 +523,14 @@ class Renderer:
         )
 
     def code_p(self) -> str:
+        if self.is_theme("song"):
+            return (
+                f"display: block; padding: 17px 19px 17px 19px; font-family: {self.f('mono')}; "
+                f"font-size: {self.t('code_size')}; line-height: 1.86; color: {self.c('code_text')}; "
+                f"text-align: left; white-space: pre-wrap; background-color: {self.c('surface')}; "
+                f"border-top: 1px solid {self.c('line')}; border-bottom: 1px solid {self.c('line_soft')}; "
+                "border-left: 0; border-right: 0; border-radius: 0;"
+            )
         return (
             f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('mono')}; "
             f"font-size: {self.t('code_size')}; line-height: 1.82; color: {self.c('code_text')}; "
@@ -501,6 +542,12 @@ class Renderer:
         return f"max-width: {self.width}px; margin: 0 auto {bottom}px auto;"
 
     def table_meta_p(self, top: int) -> str:
+        if self.is_theme("song"):
+            return (
+                f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
+                "text-align: left; letter-spacing: 0.12em;"
+            )
         return (
             f"max-width: {self.width}px; margin: {top}px auto 12px auto; font-family: {self.f('mono')}; "
             f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
@@ -508,6 +555,13 @@ class Renderer:
         )
 
     def table_card_p(self) -> str:
+        if self.is_theme("song"):
+            return (
+                f"display: block; padding: 11px 0 11px 16px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: 1.92; color: {self.c('text')}; "
+                f"text-align: left; background-color: transparent; border-left: 1px solid {self.c('line_soft')}; "
+                "border-top: 0; border-bottom: 0; border-right: 0; border-radius: 0;"
+            )
         return (
             f"display: block; padding: 17px 20px 17px 20px; font-family: {self.f('cjk')}; "
             f"font-size: {self.t('body_size')}; line-height: 1.9; color: {self.c('text')}; "
@@ -518,7 +572,26 @@ class Renderer:
     def table_wrap_p(self, bottom: int = 14) -> str:
         return f"max-width: {self.width}px; margin: 0 auto {bottom}px auto;"
 
+    def table_value_style(self, is_last: bool) -> str:
+        bottom = "0" if is_last else "12px"
+        if self.is_theme("song"):
+            return (
+                f"display: block; margin-bottom: {bottom}; padding-bottom: 0; color: {self.c('text')}; "
+                "border-bottom: 0;"
+            )
+        return (
+            f"display: block; margin-bottom: 10px; color: {self.c('text')};"
+            if not is_last
+            else f"display: block; color: {self.c('text')};"
+        )
+
     def table_label_style(self) -> str:
+        if self.is_theme("song"):
+            return (
+                f"display: block; margin-bottom: 3px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.48; color: {self.c('muted')}; "
+                "letter-spacing: 0.04em;"
+            )
         return (
             f"display: block; margin-bottom: 4px; font-family: {self.f('mono')}; "
             f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
@@ -526,12 +599,19 @@ class Renderer:
         )
 
     def inline_code_style(self) -> str:
+        if self.is_theme("song"):
+            return (
+                f"font-family: {self.f('mono')}; font-size: {self.t('body_size')}; background-color: {self.c('surface')}; "
+                f"color: {self.c('code_text')}; padding: 1px 5px; border-radius: 1px;"
+            )
         return (
             f"font-family: {self.f('mono')}; font-size: 0.9em; background-color: {self.c('surface_alt')}; "
             f"color: {self.c('code_text')}; padding: 1px 6px; border-radius: 4px;"
         )
 
     def link_style(self) -> str:
+        if self.is_theme("song"):
+            return f"color: {self.c('ink')}; text-decoration: none; border-bottom: 1px solid {self.c('accent')};"
         return f"color: {self.c('ink')}; text-decoration: none; border-bottom: 1px solid {self.c('accent')};"
 
     def strong_style(self) -> str:
@@ -541,7 +621,7 @@ class Renderer:
         if self.is_theme("mimo"):
             return f"border-bottom: 2px solid {self.c('accent')}; font-weight: 700; color: {self.c('ink')};"
         if self.is_theme("song"):
-            return f"border-bottom: 1px solid {self.c('accent')}; font-weight: 600; color: {self.c('ink')};"
+            return f"border-bottom: 1px solid {self.c('accent')}; font-weight: 700; color: {self.c('ink')};"
         return f"border-bottom: 1px dashed {self.c('accent')}; font-weight: 600;"
 
     def em_style(self) -> str:
@@ -551,6 +631,11 @@ class Renderer:
         return f"text-decoration: line-through; color: {self.c('muted')};"
 
     def latin_inline_style(self) -> str:
+        if self.is_theme("song"):
+            return (
+                f"font-family: {self.f('latin')}; font-size: {self.t('body_size')}; letter-spacing: 0; "
+                f"color: {self.c('ink')};"
+            )
         return (
             f"font-family: {self.f('latin')}; font-size: 0.96em; letter-spacing: 0.01em; "
             f"color: {self.c('ink')};"
@@ -559,9 +644,12 @@ class Renderer:
     def marker_style(self, ordered: bool) -> str:
         color = self.c("accent") if self.is_theme("mimo") else self.c("muted")
         weight = "700" if self.is_theme("mimo") else "500"
+        if self.is_theme("song"):
+            color = self.c("accent") if ordered else self.c("soft")
+            weight = "600" if ordered else "500"
         return (
             f"display: inline-block; width: 24px; margin-right: 10px; text-align: center; "
-            f"vertical-align: top; font-family: {self.f('latin')}; font-size: 12px; line-height: 1.92; "
+            f"vertical-align: top; font-family: {self.f('latin')}; font-size: {self.t('body_size') if self.is_theme('song') else '12px'}; line-height: 1.92; "
             f"font-weight: {weight}; color: {color}; letter-spacing: {'0.04em' if ordered else '0'};"
         )
 
@@ -574,12 +662,20 @@ class Renderer:
             f'border-radius: {self.radius("image_radius")};" />'
         )
         if safe_alt:
-            image_html += (
-                f'<span style="display: block; width: 88%; margin: 12px auto 0 auto; padding-top: 9px; '
-                f'border-top: 1px solid {self.c("line_soft")}; font-size: {self.t("small_size")}; '
-                f'line-height: 1.72; color: {self.c("muted")}; text-align: center; letter-spacing: 0.02em; '
-                f'font-family: {self.f("cjk")};">{self.balance_latin_text(safe_alt)}</span>'
-            )
+            if self.is_theme("song"):
+                image_html += (
+                    f'<span style="display: block; width: 88%; margin: 10px auto 0 auto; padding-top: 0; '
+                    f'font-size: {self.t("small_size")}; line-height: 1.72; color: {self.c("muted")}; '
+                    f'text-align: center; letter-spacing: 0.02em; font-family: {self.f("cjk")};">'
+                    f'{self.balance_latin_text(safe_alt)}</span>'
+                )
+            else:
+                image_html += (
+                    f'<span style="display: block; width: 88%; margin: 12px auto 0 auto; padding-top: 9px; '
+                    f'border-top: 1px solid {self.c("line_soft")}; font-size: {self.t("small_size")}; '
+                    f'line-height: 1.72; color: {self.c("muted")}; text-align: center; letter-spacing: 0.02em; '
+                    f'font-family: {self.f("cjk")};">{self.balance_latin_text(safe_alt)}</span>'
+                )
         return image_html
 
     def render_link(self, label: str, target: str) -> str:
@@ -732,9 +828,27 @@ class Renderer:
             border = self.c("muted")
 
         text = merge_lines(cleaned)
+        if self.is_theme("song") and quote_kind != "QUOTE":
+            labels = {
+                "NOTE": "注",
+                "IMPORTANT": "要",
+                "CAUTION": "慎",
+                "TIP": "笺",
+                "WARNING": "警",
+            }
+            label = labels.get(quote_kind, "注")
+            label_html = (
+                f'<span style="display: inline-block; margin: 0 10px 0 0; padding: 0 0 2px 0; '
+                f'font-family: {self.f("cjk")}; font-size: {self.t("small_size")}; line-height: 1; '
+                f'font-weight: 700; color: {border}; vertical-align: 0.08em;">'
+                f'{html.escape(label)}</span>'
+            )
+            text = f"{label_html}{self.render_inline(text)}"
+        else:
+            text = self.render_inline(text)
         return (
             f'<p style="{self.quote_wrap_p(spacing)}">'
-            f'<span style="{self.quote_p(border, background, text_color)}">{self.render_inline(text)}</span>'
+            f'<span style="{self.quote_p(border, background, text_color)}">{text}</span>'
             "</p>"
         )
 
@@ -755,10 +869,12 @@ class Renderer:
     def render_code(self, text: str, language: str, layout: Optional[Dict[str, Any]] = None) -> List[str]:
         spacing = spacing_from_layout(layout, 32)
         label = html.escape(language.upper() if language else "CODE")
-        rule = (
-            f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
-            'margin: 0 10px 4px 0;"></span>'
-        )
+        rule = ""
+        if not self.is_theme("song"):
+            rule = (
+                f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
+                'margin: 0 10px 4px 0;"></span>'
+            )
         return [
             f'<p style="{self.code_meta_p(spacing["top"])}">{rule}{label}</p>',
             f'<p style="{self.code_wrap_p(spacing["bottom"])}"><span style="{self.code_p()}">{html.escape(text)}</span></p>',
@@ -766,10 +882,12 @@ class Renderer:
 
     def render_table(self, header: Sequence[str], rows: Sequence[Sequence[str]], layout: Optional[Dict[str, Any]] = None) -> List[str]:
         spacing = spacing_from_layout(layout, 20)
-        rule = (
-            f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
-            'margin: 0 10px 4px 0;"></span>'
-        )
+        rule = ""
+        if not self.is_theme("song"):
+            rule = (
+                f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
+                'margin: 0 10px 4px 0;"></span>'
+            )
         rendered = [
             f'<p style="{self.table_meta_p(spacing["top"])}">{rule}{" × ".join(self.render_inline(cell) for cell in header)}</p>'
         ]
@@ -777,11 +895,7 @@ class Renderer:
             pairs: List[str] = []
             for index, cell in enumerate(row):
                 label = header[index] if index < len(header) else f"Column {index + 1}"
-                value_style = (
-                    f"display: block; margin-bottom: 10px; color: {self.c('text')};"
-                    if index < len(row) - 1
-                    else f"display: block; color: {self.c('text')};"
-                )
+                value_style = self.table_value_style(index == len(row) - 1)
                 pairs.append(f'<span style="{self.table_label_style()}">{self.render_inline(label)}</span>')
                 pairs.append(f'<span style="{value_style}">{self.render_inline(cell)}</span>')
             rendered.append(
@@ -804,6 +918,14 @@ class Renderer:
                 f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
                 'text-align: left; line-height: 1;">'
                 f'<span style="display: block; width: 100%; border-top: 1px solid {self.c("line_soft")};"></span>'
+                "</p>"
+            )
+        if self.is_theme("song"):
+            return (
+                f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
+                'text-align: center; line-height: 1;">'
+                f'<span style="display: inline-block; width: 4px; height: 4px; margin: 0; '
+                f'background-color: {self.c("soft")}; border-radius: 50%; vertical-align: middle;"></span>'
                 "</p>"
             )
         return (

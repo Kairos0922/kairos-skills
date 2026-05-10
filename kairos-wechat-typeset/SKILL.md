@@ -40,11 +40,17 @@ LLM 不得直接生成 HTML、CSS、`style`、`class`、自定义标签或用户
 ## System Architecture / 系统架构
 
 ```text
-Markdown / Article
+Markdown path / Markdown text / non-Markdown text
         ↓
-Structure Analysis
+Input normalization
         ↓
-User Layout Decision
+Ask: optimize layout?
+        ↓ yes                           ↓ no
+Layout Markdown contract          Current Markdown
+        ↓                              ↓
+Optional layout.md                    ↓
+        ↓                              ↓
+Ask: choose built-in theme from registry
         ↓
 Semantic Analysis
         ↓
@@ -58,31 +64,48 @@ Deterministic Renderer
         ↓
 WeChat Verify + Editorial Verify
         ↓
-HTML Output
+Versioned output under ~/.wechat-typeset
 ```
 
 ## User Workflow / 用户流程
 
-1. 用户提供一个 Markdown 文件路径。
-2. 解析 Markdown 并分析文章结构。
+1. 用户提供 Markdown 文件路径、Markdown 内容，或非 Markdown 内容。
+2. 系统将输入归一化为 Markdown。非 Markdown 内容只做最小 Markdown 标准化，不新增事实。
 3. 询问用户是否需要优化布局。
-4. 如果用户选择“是”：
+4. 如果用户选择“是”，先生成规范化布局 Markdown：
    - LLM 只输出标准 Markdown。
    - 可使用 `## 01 标题`、`==重点==`、`> [!NOTE]`、分割线、图片、列表、表格。
    - 不新增事实，不改写用户核心观点，不生成 HTML。
-   - 输出优化后的 Markdown 后，必须让用户确认是否需要修改。
-5. 执行 semantic analysis。
-6. 选择已注册主题并解析 art direction。
-7. 执行 rhythm strategy 和 layout resolver。
-8. 用脚本渲染 HTML，并运行 verify。
-9. 如验证或移动端预览有问题，调整主题 token、节奏规则或渲染器，不让 LLM 临场写样式。
+   - 输出 `layout.md`，并通过 Markdown 合约验证。
+5. 如果用户选择“否”，不生成 `layout.md`，直接使用当前 Markdown 进入渲染。
+6. 询问用户选择哪个内置主题。主题只能来自 `themes/registry.json`，不得让用户提供 CSS、颜色、模板或主题文件。
+7. 执行 semantic analysis、art direction、rhythm strategy 和 layout resolver。
+8. 用脚本渲染 HTML，并运行 Markdown / HTML / editorial verify。
+9. 输出版本化产物到 `~/.wechat-typeset/<article-slug>/vNNN/`。
+10. 如验证或移动端预览有问题，调整 Markdown 布局、主题 token、节奏规则或渲染器，不让 LLM 临场写样式。
 
 ## Output / 输出资产
 
 最多两个用户资产：
 
-- 可选：LLM 优化后的 Markdown 文件。
-- 必选：主题化排版后的 HTML 文件。
+- 可选：`layout.md`，仅在用户选择优化布局时输出。
+- 必选：`output.html`，主题化排版后的 HTML 文件。
+
+每次运行还会输出 `meta.json`，用于记录版本、主题、输入来源、是否优化布局和产物路径。用户产物必须写入跨平台用户目录：
+
+```text
+~/.wechat-typeset/
+  article-slug/
+    v001/
+      layout.md
+      output.html
+      meta.json
+    v002/
+      output.html
+      meta.json
+```
+
+实现时使用 `Path.home() / ".wechat-typeset"`，不得把用户输出写入 skill 目录。
 
 ## Built-in Themes / 内置主题
 
@@ -155,7 +178,26 @@ article.md
 
 ## Commands / 命令
 
-基础渲染：
+推荐完整工作流：
+
+```bash
+python3 scripts/typeset.py \
+  --input article.md \
+  --theme song \
+  --optimize-layout yes
+```
+
+非交互式完整工作流：
+
+```bash
+python3 scripts/typeset.py \
+  --input article.md \
+  --theme claude \
+  --optimize-layout no \
+  --non-interactive
+```
+
+底层渲染器：
 
 ```bash
 python3 scripts/render.py \
@@ -183,6 +225,13 @@ python3 scripts/verify.py \
   --input article.html
 ```
 
+单独验证布局 Markdown：
+
+```bash
+python3 scripts/verify_markdown.py \
+  --input layout.md
+```
+
 ## Quality Gates / 验收规则
 
 生成后必须检查：
@@ -194,6 +243,7 @@ python3 scripts/verify.py \
 - 无原生 `<table>`、`<ul>`、`<ol>`
 - 图片必须 `max-width: 100%`
 - 原始 HTML 必须被转义，不能透传
+- 布局 Markdown 禁止 raw HTML、`style=`、`class=`、`<script>`
 - 移动端 390px / 430px 无横向滚动风险
 - 连续长 paragraph <= 3
 - 连续 emphasis <= 2

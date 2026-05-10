@@ -96,9 +96,9 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Verify the generated HTML for WeChat inline-style constraints.",
     )
-    parser.add_argument("--article-type", help="Optional art-direction article type, e.g. tech or literary.")
-    parser.add_argument("--density", choices=["low", "medium", "high"], help="Optional art-direction density.")
-    parser.add_argument("--tone", help="Optional art-direction tone, e.g. analytical or literary.")
+    parser.add_argument("--article-type", help=argparse.SUPPRESS)
+    parser.add_argument("--density", choices=["low", "medium", "high"], help=argparse.SUPPRESS)
+    parser.add_argument("--tone", help=argparse.SUPPRESS)
     return parser.parse_args()
 
 
@@ -881,6 +881,34 @@ def render_markdown(
 ) -> str:
     theme = load_theme(theme_id)
     frontmatter_title, markdown = strip_frontmatter(input_path.read_text(encoding="utf-8"))
+    document = render_markdown_text(
+        markdown,
+        input_path=input_path,
+        title=title,
+        frontmatter_title=frontmatter_title,
+        theme=theme,
+        fragment_only=fragment_only,
+        article_type=article_type,
+        density=density,
+        tone=tone,
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(document, encoding="utf-8")
+    return document
+
+
+def render_markdown_text(
+    markdown: str,
+    *,
+    input_path: Path,
+    title: Optional[str],
+    frontmatter_title: Optional[str],
+    theme: Dict[str, Any],
+    fragment_only: bool,
+    article_type: Optional[str] = None,
+    density: Optional[str] = None,
+    tone: Optional[str] = None,
+) -> str:
     blocks = parse_blocks(markdown)
     semantics = analyze_blocks(blocks)
     art_direction = select_art_direction(theme, article_type=article_type, density=density, tone=tone)
@@ -889,11 +917,7 @@ def render_markdown(
     renderer = Renderer(theme, [item["layout"] for item in compiled])
     fragment = renderer.render_blocks(blocks)
     chosen_title = choose_title(title, frontmatter_title, blocks, input_path)
-    document = fragment if fragment_only else renderer.wrap_document(chosen_title, fragment)
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(document, encoding="utf-8")
-    return document
+    return fragment if fragment_only else renderer.wrap_document(chosen_title, fragment)
 
 
 def print_themes() -> None:

@@ -1,6 +1,6 @@
 # Theme Extension Guide
 
-Themes are developer-maintained design systems. Users can select a registered theme, but they cannot provide custom colors, CSS, HTML templates, or runtime theme files.
+Themes are developer-maintained design systems. Users select one registered built-in theme during the workflow, but they cannot provide custom colors, CSS, HTML templates, runtime theme files, or arbitrary theme paths.
 
 ## Add a Theme
 
@@ -15,6 +15,8 @@ Themes are developer-maintained design systems. Users can select a registered th
 - `DESIGN.md`: human-readable theme philosophy, fit, tokens, component rules, mobile rules, and quality gates.
 - `<theme-id>.json`: deterministic visual philosophy, constraints, rhythm, components, and tokens consumed by `scripts/render.py`.
 - `registry.json`: the only source of themes visible to users.
+
+The high-level workflow reads this registry when asking the user which theme to use. Runtime art-direction overrides are not part of the public user workflow because each registered theme must remain stable and reproducible.
 
 ## Required Theme Contract
 

@@ -9,6 +9,8 @@ V2 reframes the product as a deterministic editorial design system. The goal is 
 ## Core Split
 
 - LLM handles uncertain editorial work: structure, rhythm, headings, emphasis, and whether a paragraph should become a quote, list, divider, or callout.
+- The workflow asks whether the user wants layout optimization. If yes, the LLM produces standards-compliant Markdown only; if no, the current Markdown goes straight to rendering.
+- The workflow asks the user to choose one registered built-in theme before rendering. Users cannot provide theme files, colors, CSS, or templates.
 - Semantic analysis emits importance, intent, density, and split hints.
 - Art direction resolves theme philosophy into spacing scale, emphasis mode, density, and rhythm.
 - Rhythm engine resolves spacing and breathing between blocks.
@@ -24,6 +26,8 @@ The theme system borrows the `DESIGN.md` idea:
 
 Users cannot extend themes at runtime. Developers extend themes by adding files and registering them.
 
+Runtime article-type, density, and tone controls are not part of the user workflow. Registered theme contracts define the stable visual behavior.
+
 ## Golden System
 
 `goldens/song-style.html`, `goldens/mimo-style.html`, and `goldens/claude-style.html` are the highest visual references. They are intentionally handmade or carefully curated. They are not runtime templates and should not be copied blindly by the renderer.
@@ -34,10 +38,22 @@ Allowed editorial components are Paragraph, Insight, Quote, Summary, Divider, Li
 
 ## Output Contract
 
-At most two user-facing assets are produced:
+User-facing assets are versioned outside the skill directory:
 
-1. An optional LLM-optimized Markdown file, confirmed by the user before rendering.
-2. A themed HTML file with inline styles only.
+```text
+~/.wechat-typeset/
+  article-slug/
+    v001/
+      layout.md
+      output.html
+      meta.json
+```
+
+1. `layout.md` is optional and appears only when the user chooses layout optimization.
+2. `output.html` is required and contains themed inline-style HTML.
+3. `meta.json` records version, theme, input type, source path, title, layout optimization, and outputs.
+
+Implement output paths with `Path.home() / ".wechat-typeset"` for macOS, Windows, and Linux compatibility.
 
 ## Quality Gates
 
@@ -47,3 +63,4 @@ At most two user-facing assets are produced:
 - Mobile reading is the priority over desktop flourish.
 - Each registered theme must render representative samples with a distinct visual tone and remain aligned with its golden reference.
 - Editorial verify must reject skipped heading hierarchy, too many consecutive long paragraphs, too many consecutive emphasis blocks, and high-density sections with no breathing point.
+- Markdown verify must reject raw HTML, style/class attributes, scripts, excessive highlighting, deep headings, and overlong paragraphs before rendering.

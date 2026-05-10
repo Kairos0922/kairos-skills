@@ -151,8 +151,8 @@ Markdown path / Markdown text / non-Markdown text
 
 ## LLM 与脚本分工
 
-- LLM 只优化 Markdown：标题层级、段落节奏、重点句、引用、列表、分隔线。
-- LLM 不生成 HTML、不写 CSS、不新增自定义标签，不决定 typography、spacing、layout。
+- LLM 只优化 Markdown 与白名单 Kairos 组件语法：标题层级、段落节奏、重点句、引用、列表、分隔线、导语、摘引、图文、收束。
+- LLM 不生成 HTML、不写 CSS、不新增任意自定义标签，不决定 typography、spacing、layout。
 - 脚本负责确定性执行：输入归一化、保存/验证 `layout.md`、解析 Markdown、加载主题、分析语义、解析节奏、输出全内联 HTML、执行验证。
 
 如果用户不选择优化布局，脚本不输出 `layout.md`，直接使用当前 Markdown 渲染，并只做 safety verify。如果输入不是 Markdown，脚本会先做最小 Markdown 标准化。
@@ -166,6 +166,36 @@ Markdown path / Markdown text / non-Markdown text
 - `==重点句==`
 - `> [!NOTE]` / `> [!TIP]` / `> [!WARNING]`
 - `## 01 标题` 数字章节标题
+
+## Kairos 组件语法
+
+普通 Markdown 承载文章语义；Kairos 组件承载公众号正文里需要稳定复现的杂志版式。组件仍然是 Markdown 输入，不允许写 HTML、CSS、`style` 或 `class`。
+
+```markdown
+:::lead
+导语段，用于正文开头建立文章气息。
+:::
+
+:::pullquote
+计白当黑，数虚当实。
+:::
+
+:::figure
+![图片替代文字](https://example.com/image.png)
+图注文字。
+:::
+
+:::soft-list
+- 第一条
+- 第二条
+:::
+
+:::closing-note
+安静的结尾收束语。
+:::
+```
+
+微信公众号正文不能控制平台标题、封面图、账号信息、菜单和外部页面背景。`song` 的正文组件只追求单列阅读里的宋式杂志气质，不做印章、自由定位或封面式大标题。
 
 ## 验证
 

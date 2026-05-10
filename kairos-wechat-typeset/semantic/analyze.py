@@ -21,6 +21,12 @@ def text_of(block: Dict[str, Any]) -> str:
     block_type = block.get("type")
     if block_type in {"paragraph", "heading", "code"}:
         return str(block.get("text", ""))
+    if block_type == "component":
+        if block.get("name") == "figure":
+            return f"{block.get('alt', '')} {block.get('caption', '')}".strip()
+        if block.get("name") == "soft-list":
+            return " ".join(str(item.get("text", "")) for item in block.get("items", []))
+        return str(block.get("text", ""))
     if block_type == "quote":
         return " ".join(str(line) for line in block.get("lines", []))
     if block_type == "list":
@@ -74,6 +80,16 @@ def analyze_block(block: Dict[str, Any], index: int, total: int) -> Dict[str, An
         importance = "medium"
     elif block_type == "divider":
         intent = "breathing"
+    elif block_type == "component":
+        component_name = str(block.get("name", ""))
+        intent = {
+            "lead": "opening",
+            "pullquote": "quote",
+            "figure": "media",
+            "soft-list": "structured",
+            "closing-note": "closing",
+        }.get(component_name, "body")
+        importance = "high" if component_name in {"lead", "pullquote"} else "medium"
     elif block_type == "paragraph":
         if full_emphasis or highlight_count or re.search(r"(关键|核心|真正|必须|注意|结论|因此|所以)", text):
             intent = "insight"

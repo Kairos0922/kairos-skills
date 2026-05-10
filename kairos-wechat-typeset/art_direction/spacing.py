@@ -50,6 +50,23 @@ def resolve_spacing(
         level = int(block.get("level", 2))
         top = 0 if level == 1 else heading_top
         bottom = heading_bottom
+    elif block_type == "component":
+        component_name = str(block.get("name", ""))
+        if component_name == "lead":
+            top = 0
+            bottom = paragraph + 2
+        elif component_name == "pullquote":
+            top = quote_breathing
+            bottom = quote_breathing
+        elif component_name == "figure":
+            top = max(18, paragraph)
+            bottom = max(20, paragraph)
+        elif component_name == "soft-list":
+            top = 0
+            bottom = max(12, paragraph - 8)
+        elif component_name == "closing-note":
+            top = max(22, paragraph + 2)
+            bottom = max(16, paragraph - 2)
     elif block_type == "quote":
         top = quote_breathing
         bottom = quote_breathing
@@ -65,7 +82,7 @@ def resolve_spacing(
     elif block_type == "paragraph" and semantic.get("intent") == "insight":
         bottom = paragraph + 4
 
-    if density >= 0.76 and block_type in {"paragraph", "list"}:
+    if density >= 0.76 and block_type in {"paragraph", "list", "component"}:
         bottom += 8
     if previous and previous.get("type") == "heading" and block_type == "paragraph":
         top = 0

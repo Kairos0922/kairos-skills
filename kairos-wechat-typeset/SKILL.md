@@ -28,14 +28,14 @@ metadata:
 
 高级感来自人工定义的视觉系统，不来自 AI 即兴发挥。
 
-- LLM：只做编辑判断，包括结构、标题层级、重点句、引用、列表、分隔节奏。
+- LLM：只做编辑判断，包括结构、标题层级、重点句、引用、列表、分隔节奏，以及少量受控 Kairos 组件语法。
 - Semantic System：输出 importance、intent、density、should_split 等语义信号。
 - Art Direction Layer：根据主题哲学和文章类型解析 spacing_scale、emphasis_mode、visual_density、section_rhythm。
 - Rhythm Engine：控制阅读节奏、breathing space、visual momentum。
 - Layout Resolver / Renderer：把 layout decision 编译成微信兼容 inline HTML。
 - Verify：同时检查 HTML 兼容性和 editorial quality。
 
-LLM 不得直接生成 HTML、CSS、`style`、`class`、自定义标签或用户自定义主题。
+LLM 不得直接生成 HTML、CSS、`style`、`class`、任意自定义标签或用户自定义主题。Markdown 无法稳定表达的正文杂志组件，必须使用白名单 Kairos 组件语法，由 renderer 编译成主题组件。
 
 ## System Architecture / 系统架构
 
@@ -73,8 +73,8 @@ Versioned output under ~/.wechat-typeset
 2. 系统将输入归一化为 Markdown。非 Markdown 内容只做最小 Markdown 标准化，不新增事实。
 3. 询问用户是否需要优化布局。
 4. 如果用户选择“是”，由 agent/LLM 先生成规范化布局 Markdown：
-   - LLM 只输出标准 Markdown。
-   - 可使用 `## 01 标题`、`==重点==`、`> [!NOTE]`、分割线、图片、列表、表格。
+   - LLM 只输出 Markdown 与白名单 Kairos 组件语法。
+   - 可使用 `## 01 标题`、`==重点==`、`> [!NOTE]`、分割线、图片、列表、表格，以及 `:::lead`、`:::pullquote`、`:::figure`、`:::soft-list`、`:::closing-note`。
    - 不新增事实，不改写用户核心观点，不生成 HTML。
    - 输出 `layout.md`，并通过 Markdown 合约验证。
    - 脚本的 `--optimize-layout yes` 只负责保存和验证 `layout.md`；没有外部布局稿时只做 deterministic normalization fallback，不能替代人工/LLM 编辑判断。
@@ -176,6 +176,36 @@ article.md
 - `## 01 标题`、`## 1. 标题`、`## 02｜标题` 会渲染成主题化章节数字 + 章节标题。
 - `==需要强调的句子==` 会渲染成主题强调样式。
 - `> [!NOTE]`、`> [!WARNING]`、`> [!TIP]` 会渲染成语义提示块。
+
+## Kairos Components / 受控正文组件
+
+普通 Markdown 负责文章语义；Kairos 组件负责 Markdown 难以稳定表达的公众号正文版式。组件只表达语义，不允许 HTML、CSS、`style`、`class` 或任意自定义标签。
+
+```markdown
+:::lead
+导语段，用于正文开头建立文章气息。
+:::
+
+:::pullquote
+计白当黑，数虚当实。
+:::
+
+:::figure
+![图片替代文字](https://example.com/image.png)
+图注文字。
+:::
+
+:::soft-list
+- 第一条
+- 第二条
+:::
+
+:::closing-note
+安静的结尾收束语。
+:::
+```
+
+平台边界：微信公众号只能控制正文，不能把文章标题、封面图、账号信息、菜单、外部页面背景当作主题表面。`song` 不使用印章、自由定位或封面式大标题组件。
 
 ## Commands / 命令
 

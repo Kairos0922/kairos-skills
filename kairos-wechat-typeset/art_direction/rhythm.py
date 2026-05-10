@@ -33,6 +33,8 @@ def build_rhythm_plan(
 
 def component_for(block: Dict[str, Any], semantic: Dict[str, Any]) -> str:
     block_type = str(block.get("type"))
+    if block_type == "component":
+        return str(block.get("name", "component")).title().replace("-", "")
     if block_type == "paragraph" and semantic.get("intent") == "insight":
         return "Insight"
     return {
@@ -57,4 +59,3 @@ def variant_for(theme: Dict[str, Any], block: Dict[str, Any], semantic: Dict[str
         if intent and str(intent) in str(candidate):
             return str(candidate)
     return str(allowed[0])
-

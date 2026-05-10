@@ -23,14 +23,23 @@
 ## Components
 
 - H1: magazine opening title, left aligned, separated by whitespace rather than a rule.
-- H2 numeric: compact section number plus strong section title; hierarchy comes from spacing, not underlines.
-- H3-H6: degrade to restrained subsection headings, not repeated H2 blocks.
+- H2 numeric: Chinese section label in the form `一、标题`; hierarchy comes from weight and rhythm, not underlines.
+- H3-H6: degrade to restrained subsection headings without left rules or repeated H2 blocks.
 - Paragraph: comfortable line-height, low contrast text, mobile-first rhythm.
-- Quote: transparent paper, thin vertical rule, no filled card.
+- Lead: opening body paragraph for the editable article body; it creates magazine tone without relying on the WeChat article title area.
+- Quote: light paper surface plus restrained cinnabar left rule, matching the reference pullquote language.
 - Callout: same quote system with a tiny Chinese label such as 注、笺、警.
+- Pullquote: editorial excerpt with one light paper surface and a restrained cinnabar left rule.
+- Figure: single-column image plus centered caption; image mood comes from the source asset, not decorative CSS.
+- Lists: normal unordered, ordered, task-list fallback, and soft-list blocks share the cinnabar hollow-circle marker in `song` to keep the reference rhythm unified.
 - Code: proof-sheet block with fine top/bottom rules and a small label.
 - Table: stacked ledger entries with soft left alignment, not rounded cards or repeated field separators.
-- Divider: breathing pause with a tiny ink dot, not decorative horizontal rules.
+- Divider: short left/right hairlines with one soft central mark; use sparingly so the article does not become line-heavy.
+- Closing note: quiet centered ending paragraph for article-body closure.
+
+## Editable Body Boundary
+
+WeChat only lets this skill control the article body. Do not treat platform title, cover image, account header, menus, or external page chrome as theme surface. If a reference image shows a magazine opening, translate only the body-safe parts into components: lead paragraph, figure, pullquote, soft list, divider, and closing note. Do not add seals or free-positioned decorations.
 
 ## Mobile Rules
 

@@ -41,7 +41,7 @@ def verify_editorial_blocks(blocks: Sequence[Dict[str, Any]], theme: Dict[str, A
             consecutive_emphasis = 0
             continue
 
-        if block_type in {"divider", "quote", "list"}:
+        if block_type in {"divider", "quote", "list", "component"}:
             section_has_breathing = True
 
         section_density += float(semantic.get("density", 0.0))

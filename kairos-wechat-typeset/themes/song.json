@@ -69,6 +69,11 @@
   },
   "components": {
     "paragraph": { "variants": ["default", "lead", "quiet"] },
+    "lead": { "variants": ["editorial"] },
+    "pullquote": { "variants": ["literary"] },
+    "figure": { "variants": ["captioned"] },
+    "softlist": { "variants": ["circle"] },
+    "closingnote": { "variants": ["quiet"] },
     "insight": { "variants": ["underlined", "sentence", "closing"] },
     "quote": { "variants": ["literary", "note", "warning"] },
     "summary": { "variants": ["quiet", "numbered", "closing"] },

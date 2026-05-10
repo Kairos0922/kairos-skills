@@ -34,8 +34,9 @@ Each JSON theme must define:
 Theme quality comes from a repeatable design pass, not one-off CSS edits.
 
 1. Define the theme thesis in `DESIGN.md`: audience, mood, typography, color limits, forbidden moves, and component language.
-2. Tune the deterministic tokens in `themes/<theme-id>.json`: fonts, ink, paper, one accent color, rhythm, shape, and component variants.
-3. Render the shared visual matrix:
+2. Decide whether the visual target is a normal Markdown block or a Kairos component. Markdown owns article semantics; components own body-safe magazine layout such as lead, pullquote, figure, soft-list, and closing-note.
+3. Tune the deterministic tokens in `themes/<theme-id>.json`: fonts, ink, paper, one accent color, rhythm, shape, and component variants.
+4. Render the shared visual matrix:
 
 ```bash
 python3 scripts/render.py \
@@ -45,11 +46,11 @@ python3 scripts/render.py \
   --verify
 ```
 
-4. If tokens are not enough, add small theme-specific renderer branches for existing components only.
-5. Promote the reviewed result into `goldens/<theme-id>-style.html`.
-6. Re-run HTML verification and inspect 390px and 430px mobile previews.
+5. If tokens are not enough, add small theme-specific renderer branches for existing components only.
+6. Promote the reviewed result into `goldens/<theme-id>-style.html`.
+7. Re-run HTML verification and inspect 390px and 430px mobile previews.
 
-Use the visual matrix to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, quote, NOTE/TIP/WARNING, image caption, code block, table fallback, divider, and escaped raw HTML.
+Use the visual matrix to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, quote, NOTE/TIP/WARNING, Kairos lead, pullquote, figure, soft-list, closing-note, image caption, code block, table fallback, divider, and escaped raw HTML.
 
 Run the visual audit after every polish pass:
 
@@ -77,6 +78,7 @@ Use these checks before accepting a theme:
 - Lines: count visible borders. Repeated underlines, table field rules, image-caption rules, and decorative divider lines quickly make a mobile article feel noisy.
 - Color: keep background fills rare. Prefer paper, ink, one accent, and subtle line color over multiple tinted surfaces.
 - Components: each block should have a role. If quote, code, table, and callout all look like similar boxes, the theme is not specific enough.
+- Platform boundary: WeChat body themes cannot control the article title, cover image, account header, menus, or external page chrome. Translate references into body-safe components instead of adding seals, free positioning, or cover-like decoration.
 - Mobile first: judge density at phone width. A spacing system that feels elegant on desktop can become fragmented on WeChat mobile.
 
 `song` is the reference example for an intentionally restrained theme: two font sizes, no gradients, minimal borders, compact mobile rhythm, and no decorative horizontal divider rules.

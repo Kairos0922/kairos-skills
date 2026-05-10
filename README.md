@@ -1,8 +1,8 @@
 # Kairos Skills
 
-Reusable skills for AI coding agents.
+Personal skill collection for AI coding agents.
 
-This repository contains self-contained skills that enhance AI coding agents with automated workflows, deterministic tools, and specialized domain capabilities.
+This repository is where I collect reusable skills from daily work. I plan and design the skills; AI agents help implement, verify, document, and maintain them. The goal is to keep each skill useful for my own workflow while making the repository clear enough for future AI agents and open-source users to understand quickly.
 
 ---
 ## Skills
@@ -11,6 +11,8 @@ This repository contains self-contained skills that enhance AI coding agents wit
 |-------------------------|-----------------------------------------------------------------------------|
 | [skill-autoresearch](./skill-autoresearch/) | Automatically optimize any agent skill through edit → eval → keep/revert loops |
 | [kairos-wechat-typeset](./kairos-wechat-typeset/) | Deterministic Markdown-to-WeChat editorial HTML typesetting |
+
+The machine-readable inventory lives in [`skills.json`](./skills.json).
 
 ---
 
@@ -21,6 +23,12 @@ This repository contains self-contained skills that enhance AI coding agents wit
 - Python 3.8+
 - Git
 - An AI coding agent that supports local skills
+
+### For AI Agents
+
+Start with [`AGENTS.md`](./AGENTS.md). It defines repository conventions, tool preferences, validation expectations, and the skill directory contract.
+
+Use [`skills.json`](./skills.json) as the fast inventory before opening individual skill folders.
 
 ### Quick Start
 
@@ -44,7 +52,9 @@ python3 scripts/render.py --theme song --input article.md --output article.html 
 
 ## Adding New Skills
 
-Each skill is self-contained with its own directory. Current repository includes:
+Each skill is self-contained with its own directory. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the full workflow.
+
+Current repository includes:
 
 ```text
 kairos-skills/
@@ -60,11 +70,13 @@ kairos-skills/
 
 ```text
 skill-name/
-├── SKILL.md            # Required: skill definition with YAML frontmatter
-├── README.md           # Required: human-readable documentation
-├── agents/             # Optional: sub-agent prompts
-├── scripts/            # Optional: executable scripts
-└── evals/              # Optional: test cases for optimization
+├── SKILL.md            # Required: machine-facing skill instructions
+├── README.md           # Required: human-facing documentation
+├── agents/             # Optional: role prompts
+├── scripts/            # Optional: deterministic helpers
+├── fixtures/           # Optional: stable test inputs
+├── goldens/            # Optional: curated expected outputs
+└── evals/              # Optional: automated evaluation cases
 ```
 
 ---

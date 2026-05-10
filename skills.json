@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "repository": "kairos-skills",
+  "purpose": "Personal reusable skill collection for AI coding agents.",
+  "skills": [
+    {
+      "id": "skill-autoresearch",
+      "path": "skill-autoresearch",
+      "status": "runnable",
+      "summary": "Automatically optimize agent skills through edit, eval, and keep/revert loops.",
+      "entrypoints": [
+        "SKILL.md",
+        "scripts/loop.py"
+      ],
+      "validation": [
+        "python3 -m py_compile scripts/loop.py scripts/harness.py scripts/aggregate.py scripts/decision.py scripts/watchdog.py"
+      ]
+    },
+    {
+      "id": "kairos-wechat-typeset",
+      "path": "kairos-wechat-typeset",
+      "status": "runnable",
+      "summary": "Deterministic Markdown-to-WeChat editorial HTML design system.",
+      "entrypoints": [
+        "SKILL.md",
+        "scripts/render.py",
+        "scripts/verify.py"
+      ],
+      "validation": [
+        "python3 scripts/render.py --list-themes",
+        "python3 scripts/verify.py --input goldens/song-style.html",
+        "python3 scripts/verify.py --input goldens/mimo-style.html",
+        "python3 scripts/verify.py --input goldens/claude-style.html"
+      ]
+    }
+  ]
+}

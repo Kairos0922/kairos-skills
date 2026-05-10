@@ -19,6 +19,16 @@ python3 scripts/typeset.py \
   --optimize-layout yes
 ```
 
+如果 agent 已经生成优化后的布局 Markdown：
+
+```bash
+python3 scripts/typeset.py \
+  --input article.md \
+  --layout-input layout.md \
+  --theme song \
+  --optimize-layout yes
+```
+
 不优化布局，直接使用当前 Markdown 渲染：
 
 ```bash
@@ -78,7 +88,7 @@ python3 scripts/render.py \
 
 - `layout.md`：可选，仅在用户选择优化布局时生成。
 - `output.html`：必选，排版后的 HTML。
-- `meta.json`：必选，记录版本、主题、输入来源、是否优化布局和产物路径。
+- `meta.json`：必选，记录版本、主题、输入来源、是否优化布局、layout mode、内容 hash 和产物路径。
 
 ## 架构
 
@@ -111,9 +121,12 @@ kairos-wechat-typeset/
 │   └── compiler.py
 ├── verify/
 │   ├── html_verify.py
+│   ├── markdown_verify.py
 │   └── editorial_verify.py
 └── scripts/
+    ├── typeset.py
     ├── render.py
+    ├── verify_markdown.py
     └── verify.py
 ```
 
@@ -140,9 +153,9 @@ Markdown path / Markdown text / non-Markdown text
 
 - LLM 只优化 Markdown：标题层级、段落节奏、重点句、引用、列表、分隔线。
 - LLM 不生成 HTML、不写 CSS、不新增自定义标签，不决定 typography、spacing、layout。
-- 脚本负责确定性渲染：解析 Markdown、加载主题、分析语义、解析节奏、输出全内联 HTML、执行验证。
+- 脚本负责确定性执行：输入归一化、保存/验证 `layout.md`、解析 Markdown、加载主题、分析语义、解析节奏、输出全内联 HTML、执行验证。
 
-如果用户不选择优化布局，脚本不输出 `layout.md`，直接使用当前 Markdown 渲染。如果输入不是 Markdown，脚本会先做最小 Markdown 标准化。
+如果用户不选择优化布局，脚本不输出 `layout.md`，直接使用当前 Markdown 渲染，并只做 safety verify。如果输入不是 Markdown，脚本会先做最小 Markdown 标准化。
 
 ## 支持的 Markdown
 
@@ -164,6 +177,8 @@ python3 scripts/verify.py \
 ```
 
 验证项包括：无 `<style>`、无 `class=`、无外部 CSS、无脚本、无原生宽表格、图片移动端安全，以及 heading 不跳级、连续长段不超过 3、连续强强调不超过 2、高密度区块必须有 breathing。
+
+完整工作流 `scripts/typeset.py` 会在渲染后自动执行 HTML 和 editorial verify。
 
 验证布局 Markdown：
 

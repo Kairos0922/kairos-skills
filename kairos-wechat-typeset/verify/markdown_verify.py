@@ -1,4 +1,4 @@
-"""Markdown contract verification for layout-optimized WeChat articles."""
+"""Markdown verification for WeChat article inputs and layout contracts."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ STYLE_TOKEN_RE = re.compile(r"\b(style|class)\s*=", re.IGNORECASE)
 HIGHLIGHT_RE = re.compile(r"==.+?==", re.DOTALL)
 
 
-def verify_markdown_text(markdown: str, blocks: Sequence[Dict[str, Any]]) -> List[str]:
+def verify_markdown_safety(markdown: str) -> List[str]:
     findings: List[str] = []
     lowered = markdown.lower()
 
@@ -26,7 +26,11 @@ def verify_markdown_text(markdown: str, blocks: Sequence[Dict[str, Any]]) -> Lis
         findings.append("Markdown must not contain style blocks.")
     if "<script" in lowered or "</script" in lowered:
         findings.append("Markdown must not contain scripts.")
+    return findings
 
+
+def verify_markdown_text(markdown: str, blocks: Sequence[Dict[str, Any]]) -> List[str]:
+    findings = verify_markdown_safety(markdown)
     findings.extend(heading_hierarchy_findings(blocks))
     findings.extend(_highlight_frequency_findings(markdown))
     findings.extend(_block_contract_findings(blocks))

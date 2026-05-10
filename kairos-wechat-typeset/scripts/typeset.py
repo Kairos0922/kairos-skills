@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -18,14 +19,50 @@ from render import (
     parse_blocks,
     render_markdown_text,
     strip_frontmatter,
+    verify_html,
 )
+from verify.editorial_verify import verify_editorial_blocks
 from verify.markdown_verify import verify_markdown_text
+from verify.markdown_verify import verify_markdown_safety
 
 
 OUTPUT_ROOT = Path.home() / ".wechat-typeset"
 HTML_NAME = "output.html"
 LAYOUT_NAME = "layout.md"
 META_NAME = "meta.json"
+SKILL_VERSION = "2.1"
+SMOKE_MARKDOWN = """---
+title: "AI 产品发布复盘"
+---
+
+# AI 产品发布复盘
+
+过去一年，AI 产品的竞争从“模型能力”逐渐转向“可被普通用户感知的体验”。
+
+一个功能是否先进，已经不能只看 benchmark，而要看它是否能被自然地纳入日常工作。
+
+==真正影响留存的，往往不是一次惊艳演示，而是用户第二天还愿不愿意打开。==
+
+## 01 入口：让复杂能力变得可接近
+
+好的入口不是把全部能力铺开，而是给用户一个明确的第一步。
+
+> [!NOTE] 入口设计要服务于心智建模
+> 用户第一次使用时，最需要的是一个能立刻成功的动作。
+
+- 明确主任务，减少并列入口。
+- 用示例承接陌生概念。
+
+| 阶段 | 用户关心 | 界面反馈 |
+| --- | --- | --- |
+| 输入 | 是否理解意图 | 摘要与目标 |
+| 完成 | 是否可信 | 引用与下一步 |
+
+```python
+def ready(result):
+    return result.is_structured
+```
+"""
 
 
 def parse_args() -> argparse.Namespace:
@@ -33,6 +70,10 @@ def parse_args() -> argparse.Namespace:
     input_group = parser.add_mutually_exclusive_group(required=False)
     input_group.add_argument("--input", help="Path to source content.")
     input_group.add_argument("--content", help="Source content text.")
+    parser.add_argument(
+        "--layout-input",
+        help="Path to agent/user-optimized layout Markdown. Used only with --optimize-layout yes.",
+    )
     parser.add_argument("--theme", help="Registered built-in theme id.")
     parser.add_argument(
         "--optimize-layout",
@@ -93,6 +134,12 @@ def source_from_args(args: argparse.Namespace) -> Tuple[str, str, Optional[Path]
     return str(args.content or ""), "content", None
 
 
+def content_hash(text: Optional[str]) -> Optional[str]:
+    if text is None:
+        return None
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
 def looks_like_markdown(text: str) -> bool:
     return bool(
         re.search(
@@ -130,8 +177,8 @@ def minimal_markdown(text: str, title: Optional[str] = None) -> str:
     return "\n\n".join(output).strip() + "\n"
 
 
-def optimized_layout_markdown(markdown: str, title: Optional[str] = None) -> str:
-    """Create deterministic layout Markdown without changing article facts."""
+def normalized_layout_markdown(markdown: str, title: Optional[str] = None) -> str:
+    """Create deterministic contract-friendly Markdown; this is not editorial optimization."""
 
     frontmatter_title, body = strip_frontmatter(markdown)
     blocks = parse_blocks(body)
@@ -241,6 +288,10 @@ def write_meta(
     source_path: Optional[Path],
     title: str,
     fragment_only: bool,
+    source_hash: str,
+    layout_hash: Optional[str],
+    html_hash: str,
+    layout_mode: str,
 ) -> None:
     meta: Dict[str, Any] = {
         "version": version,
@@ -251,6 +302,12 @@ def write_meta(
         "title": title,
         "created_at": datetime.now(timezone.utc).astimezone().isoformat(),
         "fragment_only": fragment_only,
+        "skill_version": SKILL_VERSION,
+        "renderer": "scripts/render.py",
+        "source_hash": source_hash,
+        "layout_hash": layout_hash,
+        "html_hash": html_hash,
+        "layout_mode": layout_mode,
         "outputs": {
             "layout_markdown": LAYOUT_NAME if layout_optimized else None,
             "html": HTML_NAME,
@@ -278,13 +335,44 @@ def resolve_theme(args: argparse.Namespace) -> str:
     return prompt_choice("Choose a built-in theme", theme_ids, theme_ids[0])
 
 
+def resolve_render_source(normalized: str, args: argparse.Namespace, layout_optimized: bool) -> Tuple[str, str]:
+    if not layout_optimized:
+        return normalized, "preserve"
+    if args.layout_input:
+        layout_path = Path(args.layout_input).expanduser().resolve()
+        return layout_path.read_text(encoding="utf-8"), "provided"
+    return normalized_layout_markdown(normalized, title=args.title), "normalized-fallback"
+
+
+def verify_workflow_markdown(markdown: str, layout_optimized: bool) -> None:
+    body = strip_frontmatter(markdown)[1]
+    blocks = parse_blocks(body)
+    findings = verify_markdown_text(body, blocks) if layout_optimized else verify_markdown_safety(body)
+    if findings:
+        for finding in findings:
+            print(f"VERIFY: {finding}", file=sys.stderr)
+        raise SystemExit(1)
+
+
+def verify_rendered_document(document: str, markdown: str, theme_id: str, fragment_only: bool) -> None:
+    theme = load_theme(theme_id)
+    body = strip_frontmatter(markdown)[1]
+    blocks = parse_blocks(body)
+    findings = verify_html(document, fragment_only)
+    findings.extend(verify_editorial_blocks(blocks, theme))
+    if findings:
+        for finding in findings:
+            print(f"VERIFY: {finding}", file=sys.stderr)
+        raise SystemExit(1)
+
+
 def main() -> None:
     args = parse_args()
     if args.list_themes:
         list_themes()
         return
     if args.check:
-        args.input = str(Path(__file__).resolve().parents[1] / "fixtures" / "theme-flow-check.md")
+        args.content = SMOKE_MARKDOWN
         args.theme = args.theme or "song"
         args.optimize_layout = args.optimize_layout or "yes"
         args.output_root = args.output_root or str(Path(tempfile.gettempdir()) / "kairos-typeset-check")
@@ -296,13 +384,8 @@ def main() -> None:
     layout_optimized = resolve_layout_choice(args)
 
     normalized = minimal_markdown(source_text, title=args.title)
-    render_source = optimized_layout_markdown(normalized, title=args.title) if layout_optimized else normalized
-    blocks = parse_blocks(strip_frontmatter(render_source)[1])
-    findings = verify_markdown_text(strip_frontmatter(render_source)[1], blocks)
-    if findings:
-        for finding in findings:
-            print(f"VERIFY: {finding}", file=sys.stderr)
-        raise SystemExit(1)
+    render_source, layout_mode = resolve_render_source(normalized, args, layout_optimized)
+    verify_workflow_markdown(render_source, layout_optimized)
 
     title = title_from_markdown(render_source, args.title or (source_path.stem if source_path else "wechat-article"))
     output_root = Path(args.output_root).expanduser() if args.output_root else OUTPUT_ROOT
@@ -322,6 +405,7 @@ def main() -> None:
         theme=theme,
         fragment_only=args.fragment_only,
     )
+    verify_rendered_document(document, render_source, theme_id, args.fragment_only)
     output_html.write_text(document, encoding="utf-8")
     write_meta(
         version_dir / META_NAME,
@@ -332,6 +416,10 @@ def main() -> None:
         source_path=source_path,
         title=title,
         fragment_only=args.fragment_only,
+        source_hash=content_hash(source_text) or "",
+        layout_hash=content_hash(render_source) if layout_optimized else None,
+        html_hash=content_hash(document) or "",
+        layout_mode=layout_mode,
     )
 
     print(f"Created {version_dir}")

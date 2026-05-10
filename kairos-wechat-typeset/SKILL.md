@@ -72,12 +72,13 @@ Versioned output under ~/.wechat-typeset
 1. 用户提供 Markdown 文件路径、Markdown 内容，或非 Markdown 内容。
 2. 系统将输入归一化为 Markdown。非 Markdown 内容只做最小 Markdown 标准化，不新增事实。
 3. 询问用户是否需要优化布局。
-4. 如果用户选择“是”，先生成规范化布局 Markdown：
+4. 如果用户选择“是”，由 agent/LLM 先生成规范化布局 Markdown：
    - LLM 只输出标准 Markdown。
    - 可使用 `## 01 标题`、`==重点==`、`> [!NOTE]`、分割线、图片、列表、表格。
    - 不新增事实，不改写用户核心观点，不生成 HTML。
    - 输出 `layout.md`，并通过 Markdown 合约验证。
-5. 如果用户选择“否”，不生成 `layout.md`，直接使用当前 Markdown 进入渲染。
+   - 脚本的 `--optimize-layout yes` 只负责保存和验证 `layout.md`；没有外部布局稿时只做 deterministic normalization fallback，不能替代人工/LLM 编辑判断。
+5. 如果用户选择“否”，不生成 `layout.md`，直接使用当前 Markdown 进入渲染，只执行安全验证。
 6. 询问用户选择哪个内置主题。主题只能来自 `themes/registry.json`，不得让用户提供 CSS、颜色、模板或主题文件。
 7. 执行 semantic analysis、art direction、rhythm strategy 和 layout resolver。
 8. 用脚本渲染 HTML，并运行 Markdown / HTML / editorial verify。
@@ -91,7 +92,7 @@ Versioned output under ~/.wechat-typeset
 - 可选：`layout.md`，仅在用户选择优化布局时输出。
 - 必选：`output.html`，主题化排版后的 HTML 文件。
 
-每次运行还会输出 `meta.json`，用于记录版本、主题、输入来源、是否优化布局和产物路径。用户产物必须写入跨平台用户目录：
+每次运行还会输出 `meta.json`，用于记录版本、主题、输入来源、是否优化布局、layout mode、内容 hash 和产物路径。用户产物必须写入跨平台用户目录：
 
 ```text
 ~/.wechat-typeset/
@@ -187,6 +188,16 @@ python3 scripts/typeset.py \
   --optimize-layout yes
 ```
 
+如果 agent 已经生成优化后的 Markdown，可显式传入：
+
+```bash
+python3 scripts/typeset.py \
+  --input article.md \
+  --layout-input layout.md \
+  --theme song \
+  --optimize-layout yes
+```
+
 非交互式完整工作流：
 
 ```bash
@@ -243,7 +254,8 @@ python3 scripts/verify_markdown.py \
 - 无原生 `<table>`、`<ul>`、`<ol>`
 - 图片必须 `max-width: 100%`
 - 原始 HTML 必须被转义，不能透传
-- 布局 Markdown 禁止 raw HTML、`style=`、`class=`、`<script>`
+- 所有输入都必须通过 Markdown safety verify：禁止 raw HTML、`style=`、`class=`、`<script>`
+- `layout.md` 还必须通过 layout contract verify：heading 不跳级、重点不过量、段落不过长
 - 移动端 390px / 430px 无横向滚动风险
 - 连续长 paragraph <= 3
 - 连续 emphasis <= 2

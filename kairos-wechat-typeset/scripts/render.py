@@ -977,6 +977,15 @@ class Renderer:
             escaped = escaped.replace(placeholder_token(index), fragment)
         return escaped
 
+    def render_heading_inline(self, text: str) -> str:
+        rendered = self.render_inline(text)
+        if self.is_theme("song"):
+            rendered = rendered.replace(
+                f"font-size: {self.t('body_size')};",
+                f"font-size: {self.t('section_title_size')};",
+            )
+        return rendered
+
     def render_paragraph(self, text: str, layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("paragraph_gap", 22))
         strong_match = FULL_STRONG_RE.match(text)
@@ -991,7 +1000,7 @@ class Renderer:
         spacing = spacing_from_layout(layout, self.rhythm("heading_bottom", 24))
         stripped = text.strip()
         if level == 1:
-            return [f'<p style="{self.title_p(spacing)}">{self.render_inline(stripped)}</p>']
+            return [f'<p style="{self.title_p(spacing)}">{self.render_heading_inline(stripped)}</p>']
 
         numeric_match = NUMERIC_SECTION_RE.match(stripped)
         if numeric_match:
@@ -1001,15 +1010,15 @@ class Renderer:
                 label = self.chinese_section_label(number)
                 return [
                     f'<p style="{self.section_num_p(spacing["top"])}">'
-                    f'{html.escape(label)}、{self.render_inline(title)}</p>'
+                    f'{html.escape(label)}、{self.render_heading_inline(title)}</p>'
                 ]
             number_label = f"SECTION {number}" if self.is_theme("mimo") else number
             return [
                 f'<p style="{self.section_num_p(spacing["top"])}">{html.escape(number_label)}</p>',
-                f'<p style="{self.section_title_p(spacing["bottom"])}">{self.render_inline(title)}</p>',
+                f'<p style="{self.section_title_p(spacing["bottom"])}">{self.render_heading_inline(title)}</p>',
             ]
 
-        return [f'<p style="{self.subtitle_p(spacing)}">{self.render_inline(stripped)}</p>']
+        return [f'<p style="{self.subtitle_p(spacing)}">{self.render_heading_inline(stripped)}</p>']
 
     def render_quote(self, lines: Sequence[str], layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("quote_breathing", 34))

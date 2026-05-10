@@ -7,7 +7,7 @@ Themes are developer-maintained design systems. Users select one registered buil
 1. Create `themes/<theme-id>/DESIGN.md`.
 2. Create `themes/<theme-id>.json`.
 3. Add the theme to `themes/registry.json`.
-4. Render `fixtures/visual-matrix.md` with `--verify`.
+4. Render a real article fixture with `--verify`; for `song`, use `fixtures/agent-skills-technical-article.md`.
 5. Compare the output against the nearest `goldens/` reference.
 6. Review mobile output at 390px and 430px.
 
@@ -36,13 +36,13 @@ Theme quality comes from a repeatable design pass, not one-off CSS edits.
 1. Define the theme thesis in `DESIGN.md`: audience, mood, typography, color limits, forbidden moves, and component language.
 2. Decide whether the visual target is a normal Markdown block or a Kairos component. Markdown owns article semantics; components own body-safe magazine layout such as lead, pullquote, figure, soft-list, and closing-note.
 3. Tune the deterministic tokens in `themes/<theme-id>.json`: fonts, ink, paper, one accent color, rhythm, shape, and component variants.
-4. Render the shared visual matrix:
+4. Render the theme's real article fixture:
 
 ```bash
 python3 scripts/render.py \
   --theme <theme-id> \
-  --input fixtures/visual-matrix.md \
-  --output /tmp/<theme-id>-visual-matrix.html \
+  --input fixtures/<theme-id>-article.md \
+  --output /tmp/<theme-id>-article.html \
   --verify
 ```
 
@@ -50,7 +50,9 @@ python3 scripts/render.py \
 6. Promote the reviewed result into `goldens/<theme-id>-style.html`.
 7. Re-run HTML verification and inspect 390px and 430px mobile previews.
 
-Use the visual matrix to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, quote, NOTE/TIP/WARNING, Kairos lead, pullquote, figure, soft-list, closing-note, image caption, code block, table fallback, divider, and escaped raw HTML.
+Use a realistic article fixture to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, quote, NOTE/TIP/WARNING, Kairos lead, pullquote, figure, soft-list, closing-note, image caption, code block, table fallback, divider, and escaped raw HTML.
+
+`goldens/song-style.html` is rendered from `fixtures/agent-skills-technical-article.md` so the Song reference stays close to a real technical article instead of a synthetic component matrix.
 
 Run the visual audit after every polish pass:
 

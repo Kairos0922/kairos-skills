@@ -302,7 +302,7 @@ python3 scripts/verify_markdown.py \
 
 这些文件是主题气质的参照，不是运行时模板。渲染器只能执行 layout decision，不得自由设计或动态创造样式。
 
-`fixtures/visual-matrix.md` 是开发者共享的主题打磨样例。新增或重打磨主题时，先用这份样例覆盖标题、段落、引用、代码、表格、分割符、图片、链接和安全转义，再把通过人工审核的结果提升为 golden。
+`fixtures/agent-skills-technical-article.md` 是 `song` 的标准技术文章样例。新增或重打磨主题时，使用对应真实文章 fixture 覆盖标题、段落、引用、代码、表格、分割符、图片、链接和安全转义，再把通过人工审核的结果提升为 golden。
 
 ## Developer Theme Extension / 开发者扩展
 
@@ -311,7 +311,7 @@ python3 scripts/verify_markdown.py \
 - `themes/<theme-id>/DESIGN.md`：给开发者看的设计规范。
 - `themes/<theme-id>.json`：给脚本读取的确定性 visual philosophy、token、rhythm、constraints。
 - `themes/registry.json`：唯一对用户暴露的主题索引。
-- `fixtures/visual-matrix.md`：开发者固定视觉矩阵，用于跨主题对照。
+- `fixtures/agent-skills-technical-article.md`：`song` 标准技术文章 golden 来源。
 - `scripts/audit_visual.py`：渲染后视觉库存审计，用于发现字号漂移、间距过大、边框过密和背景色过多。
 
-新增主题必须先使用 `fixtures/visual-matrix.md` 渲染、验证、对照 `goldens/` 的视觉标准并完成移动端预览，再加入 registry。用户运行时不能新增主题。
+新增主题必须先使用对应真实文章 fixture 渲染、验证、对照 `goldens/` 的视觉标准并完成移动端预览，再加入 registry。用户运行时不能新增主题。

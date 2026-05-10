@@ -57,4 +57,4 @@ WeChat only lets this skill control the article body. Do not treat platform titl
 - All styles inline.
 - No `<style>`, no CSS classes, no user theme overrides.
 - Theme changes must update both this file and `themes/song.json`.
-- Render `fixtures/visual-matrix.md` before accepting component changes.
+- Render `fixtures/agent-skills-technical-article.md` before accepting component changes.

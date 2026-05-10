@@ -1,107 +1,30 @@
 #!/usr/bin/env python3
-"""Render Markdown into WeChat-friendly HTML with inline styles only."""
+"""Render Markdown into theme-driven, WeChat-friendly HTML with inline styles only."""
 
 from __future__ import annotations
 
 import argparse
 import html
+import json
 import re
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 
-CJK_FONT_STACK = "'Songti SC', 'STSong', 'Noto Serif CJK SC', 'Source Han Serif SC', SimSun, serif"
-LATIN_FONT_STACK = "'Baskerville', 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif"
-MONO_FONT_STACK = "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
-CONTENT_WIDTH = 640
-BODY_STYLE = (
-    "margin: 0; padding: 24px 16px 42px 16px; background-color: #f5f0e8; "
-    "-webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;"
-)
-BASE_P = (
-    f"max-width: {CONTENT_WIDTH}px; margin: 0 auto 22px auto; font-family: {CJK_FONT_STACK}; "
-    "font-size: 15.5px; line-height: 1.98; color: #413932; text-align: left; letter-spacing: 0.015em;"
-)
-TITLE_P = (
-    f"max-width: {CONTENT_WIDTH}px; margin: 0 auto 34px auto; font-family: {CJK_FONT_STACK}; "
-    "font-size: 23px; line-height: 1.6; font-weight: 700; color: #231c17; text-align: left; letter-spacing: 0.035em;"
-)
-SECTION_NUM_P = (
-    f"max-width: {CONTENT_WIDTH}px; margin: 40px auto 8px auto; font-family: {LATIN_FONT_STACK}; "
-    "font-size: 38px; line-height: 1; font-weight: 400; letter-spacing: 0.1em; color: #d3c6b6; text-align: left;"
-)
-SECTION_TITLE_P = (
-    f"max-width: {CONTENT_WIDTH}px; margin: 0 auto 24px auto; font-family: {CJK_FONT_STACK}; "
-    "font-size: 15px; line-height: 1.88; font-weight: 700; color: #241d17; text-align: left; "
-    "border-bottom: 1px solid #d8ccbe; padding-bottom: 10px; letter-spacing: 0.05em;"
-)
-SUBTITLE_P = (
-    f"max-width: {CONTENT_WIDTH}px; margin: 36px auto 22px auto; font-family: {CJK_FONT_STACK}; "
-    "font-size: 15px; line-height: 1.88; font-weight: 700; color: #241d17; text-align: left; "
-    "border-bottom: 1px solid #dfd4c8; padding-bottom: 10px; letter-spacing: 0.04em;"
-)
-LIST_P = (
-    f"max-width: {CONTENT_WIDTH}px; margin: 0 auto 12px auto; font-family: {CJK_FONT_STACK}; "
-    "font-size: 15px; line-height: 1.96; color: #403831; text-align: left;"
-)
-QUOTE_P = (
-    f"display: block; padding: 18px 20px 18px 20px; font-family: {CJK_FONT_STACK}; "
-    "font-size: 15px; line-height: 1.95; text-align: left; background-color: #f3ede3; "
-    "border-left: 3px solid #c8b59f; border-radius: 14px; color: #5b534b;"
-)
-QUOTE_WRAP_P = f"max-width: {CONTENT_WIDTH}px; margin: 30px auto;"
-NOTE_P = QUOTE_P.replace("border-left: 3px solid #c8b59f;", "border-left: 3px solid #b7ad9f;")
-TIP_P = QUOTE_P.replace("border-left: 3px solid #c8b59f;", "border-left: 3px solid #07C160;")
-WARNING_P = (
-    f"display: block; padding: 18px 20px 18px 20px; font-family: {CJK_FONT_STACK}; "
-    "font-size: 15px; line-height: 1.95; text-align: left; background-color: #f7efe1; "
-    "border-left: 3px solid #c69245; border-radius: 14px; color: #6b5434;"
-)
-CODE_META_P = (
-    f"max-width: {CONTENT_WIDTH}px; margin: 34px auto 10px auto; font-family: {LATIN_FONT_STACK}; "
-    "font-size: 10.8px; line-height: 1.4; color: #8a8074; text-align: left; letter-spacing: 0.18em;"
-)
-CODE_P = (
-    f"display: block; padding: 18px 20px 18px 20px; font-family: {MONO_FONT_STACK}; "
-    "font-size: 12.5px; line-height: 1.86; color: #2f2a25; text-align: left; white-space: pre-wrap; "
-    "background-color: #f0e8dc; border: 1px solid #ddd2c2; border-radius: 14px;"
-)
-CODE_WRAP_P = f"max-width: {CONTENT_WIDTH}px; margin: 0 auto 32px auto;"
-TABLE_META_P = (
-    f"max-width: {CONTENT_WIDTH}px; margin: 34px auto 12px auto; font-family: {LATIN_FONT_STACK}; "
-    "font-size: 11.3px; line-height: 1.4; color: #8a8074; text-align: left; letter-spacing: 0.16em;"
-)
-TABLE_CARD_P = (
-    f"display: block; padding: 17px 20px 17px 20px; font-family: {CJK_FONT_STACK}; "
-    "font-size: 15px; line-height: 1.95; color: #403831; text-align: left; background-color: #f3ede3; "
-    "border: 1px solid #ddd2c3; border-radius: 14px;"
-)
-TABLE_WRAP_P = f"max-width: {CONTENT_WIDTH}px; margin: 0 auto 14px auto;"
-TABLE_LABEL_STYLE = (
-    f"display: block; margin-bottom: 4px; font-family: {LATIN_FONT_STACK}; "
-    "font-size: 11.3px; line-height: 1.4; color: #877d72; letter-spacing: 0.14em;"
-)
-TABLE_VALUE_STYLE = "display: block; margin-bottom: 10px; color: #403831;"
+SKILL_ROOT = Path(__file__).resolve().parents[1]
+THEMES_ROOT = SKILL_ROOT / "themes"
+REGISTRY_PATH = THEMES_ROOT / "registry.json"
 
-INLINE_CODE_STYLE = (
-    f"font-family: {MONO_FONT_STACK}; font-size: 0.9em; background-color: #ece3d7; "
-    "color: #2f2c28; padding: 1px 6px; border-radius: 4px;"
-)
-LINK_STYLE = "color: #23201c; text-decoration: none; border-bottom: 1px solid #cfc3b4;"
-STRONG_STYLE = "font-weight: 700; color: #1d1813;"
-HIGHLIGHT_STYLE = "border-bottom: 1px dashed #07C160; font-weight: 600;"
-EM_STYLE = "font-style: italic; color: #595048;"
-STRIKE_STYLE = "text-decoration: line-through; color: #766d63;"
-LATIN_INLINE_STYLE = f"font-family: {LATIN_FONT_STACK}; font-size: 0.96em; letter-spacing: 0.02em; color: #322b25;"
-LIST_MARKER_STYLE = (
-    f"display: inline-block; width: 24px; margin-right: 10px; text-align: center; vertical-align: top; font-family: {LATIN_FONT_STACK}; "
-    "font-size: 12px; line-height: 1.96; color: #988c7f;"
-)
-ORDERED_MARKER_STYLE = (
-    f"display: inline-block; width: 24px; margin-right: 10px; text-align: center; vertical-align: top; font-family: {LATIN_FONT_STACK}; "
-    "font-size: 12px; line-height: 1.96; color: #938678; letter-spacing: 0.04em;"
-)
-LIST_CONTENT_STYLE = "display: inline-block; max-width: 88%; vertical-align: top;"
+if str(SKILL_ROOT) not in sys.path:
+    sys.path.insert(0, str(SKILL_ROOT))
+
+from art_direction.mood import select_art_direction
+from art_direction.rhythm import build_rhythm_plan
+from renderer.compiler import compile_plan
+from semantic.analyze import analyze_blocks
+from verify.editorial_verify import verify_editorial_blocks
+from verify.html_verify import verify_html
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
 UNORDERED_RE = re.compile(r"^(\s*)[-+*]\s+(.*)$")
@@ -112,22 +35,70 @@ NUMERIC_SECTION_RE = re.compile(r"^(?P<num>\d{1,2})(?:[.、:：|｜\-\s]+)(?P<ti
 FULL_STRONG_RE = re.compile(r"^\s*(\*\*|__)(.+?)\1\s*$", re.DOTALL)
 NOTE_RE = re.compile(r"^\[!(NOTE|TIP|WARNING|IMPORTANT|CAUTION)\]\s*(.*)$", re.IGNORECASE)
 LATIN_WORD_RE = r"[A-Za-z0-9]+(?:[A-Za-z0-9./_:+%#@-]*[A-Za-z0-9])?"
-LATIN_TEXT_RE = re.compile(rf"{LATIN_WORD_RE}(?: {LATIN_WORD_RE})*")
+
+
+def load_registry() -> Dict[str, Any]:
+    if not REGISTRY_PATH.exists():
+        raise FileNotFoundError(f"Theme registry not found: {REGISTRY_PATH}")
+    return json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+
+
+def available_themes() -> List[Dict[str, Any]]:
+    return list(load_registry().get("themes", []))
+
+
+def default_theme_id() -> str:
+    registry = load_registry()
+    return str(registry.get("default") or "song")
+
+
+def load_theme(theme_id: str) -> Dict[str, Any]:
+    registry = load_registry()
+    themes = {theme["id"]: theme for theme in registry.get("themes", [])}
+    if theme_id not in themes:
+        valid = ", ".join(sorted(themes))
+        raise ValueError(f"Unknown theme '{theme_id}'. Available themes: {valid}")
+
+    theme_path = THEMES_ROOT / themes[theme_id]["path"]
+    if not theme_path.exists():
+        raise FileNotFoundError(f"Registered theme file not found: {theme_path}")
+    theme = json.loads(theme_path.read_text(encoding="utf-8"))
+    if theme.get("id") != theme_id:
+        raise ValueError(f"Theme id mismatch in {theme_path}: expected {theme_id}")
+    return theme
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Render Markdown into WeChat-friendly HTML.")
-    parser.add_argument("--input", required=True, help="Path to the input markdown file.")
+    parser = argparse.ArgumentParser(description="Render Markdown into theme-driven WeChat HTML.")
+    parser.add_argument("--input", help="Path to the input markdown file.")
     parser.add_argument(
         "--output",
         help="Path to the output HTML file. Defaults to the input path with a .html suffix.",
     )
     parser.add_argument("--title", help="Optional document title override.")
     parser.add_argument(
+        "--theme",
+        default=default_theme_id(),
+        help="Registered theme id. Use --list-themes to see available themes.",
+    )
+    parser.add_argument(
+        "--list-themes",
+        action="store_true",
+        help="List registered themes and exit.",
+    )
+    parser.add_argument(
         "--fragment-only",
         action="store_true",
         help="Output only the body fragment instead of a full HTML document.",
     )
+    parser.add_argument(
+        "--verify",
+        action="store_true",
+        help="Verify the generated HTML for WeChat inline-style constraints.",
+    )
+    parser.add_argument("--article-type", help="Optional art-direction article type, e.g. tech or literary.")
+    parser.add_argument("--density", choices=["low", "medium", "high"], help="Optional art-direction density.")
+    parser.add_argument("--tone", help="Optional art-direction tone, e.g. analytical or literary.")
     return parser.parse_args()
 
 
@@ -166,6 +137,15 @@ def is_divider(line: str) -> bool:
     )
 
 
+def split_table_row(line: str) -> List[str]:
+    stripped = line.strip()
+    if stripped.startswith("|"):
+        stripped = stripped[1:]
+    if stripped.endswith("|"):
+        stripped = stripped[:-1]
+    return [cell.strip() for cell in stripped.split("|")]
+
+
 def is_table_start(lines: Sequence[str], index: int) -> bool:
     if index + 1 >= len(lines):
         return False
@@ -192,15 +172,6 @@ def is_block_start(lines: Sequence[str], index: int) -> bool:
             is_table_start(lines, index),
         )
     )
-
-
-def split_table_row(line: str) -> List[str]:
-    stripped = line.strip()
-    if stripped.startswith("|"):
-        stripped = stripped[1:]
-    if stripped.endswith("|"):
-        stripped = stripped[:-1]
-    return [cell.strip() for cell in stripped.split("|")]
 
 
 def is_cjk(char: str) -> bool:
@@ -236,6 +207,15 @@ def merge_lines(lines: Sequence[str]) -> str:
         else:
             merged += current_text
     return merged
+
+
+def spacing_from_layout(layout: Optional[Dict[str, Any]], fallback_bottom: int) -> Dict[str, int]:
+    if not layout:
+        return {"top": 0, "bottom": fallback_bottom}
+    return {
+        "top": int(layout.get("spacing_top", 0)),
+        "bottom": int(layout.get("spacing_bottom", fallback_bottom)),
+    }
 
 
 def parse_blocks(markdown: str) -> List[Dict[str, Any]]:
@@ -347,255 +327,459 @@ def placeholder_token(index: int) -> str:
     return chr(0xE000 + index)
 
 
-def render_image(alt_text: str, source: str) -> str:
-    safe_alt = html.escape(alt_text.strip())
-    safe_source = html.escape(source.strip(), quote=True)
-    image_html = (
-        f'<img src="{safe_source}" alt="{safe_alt}" '
-        'style="display: block; max-width: 100%; height: auto; margin: 14px auto; border-radius: 8px;" />'
-    )
-    if safe_alt:
-        image_html += (
-            f'<span style="display: block; width: 88%; margin: 12px auto 0 auto; padding-top: 9px; '
-            f'border-top: 1px solid #e3d9cc; font-size: 13px; line-height: 1.72; color: #877c70; '
-            f'text-align: center; letter-spacing: 0.03em; font-family: {CJK_FONT_STACK};">{balance_serif_text(safe_alt)}</span>'
+class Renderer:
+    def __init__(self, theme: Dict[str, Any], plans: Optional[Sequence[Dict[str, Any]]] = None):
+        self.theme = theme
+        self.width = int(theme.get("content_width", 640))
+        self.fonts = theme["fonts"]
+        self.colors = theme["colors"]
+        self.typography = theme["typography"]
+        self.shape = theme["shape"]
+        self.plans = list(plans or [])
+        self.latin_text_re = re.compile(rf"{LATIN_WORD_RE}(?: {LATIN_WORD_RE})*")
+
+    def c(self, key: str) -> str:
+        return self.colors[key]
+
+    def f(self, key: str) -> str:
+        return self.fonts[key]
+
+    def t(self, key: str) -> str:
+        return self.typography[key]
+
+    def rhythm(self, key: str, fallback: int) -> int:
+        value = self.theme.get("rhythm", {}).get(key, fallback)
+        if isinstance(value, (int, float)):
+            return int(round(value))
+        if isinstance(value, str) and value.endswith("px"):
+            try:
+                return int(round(float(value[:-2])))
+            except ValueError:
+                return fallback
+        return fallback
+
+    def margin(self, top: int, bottom: int) -> str:
+        return f"{top}px auto {bottom}px auto"
+
+    def radius(self, key: str = "radius") -> str:
+        return self.shape[key]
+
+    def body_style(self) -> str:
+        body = self.theme["body"]
+        return (
+            f"margin: 0; padding: {body['padding']}; background-color: {body['background']}; "
+            "-webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;"
         )
-    return image_html
 
+    def base_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
+        spacing = spacing or {"top": 0, "bottom": self.rhythm("paragraph_gap", 22)}
+        return (
+            f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
+            f"font-size: {self.t('body_size')}; line-height: {self.t('body_line')}; color: {self.c('text')}; "
+            "text-align: left; letter-spacing: 0;"
+        )
 
-def render_link(label: str, target: str) -> str:
-    safe_target = html.escape(target.strip(), quote=True)
-    return f'<a href="{safe_target}" style="{LINK_STYLE}">{render_inline(label)}</a>'
+    def title_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
+        spacing = spacing or {"top": 0, "bottom": 34}
+        return (
+            f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
+            f"font-size: {self.t('title_size')}; line-height: {self.t('title_line')}; font-weight: 700; "
+            f"color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
+        )
 
+    def section_num_p(self, top: int) -> str:
+        return (
+            f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
+            f"font-size: {self.t('section_num_size')}; line-height: 1; font-weight: 500; "
+            f"letter-spacing: 0.08em; color: {self.c('soft')}; text-align: left;"
+        )
 
-def apply_recursive_pattern(
-    text: str, pattern: re.Pattern[str], repl: Any, recursive: bool = True
-) -> str:
-    while True:
-        def replace(match: re.Match[str]) -> str:
-            inner = match.group(1)
-            return repl(render_inline(inner) if recursive else inner)
+    def section_title_p(self, bottom: int) -> str:
+        return (
+            f"max-width: {self.width}px; margin: 0 auto {bottom}px auto; font-family: {self.f('cjk')}; "
+            f"font-size: {self.t('section_title_size')}; line-height: 1.88; font-weight: 700; "
+            f"color: {self.c('ink')}; text-align: left; border-bottom: 1px solid {self.c('line')}; "
+            "padding-bottom: 10px; letter-spacing: 0;"
+        )
 
-        updated, count = pattern.subn(replace, text)
-        text = updated
-        if count == 0:
-            return text
+    def subtitle_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
+        spacing = spacing or {"top": 36, "bottom": 22}
+        return (
+            f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
+            f"font-size: {self.t('section_title_size')}; line-height: 1.88; font-weight: 700; "
+            f"color: {self.c('ink')}; text-align: left; border-bottom: 1px solid {self.c('line_soft')}; "
+            "padding-bottom: 10px; letter-spacing: 0;"
+        )
 
+    def list_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
+        spacing = spacing or {"top": 0, "bottom": 12}
+        return (
+            f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
+            f"font-size: {self.t('body_size')}; line-height: 1.92; color: {self.c('text')}; text-align: left;"
+        )
 
-def balance_serif_text(fragment: str) -> str:
-    # Only wrap plain text segments so we do not disturb existing tags or HTML entities.
-    segments = re.split(r"(<[^>]+>|&[A-Za-z0-9#]+;)", fragment)
-    balanced: List[str] = []
-    for segment in segments:
-        if not segment:
-            continue
-        if segment.startswith("<") and segment.endswith(">"):
-            balanced.append(segment)
-            continue
-        if segment.startswith("&") and segment.endswith(";"):
-            balanced.append(segment)
-            continue
-        balanced.append(
-            LATIN_TEXT_RE.sub(
-                lambda match: f'<span style="{LATIN_INLINE_STYLE}">{match.group(0)}</span>',
-                segment,
+    def quote_wrap_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
+        spacing = spacing or {"top": 30, "bottom": 30}
+        return f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])};"
+
+    def quote_p(self, border: str, background: Optional[str] = None, text: Optional[str] = None) -> str:
+        return (
+            f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('cjk')}; "
+            f"font-size: {self.t('body_size')}; line-height: 1.92; text-align: left; "
+            f"background-color: {background or self.c('surface')}; border-left: 3px solid {border}; "
+            f"border-radius: {self.radius()}; color: {text or self.c('text')};"
+        )
+
+    def code_meta_p(self, top: int) -> str:
+        return (
+            f"max-width: {self.width}px; margin: {top}px auto 10px auto; font-family: {self.f('mono')}; "
+            f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
+            "text-align: left; letter-spacing: 0.08em;"
+        )
+
+    def code_p(self) -> str:
+        return (
+            f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('mono')}; "
+            f"font-size: {self.t('code_size')}; line-height: 1.82; color: {self.c('code_text')}; "
+            f"text-align: left; white-space: pre-wrap; background-color: {self.c('surface_alt')}; "
+            f"border: 1px solid {self.c('line')}; border-radius: {self.radius()};"
+        )
+
+    def code_wrap_p(self, bottom: int) -> str:
+        return f"max-width: {self.width}px; margin: 0 auto {bottom}px auto;"
+
+    def table_meta_p(self, top: int) -> str:
+        return (
+            f"max-width: {self.width}px; margin: {top}px auto 12px auto; font-family: {self.f('mono')}; "
+            f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
+            "text-align: left; letter-spacing: 0.08em;"
+        )
+
+    def table_card_p(self) -> str:
+        return (
+            f"display: block; padding: 17px 20px 17px 20px; font-family: {self.f('cjk')}; "
+            f"font-size: {self.t('body_size')}; line-height: 1.9; color: {self.c('text')}; "
+            f"text-align: left; background-color: {self.c('surface')}; border: 1px solid {self.c('line')}; "
+            f"border-radius: {self.radius()};"
+        )
+
+    def table_wrap_p(self, bottom: int = 14) -> str:
+        return f"max-width: {self.width}px; margin: 0 auto {bottom}px auto;"
+
+    def table_label_style(self) -> str:
+        return (
+            f"display: block; margin-bottom: 4px; font-family: {self.f('mono')}; "
+            f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
+            "letter-spacing: 0.08em;"
+        )
+
+    def inline_code_style(self) -> str:
+        return (
+            f"font-family: {self.f('mono')}; font-size: 0.9em; background-color: {self.c('surface_alt')}; "
+            f"color: {self.c('code_text')}; padding: 1px 6px; border-radius: 4px;"
+        )
+
+    def link_style(self) -> str:
+        return f"color: {self.c('ink')}; text-decoration: none; border-bottom: 1px solid {self.c('accent')};"
+
+    def strong_style(self) -> str:
+        return f"font-weight: 700; color: {self.c('ink')};"
+
+    def highlight_style(self) -> str:
+        return f"border-bottom: 1px dashed {self.c('accent')}; font-weight: 600;"
+
+    def em_style(self) -> str:
+        return f"font-style: italic; color: {self.c('muted')};"
+
+    def strike_style(self) -> str:
+        return f"text-decoration: line-through; color: {self.c('muted')};"
+
+    def latin_inline_style(self) -> str:
+        return (
+            f"font-family: {self.f('latin')}; font-size: 0.96em; letter-spacing: 0.01em; "
+            f"color: {self.c('ink')};"
+        )
+
+    def marker_style(self, ordered: bool) -> str:
+        return (
+            f"display: inline-block; width: 24px; margin-right: 10px; text-align: center; "
+            f"vertical-align: top; font-family: {self.f('latin')}; font-size: 12px; line-height: 1.92; "
+            f"color: {self.c('muted')}; letter-spacing: {'0.04em' if ordered else '0'};"
+        )
+
+    def render_image(self, alt_text: str, source: str) -> str:
+        safe_alt = html.escape(alt_text.strip())
+        safe_source = html.escape(source.strip(), quote=True)
+        image_html = (
+            f'<img src="{safe_source}" alt="{safe_alt}" '
+            f'style="display: block; max-width: 100%; height: auto; margin: 14px auto; '
+            f'border-radius: {self.radius("image_radius")};" />'
+        )
+        if safe_alt:
+            image_html += (
+                f'<span style="display: block; width: 88%; margin: 12px auto 0 auto; padding-top: 9px; '
+                f'border-top: 1px solid {self.c("line_soft")}; font-size: {self.t("small_size")}; '
+                f'line-height: 1.72; color: {self.c("muted")}; text-align: center; letter-spacing: 0.02em; '
+                f'font-family: {self.f("cjk")};">{self.balance_latin_text(safe_alt)}</span>'
             )
-        )
-    return "".join(balanced)
+        return image_html
 
+    def render_link(self, label: str, target: str) -> str:
+        safe_target = html.escape(target.strip(), quote=True)
+        return f'<a href="{safe_target}" style="{self.link_style()}">{self.render_inline(label)}</a>'
 
-def render_inline(text: str) -> str:
-    placeholders: List[str] = []
+    def apply_recursive_pattern(
+        self, text: str, pattern: re.Pattern[str], repl: Any, recursive: bool = True
+    ) -> str:
+        while True:
+            def replace(match: re.Match[str]) -> str:
+                inner = match.group(1)
+                return repl(self.render_inline(inner) if recursive else inner)
 
-    def stash(fragment: str) -> str:
-        token = placeholder_token(len(placeholders))
-        placeholders.append(fragment)
-        return token
+            updated, count = pattern.subn(replace, text)
+            text = updated
+            if count == 0:
+                return text
 
-    working = text
-    working = re.sub(
-        r"`([^`]+)`",
-        lambda match: stash(
-            f'<span style="{INLINE_CODE_STYLE}">{html.escape(match.group(1))}</span>'
-        ),
-        working,
-    )
-    working = re.sub(
-        r"!\[([^\]]*)\]\(([^)]+)\)",
-        lambda match: stash(render_image(match.group(1), match.group(2))),
-        working,
-    )
-    working = re.sub(
-        r"\[([^\]]+)\]\(([^)]+)\)",
-        lambda match: stash(render_link(match.group(1), match.group(2))),
-        working,
-    )
+    def balance_latin_text(self, fragment: str) -> str:
+        segments = re.split(r"(<[^>]+>|&[A-Za-z0-9#]+;)", fragment)
+        balanced: List[str] = []
+        for segment in segments:
+            if not segment:
+                continue
+            if segment.startswith("<") and segment.endswith(">"):
+                balanced.append(segment)
+                continue
+            if segment.startswith("&") and segment.endswith(";"):
+                balanced.append(segment)
+                continue
+            balanced.append(
+                self.latin_text_re.sub(
+                    lambda match: f'<span style="{self.latin_inline_style()}">{match.group(0)}</span>',
+                    segment,
+                )
+            )
+        return "".join(balanced)
 
-    escaped = html.escape(working).replace("\n", "<br>")
-    escaped = apply_recursive_pattern(
-        escaped,
-        re.compile(r"==(.+?)==", re.DOTALL),
-        lambda inner: f'<span style="{HIGHLIGHT_STYLE}">{inner}</span>',
-    )
-    escaped = apply_recursive_pattern(
-        escaped,
-        re.compile(r"(?:\*\*|__)(.+?)(?:\*\*|__)", re.DOTALL),
-        lambda inner: f'<span style="{STRONG_STYLE}">{inner}</span>',
-    )
-    escaped = apply_recursive_pattern(
-        escaped,
-        re.compile(r"~~(.+?)~~", re.DOTALL),
-        lambda inner: f'<span style="{STRIKE_STYLE}">{inner}</span>',
-    )
-    escaped = apply_recursive_pattern(
-        escaped,
-        re.compile(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", re.DOTALL),
-        lambda inner: f'<span style="{EM_STYLE}">{inner}</span>',
-    )
-    escaped = apply_recursive_pattern(
-        escaped,
-        re.compile(r"(?<!_)_(?!_)(.+?)(?<!_)_(?!_)", re.DOTALL),
-        lambda inner: f'<span style="{EM_STYLE}">{inner}</span>',
-    )
-    escaped = balance_serif_text(escaped)
+    def render_inline(self, text: str) -> str:
+        placeholders: List[str] = []
 
-    for index, fragment in enumerate(placeholders):
-        escaped = escaped.replace(placeholder_token(index), fragment)
-    return escaped
+        def stash(fragment: str) -> str:
+            token = placeholder_token(len(placeholders))
+            placeholders.append(fragment)
+            return token
 
-
-def paragraph_style(extra: str = "") -> str:
-    return BASE_P if not extra else f"{BASE_P} {extra}"
-
-
-def render_paragraph(text: str) -> str:
-    strong_match = FULL_STRONG_RE.match(text)
-    if strong_match:
-        content = render_inline(strong_match.group(2).strip())
-        return f'<p style="{paragraph_style("font-weight: 700; color: #000; letter-spacing: 0.02em;")}">{content}</p>'
-    return f'<p style="{BASE_P}">{render_inline(text)}</p>'
-
-
-def render_heading(level: int, text: str) -> List[str]:
-    stripped = text.strip()
-    if level == 1:
-        return [
-            (
-                f'<p style="{TITLE_TOPLINE_P}"><span style="display: inline-block; width: 48px; '
-                'border-top: 1px solid #d9cec0;"></span></p>'
+        working = text
+        working = re.sub(
+            r"`([^`]+)`",
+            lambda match: stash(
+                f'<span style="{self.inline_code_style()}">{html.escape(match.group(1))}</span>'
             ),
-            f'<p style="{TITLE_P}">{render_inline(stripped)}</p>',
-        ]
+            working,
+        )
+        working = re.sub(
+            r"!\[([^\]]*)\]\(([^)]+)\)",
+            lambda match: stash(self.render_image(match.group(1), match.group(2))),
+            working,
+        )
+        working = re.sub(
+            r"\[([^\]]+)\]\(([^)]+)\)",
+            lambda match: stash(self.render_link(match.group(1), match.group(2))),
+            working,
+        )
 
-    numeric_match = NUMERIC_SECTION_RE.match(stripped)
-    if numeric_match:
-        number = numeric_match.group("num").zfill(2)
-        title = numeric_match.group("title").strip()
+        escaped = html.escape(working).replace("\n", "<br>")
+        escaped = self.apply_recursive_pattern(
+            escaped,
+            re.compile(r"==(.+?)==", re.DOTALL),
+            lambda inner: f'<span style="{self.highlight_style()}">{inner}</span>',
+        )
+        escaped = self.apply_recursive_pattern(
+            escaped,
+            re.compile(r"(?:\*\*|__)(.+?)(?:\*\*|__)", re.DOTALL),
+            lambda inner: f'<span style="{self.strong_style()}">{inner}</span>',
+        )
+        escaped = self.apply_recursive_pattern(
+            escaped,
+            re.compile(r"~~(.+?)~~", re.DOTALL),
+            lambda inner: f'<span style="{self.strike_style()}">{inner}</span>',
+        )
+        escaped = self.apply_recursive_pattern(
+            escaped,
+            re.compile(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", re.DOTALL),
+            lambda inner: f'<span style="{self.em_style()}">{inner}</span>',
+        )
+        escaped = self.apply_recursive_pattern(
+            escaped,
+            re.compile(r"(?<!_)_(?!_)(.+?)(?<!_)_(?!_)", re.DOTALL),
+            lambda inner: f'<span style="{self.em_style()}">{inner}</span>',
+        )
+        escaped = self.balance_latin_text(escaped)
+
+        for index, fragment in enumerate(placeholders):
+            escaped = escaped.replace(placeholder_token(index), fragment)
+        return escaped
+
+    def render_paragraph(self, text: str, layout: Optional[Dict[str, Any]] = None) -> str:
+        spacing = spacing_from_layout(layout, self.rhythm("paragraph_gap", 22))
+        strong_match = FULL_STRONG_RE.match(text)
+        if strong_match:
+            content = self.render_inline(strong_match.group(2).strip())
+            return (
+                f'<p style="{self.base_p(spacing)} font-weight: 700; color: {self.c("ink")};">{content}</p>'
+            )
+        return f'<p style="{self.base_p(spacing)}">{self.render_inline(text)}</p>'
+
+    def render_heading(self, level: int, text: str, layout: Optional[Dict[str, Any]] = None) -> List[str]:
+        spacing = spacing_from_layout(layout, self.rhythm("heading_bottom", 24))
+        stripped = text.strip()
+        if level == 1:
+            return [f'<p style="{self.title_p(spacing)}">{self.render_inline(stripped)}</p>']
+
+        numeric_match = NUMERIC_SECTION_RE.match(stripped)
+        if numeric_match:
+            number = numeric_match.group("num").zfill(2)
+            title = numeric_match.group("title").strip()
+            return [
+                f'<p style="{self.section_num_p(spacing["top"])}">{html.escape(number)}</p>',
+                f'<p style="{self.section_title_p(spacing["bottom"])}">{self.render_inline(title)}</p>',
+            ]
+
+        return [f'<p style="{self.subtitle_p(spacing)}">{self.render_inline(stripped)}</p>']
+
+    def render_quote(self, lines: Sequence[str], layout: Optional[Dict[str, Any]] = None) -> str:
+        spacing = spacing_from_layout(layout, self.rhythm("quote_breathing", 34))
+        cleaned = [line for line in lines if line.strip()]
+        quote_kind = "QUOTE"
+        border = self.c("line")
+        background = self.c("surface")
+        text_color = self.c("text")
+
+        if cleaned:
+            kind_match = NOTE_RE.match(cleaned[0].strip())
+            if kind_match:
+                quote_kind = kind_match.group(1).upper()
+                remainder = kind_match.group(2).strip()
+                cleaned = cleaned[1:]
+                if remainder:
+                    cleaned.insert(0, remainder)
+
+        if quote_kind == "TIP":
+            border = self.c("accent")
+        elif quote_kind == "WARNING":
+            border = self.c("warning")
+            background = self.c("warning_bg")
+        elif quote_kind in {"NOTE", "IMPORTANT", "CAUTION"}:
+            border = self.c("muted")
+
+        text = merge_lines(cleaned)
+        return (
+            f'<p style="{self.quote_wrap_p(spacing)}">'
+            f'<span style="{self.quote_p(border, background, text_color)}">{self.render_inline(text)}</span>'
+            "</p>"
+        )
+
+    def render_list(self, items: Sequence[Dict[str, Any]], ordered: bool, layout: Optional[Dict[str, Any]] = None) -> List[str]:
+        rendered = []
+        content_style = "display: inline-block; max-width: 88%; vertical-align: top;"
+        spacing = spacing_from_layout(layout, 12)
+        for index, item in enumerate(items):
+            marker = f"{item['number']}." if ordered else "•"
+            content = self.render_inline(item["text"])
+            item_spacing = {"top": spacing["top"] if index == 0 else 0, "bottom": spacing["bottom"]}
+            rendered.append(
+                f'<p style="{self.list_p(item_spacing)}"><span style="{self.marker_style(ordered)}">{html.escape(marker)}</span>'
+                f'<span style="{content_style}">{content}</span></p>'
+            )
+        return rendered
+
+    def render_code(self, text: str, language: str, layout: Optional[Dict[str, Any]] = None) -> List[str]:
+        spacing = spacing_from_layout(layout, 32)
+        label = html.escape(language.upper() if language else "CODE")
+        rule = (
+            f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
+            'margin: 0 10px 4px 0;"></span>'
+        )
         return [
-            f'<p style="{SECTION_NUM_P}">{html.escape(number)}</p>',
-            f'<p style="{SECTION_TITLE_P}">{render_inline(title)}</p>',
+            f'<p style="{self.code_meta_p(spacing["top"])}">{rule}{label}</p>',
+            f'<p style="{self.code_wrap_p(spacing["bottom"])}"><span style="{self.code_p()}">{html.escape(text)}</span></p>',
         ]
 
-    return [f'<p style="{SUBTITLE_P}">{render_inline(stripped)}</p>']
-
-
-def render_quote(lines: Sequence[str]) -> str:
-    cleaned = [line for line in lines if line.strip()]
-    quote_kind = "QUOTE"
-    style = QUOTE_P
-
-    if cleaned:
-        kind_match = NOTE_RE.match(cleaned[0].strip())
-        if kind_match:
-            quote_kind = kind_match.group(1).upper()
-            remainder = kind_match.group(2).strip()
-            cleaned = cleaned[1:]
-            if remainder:
-                cleaned.insert(0, remainder)
-
-    if quote_kind in {"NOTE", "IMPORTANT", "CAUTION"}:
-        style = NOTE_P
-    elif quote_kind == "TIP":
-        style = TIP_P
-    elif quote_kind == "WARNING":
-        style = WARNING_P
-
-    text = merge_lines(cleaned)
-    return f'<p style="{QUOTE_WRAP_P}"><span style="{style}">{render_inline(text)}</span></p>'
-
-
-def render_list(items: Sequence[Dict[str, Any]], ordered: bool) -> List[str]:
-    rendered = []
-    for item in items:
-        marker = f"{item['number']}." if ordered else "•"
-        content = render_inline(item["text"])
-        marker_style = ORDERED_MARKER_STYLE if ordered else LIST_MARKER_STYLE
-        rendered.append(
-            f'<p style="{LIST_P}"><span style="{marker_style}">{html.escape(marker)}</span>{content}</p>'
+    def render_table(self, header: Sequence[str], rows: Sequence[Sequence[str]], layout: Optional[Dict[str, Any]] = None) -> List[str]:
+        spacing = spacing_from_layout(layout, 20)
+        rule = (
+            f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
+            'margin: 0 10px 4px 0;"></span>'
         )
-    return rendered
+        rendered = [
+            f'<p style="{self.table_meta_p(spacing["top"])}">{rule}{" × ".join(self.render_inline(cell) for cell in header)}</p>'
+        ]
+        for row_index, row in enumerate(rows):
+            pairs: List[str] = []
+            for index, cell in enumerate(row):
+                label = header[index] if index < len(header) else f"Column {index + 1}"
+                value_style = (
+                    f"display: block; margin-bottom: 10px; color: {self.c('text')};"
+                    if index < len(row) - 1
+                    else f"display: block; color: {self.c('text')};"
+                )
+                pairs.append(f'<span style="{self.table_label_style()}">{self.render_inline(label)}</span>')
+                pairs.append(f'<span style="{value_style}">{self.render_inline(cell)}</span>')
+            rendered.append(
+                f'<p style="{self.table_wrap_p(spacing["bottom"] if row_index == len(rows) - 1 else 14)}"><span style="{self.table_card_p()}">{"".join(pairs)}</span></p>'
+            )
+        return rendered
 
-
-def render_code(text: str, language: str) -> List[str]:
-    label = html.escape(language.upper() if language else "CODE")
-    return [
-        (
-            f'<p style="{CODE_META_P}"><span style="display: inline-block; width: 28px; '
-            f'border-top: 1px solid #cfc3b4; margin: 0 10px 4px 0;"></span>{label}</p>'
-        ),
-        f'<p style="{CODE_WRAP_P}"><span style="{CODE_P}">{html.escape(text)}</span></p>',
-    ]
-
-
-def render_table(header: Sequence[str], rows: Sequence[Sequence[str]]) -> List[str]:
-    rendered = [
-        (
-            f'<p style="{TABLE_META_P}"><span style="display: inline-block; width: 28px; '
-            f'border-top: 1px solid #cfc3b4; margin: 0 10px 4px 0;"></span>'
-            f'{" × ".join(render_inline(cell) for cell in header)}</p>'
+    def render_divider(self, layout: Optional[Dict[str, Any]] = None) -> str:
+        spacing = spacing_from_layout(layout, self.rhythm("section_break", 42))
+        return (
+            f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; text-align: center; line-height: 1;">'
+            f'<span style="display: inline-block; width: 54px; border-top: 1px solid {self.c("line_soft")}; '
+            'vertical-align: middle;"></span>'
+            f'<span style="display: inline-block; margin: 0 12px; font-family: {self.f("latin")}; '
+            f'font-size: 10px; line-height: 1; color: {self.c("soft")}; letter-spacing: 0.28em; '
+            'vertical-align: middle;">··</span>'
+            f'<span style="display: inline-block; width: 54px; border-top: 1px solid {self.c("line_soft")}; '
+            'vertical-align: middle;"></span>'
+            "</p>"
         )
-    ]
-    for row in rows:
-        pairs: List[str] = []
-        for index, cell in enumerate(row):
-            label = header[index] if index < len(header) else f"Column {index + 1}"
-            value_style = TABLE_VALUE_STYLE if index < len(row) - 1 else "display: block; color: #36322d;"
-            pairs.append(f'<span style="{TABLE_LABEL_STYLE}">{render_inline(label)}</span>')
-            pairs.append(f'<span style="{value_style}">{render_inline(cell)}</span>')
-        rendered.append(f'<p style="{TABLE_WRAP_P}"><span style="{TABLE_CARD_P}">{"".join(pairs)}</span></p>')
-    return rendered
 
+    def render_blocks(self, blocks: Sequence[Dict[str, Any]]) -> str:
+        rendered: List[str] = []
+        for index, block in enumerate(blocks):
+            block_type = block["type"]
+            layout = self.plans[index] if index < len(self.plans) else None
+            if block_type == "heading":
+                rendered.extend(self.render_heading(block["level"], block["text"], layout))
+            elif block_type == "paragraph":
+                rendered.append(self.render_paragraph(block["text"], layout))
+            elif block_type == "quote":
+                rendered.append(self.render_quote(block["lines"], layout))
+            elif block_type == "list":
+                rendered.extend(self.render_list(block["items"], block["ordered"], layout))
+            elif block_type == "code":
+                rendered.extend(self.render_code(block["text"], block["language"], layout))
+            elif block_type == "table":
+                rendered.extend(self.render_table(block["header"], block["rows"], layout))
+            elif block_type == "divider":
+                rendered.append(self.render_divider(layout))
+        return "\n".join(rendered).strip() + "\n"
 
-def render_divider() -> str:
-    return (
-        f'<p style="max-width: {CONTENT_WIDTH}px; margin: 42px auto 38px auto; text-align: center; line-height: 1;">'
-        '<span style="display: inline-block; width: 54px; border-top: 1px solid #ddd2c4; vertical-align: middle;"></span>'
-        '<span style="display: inline-block; margin: 0 12px; font-family: \'Iowan Old Style\', Baskerville, \'Palatino Linotype\', \'Book Antiqua\', Georgia, \'Times New Roman\', serif; '
-        'font-size: 10px; line-height: 1; color: #c3b7a8; letter-spacing: 0.28em; vertical-align: middle;">··</span>'
-        '<span style="display: inline-block; width: 54px; border-top: 1px solid #ddd2c4; vertical-align: middle;"></span>'
-        "</p>"
-    )
-
-
-def render_blocks(blocks: Sequence[Dict[str, Any]]) -> str:
-    rendered: List[str] = []
-    for block in blocks:
-        block_type = block["type"]
-        if block_type == "heading":
-            rendered.extend(render_heading(block["level"], block["text"]))
-        elif block_type == "paragraph":
-            rendered.append(render_paragraph(block["text"]))
-        elif block_type == "quote":
-            rendered.append(render_quote(block["lines"]))
-        elif block_type == "list":
-            rendered.extend(render_list(block["items"], block["ordered"]))
-        elif block_type == "code":
-            rendered.extend(render_code(block["text"], block["language"]))
-        elif block_type == "table":
-            rendered.extend(render_table(block["header"], block["rows"]))
-        elif block_type == "divider":
-            rendered.append(render_divider())
-    return "\n".join(rendered).strip() + "\n"
+    def wrap_document(self, title: str, fragment: str) -> str:
+        safe_title = html.escape(title)
+        return (
+            "<!DOCTYPE html>\n"
+            '<html lang="zh-CN">\n'
+            "<head>\n"
+            '  <meta charset="UTF-8" />\n'
+            '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n'
+            f"  <title>{safe_title}</title>\n"
+            "</head>\n"
+            f'<body style="{self.body_style()}">\n'
+            f"{fragment}"
+            "</body>\n"
+            "</html>\n"
+        )
 
 
 def choose_title(
@@ -611,25 +795,48 @@ def choose_title(
     return input_path.stem
 
 
-def wrap_document(title: str, fragment: str) -> str:
-    safe_title = html.escape(title)
-    return (
-        "<!DOCTYPE html>\n"
-        '<html lang="zh-CN">\n'
-        "<head>\n"
-        '  <meta charset="UTF-8" />\n'
-        '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n'
-        f"  <title>{safe_title}</title>\n"
-        "</head>\n"
-        f'<body style="{BODY_STYLE}">\n'
-        f"{fragment}"
-        "</body>\n"
-        "</html>\n"
-    )
+def render_markdown(
+    input_path: Path,
+    output_path: Path,
+    title: Optional[str],
+    theme_id: str,
+    fragment_only: bool,
+    article_type: Optional[str] = None,
+    density: Optional[str] = None,
+    tone: Optional[str] = None,
+) -> str:
+    theme = load_theme(theme_id)
+    frontmatter_title, markdown = strip_frontmatter(input_path.read_text(encoding="utf-8"))
+    blocks = parse_blocks(markdown)
+    semantics = analyze_blocks(blocks)
+    art_direction = select_art_direction(theme, article_type=article_type, density=density, tone=tone)
+    plans = build_rhythm_plan(blocks, semantics, theme, art_direction)
+    compiled = compile_plan(blocks, plans)
+    renderer = Renderer(theme, [item["layout"] for item in compiled])
+    fragment = renderer.render_blocks(blocks)
+    chosen_title = choose_title(title, frontmatter_title, blocks, input_path)
+    document = fragment if fragment_only else renderer.wrap_document(chosen_title, fragment)
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(document, encoding="utf-8")
+    return document
+
+
+def print_themes() -> None:
+    for theme in available_themes():
+        suitable = " / ".join(theme.get("suitable_for", []))
+        print(f"{theme['id']}\t{theme.get('name_zh', theme['name'])}\t{suitable}")
 
 
 def main() -> None:
     args = parse_args()
+    if args.list_themes:
+        print_themes()
+        return
+
+    if not args.input:
+        raise SystemExit("--input is required unless --list-themes is used.")
+
     input_path = Path(args.input).expanduser().resolve()
     output_path = (
         Path(args.output).expanduser().resolve()
@@ -637,15 +844,33 @@ def main() -> None:
         else input_path.with_suffix(".html")
     )
 
-    frontmatter_title, markdown = strip_frontmatter(input_path.read_text(encoding="utf-8"))
-    blocks = parse_blocks(markdown)
-    fragment = render_blocks(blocks)
-    title = choose_title(args.title, frontmatter_title, blocks, input_path)
-    document = fragment if args.fragment_only else wrap_document(title, fragment)
+    try:
+        document = render_markdown(
+            input_path,
+            output_path,
+            args.title,
+            args.theme,
+            args.fragment_only,
+            article_type=args.article_type,
+            density=args.density,
+            tone=args.tone,
+        )
+    except (FileNotFoundError, ValueError, json.JSONDecodeError) as exc:
+        raise SystemExit(str(exc)) from exc
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(document, encoding="utf-8")
-    print(f"Rendered {input_path} -> {output_path}")
+    if args.verify:
+        theme = load_theme(args.theme)
+        _, markdown = strip_frontmatter(input_path.read_text(encoding="utf-8"))
+        blocks = parse_blocks(markdown)
+        findings = verify_html(document, args.fragment_only)
+        findings.extend(verify_editorial_blocks(blocks, theme))
+        if findings:
+            for finding in findings:
+                print(f"VERIFY: {finding}", file=sys.stderr)
+            raise SystemExit(1)
+        print("Verified inline WeChat HTML constraints.")
+
+    print(f"Rendered {input_path} -> {output_path} with theme '{args.theme}'")
 
 
 if __name__ == "__main__":

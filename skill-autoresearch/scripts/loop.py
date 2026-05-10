@@ -15,7 +15,7 @@ Workflow per iteration:
 8. Record history + results.tsv
 
 Usage:
-    python3 scripts/loop.py --skill-path /path/to/target-skill --max-iterations 20
+    python3 scripts/loop.py --skill-path ../target-skill --max-iterations 20
 """
 
 import argparse

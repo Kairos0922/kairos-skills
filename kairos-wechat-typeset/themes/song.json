@@ -1,0 +1,79 @@
+{
+  "id": "song",
+  "name": "Song Aesthetic",
+  "name_zh": "宋式美学",
+  "description": "Chinese editorial reading system inspired by Song books, calligraphic whitespace, warm paper, and slow long-form rhythm.",
+  "content_width": 640,
+  "philosophy": {
+    "mood": "literary",
+    "density": "airy",
+    "rhythm": "slow",
+    "hierarchy": "soft"
+  },
+  "constraints": {
+    "accent_color_count": 1,
+    "highlight_frequency_max": 0.08,
+    "component_variants_max": 3,
+    "forbidden": ["card-heavy layout", "color CTA", "strong shadow", "multiple accent colors", "high-contrast blocks"]
+  },
+  "art_direction": {
+    "article_type": "literary",
+    "spacing_scale": 1.12,
+    "emphasis_mode": "restrained",
+    "visual_density": "low",
+    "section_rhythm": "editorial"
+  },
+  "body": {
+    "background": "#f6f1e8",
+    "padding": "28px 18px 48px 18px"
+  },
+  "fonts": {
+    "cjk": "'Songti SC', 'STSong', 'Noto Serif CJK SC', 'Source Han Serif SC', SimSun, serif",
+    "latin": "'Baskerville', 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif",
+    "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  },
+  "colors": {
+    "ink": "#241d18",
+    "text": "#413a33",
+    "muted": "#867a6e",
+    "soft": "#d4c7b7",
+    "line": "#d9ccbc",
+    "line_soft": "#e1d6c8",
+    "surface": "#f4ede3",
+    "surface_alt": "#efe6da",
+    "accent": "#8a6b3f",
+    "warning": "#a16f35",
+    "warning_bg": "#f7eee0",
+    "code_text": "#302a24"
+  },
+  "typography": {
+    "title_size": "30px",
+    "title_line": "1.45",
+    "body_size": "17px",
+    "body_line": "2.0",
+    "section_num_size": "38px",
+    "section_title_size": "24px",
+    "small_size": "13px",
+    "code_size": "12.5px"
+  },
+  "rhythm": {
+    "paragraph_gap": 26,
+    "heading_top": 48,
+    "heading_bottom": 28,
+    "quote_breathing": 42,
+    "section_break": 56
+  },
+  "shape": {
+    "radius": "6px",
+    "image_radius": "6px"
+  },
+  "components": {
+    "paragraph": { "variants": ["default", "lead", "quiet"] },
+    "insight": { "variants": ["underlined", "sentence", "closing"] },
+    "quote": { "variants": ["literary", "note", "warning"] },
+    "summary": { "variants": ["quiet", "numbered", "closing"] },
+    "divider": { "variants": ["thin-rule", "ink-dot", "breath"] },
+    "list": { "variants": ["soft-marker", "ordered", "compact"] },
+    "cta": { "variants": ["text-only", "quiet-link", "closing-note"] }
+  }
+}

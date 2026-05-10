@@ -10,7 +10,7 @@ Responsibilities:
 2. Write harness_summary.json + grading_summary.txt for the iteration
 
 Usage:
-    python3 scripts/harness.py --skill-path /path/to/target-skill --iteration 1
+    python3 scripts/harness.py --skill-path ../target-skill --iteration 1
 """
 
 import argparse

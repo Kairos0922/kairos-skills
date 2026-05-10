@@ -1,43 +1,142 @@
 ---
 name: kairos-wechat-typeset
 description: |
-  把标准 Markdown 文章转换成适合微信公众号编辑器粘贴的极简黑白灰 HTML。
+  把标准 Markdown 文章转换成适合微信公众号编辑器粘贴的多主题内联 HTML。该 Skill 是确定性的 WeChat Editorial Design System：用人工定义的视觉母版、主题哲学、节奏引擎和校验规则，稳定复现高级、精致、有品牌感的公众号排版。
 
   触发场景：
   - “把这篇 md 排成公众号样式”
   - “把 Markdown 转成可直接贴进微信编辑器的 HTML”
   - “给公众号文章做兼容微信编辑器的排版”
   - “把 .md 文件输出成排版好的 html 文件”
+  - “用宋式美学 / MiMo / Claude 风格排版公众号文章”
 metadata:
-  version: "1.0"
+  version: "2.0"
 ---
 
 # kairos-wechat-typeset
 
 ## Purpose / 目的
 
-将标准 Markdown `.md` 文件转换为“公众号编辑器友好”的 HTML 文件，目标是：
+将标准 Markdown `.md` 文件转换为微信公众号编辑器友好的 HTML。目标不是 Markdown Renderer，也不是临场 HTML Generator，而是 WeChat Editorial Design Skill：先人工定义高级感，再让系统稳定复现。
 
-- 直接切到微信公众号编辑器的 HTML 模式即可粘贴
-- 样式以内联样式为主，尽量避免被微信重置后排版错乱
-- 输出风格统一为黑白灰极简版式
-- 保留文章的阅读层级、节奏和重点
+- 人工精修的视觉母版
+- 主题级视觉哲学，而不是颜色包
+- 确定性的节奏、层级、间距和组件约束
+- 所有样式内联，尽量避免被微信编辑器打散
 
-## When to use / 何时使用
+## Core Principle / 核心原则
 
-- 用户已经写好一篇 Markdown 文章，需要排成公众号版式
-- 需要把文章交给微信编辑器，且希望样式尽量稳定
-- 需要把 `.md` 文件落地成可预览、可复制的 `.html` 文件
+高级感来自人工定义的视觉系统，不来自 AI 即兴发挥。
+
+- LLM：只做编辑判断，包括结构、标题层级、重点句、引用、列表、分隔节奏。
+- Semantic System：输出 importance、intent、density、should_split 等语义信号。
+- Art Direction Layer：根据主题哲学和文章类型解析 spacing_scale、emphasis_mode、visual_density、section_rhythm。
+- Rhythm Engine：控制阅读节奏、breathing space、visual momentum。
+- Layout Resolver / Renderer：把 layout decision 编译成微信兼容 inline HTML。
+- Verify：同时检查 HTML 兼容性和 editorial quality。
+
+LLM 不得直接生成 HTML、CSS、`style`、`class`、自定义标签或用户自定义主题。
+
+## System Architecture / 系统架构
+
+```text
+Markdown / Article
+        ↓
+Structure Analysis
+        ↓
+User Layout Decision
+        ↓
+Semantic Analysis
+        ↓
+Art Direction
+        ↓
+Rhythm Engine
+        ↓
+Layout Resolver
+        ↓
+Deterministic Renderer
+        ↓
+WeChat Verify + Editorial Verify
+        ↓
+HTML Output
+```
+
+## User Workflow / 用户流程
+
+1. 用户提供一个 Markdown 文件路径。
+2. 解析 Markdown 并分析文章结构。
+3. 询问用户是否需要优化布局。
+4. 如果用户选择“是”：
+   - LLM 只输出标准 Markdown。
+   - 可使用 `## 01 标题`、`==重点==`、`> [!NOTE]`、分割线、图片、列表、表格。
+   - 不新增事实，不改写用户核心观点，不生成 HTML。
+   - 输出优化后的 Markdown 后，必须让用户确认是否需要修改。
+5. 执行 semantic analysis。
+6. 选择已注册主题并解析 art direction。
+7. 执行 rhythm strategy 和 layout resolver。
+8. 用脚本渲染 HTML，并运行 verify。
+9. 如验证或移动端预览有问题，调整主题 token、节奏规则或渲染器，不让 LLM 临场写样式。
+
+## Output / 输出资产
+
+最多两个用户资产：
+
+- 可选：LLM 优化后的 Markdown 文件。
+- 必选：主题化排版后的 HTML 文件。
+
+## Built-in Themes / 内置主题
+
+运行以下命令查看主题：
+
+```bash
+python3 scripts/render.py --list-themes
+```
+
+v2 内置：
+
+- `song`：宋式美学。适合人文评论、生活方式、长文随笔、书评。
+- `mimo`：Xiaomi MiMo。适合 AI、产品发布、技术报告、研究解读、数据型文章。
+- `claude`：Claude。适合教程、说明文档、方法论、技术观点、深度解释。
+
+主题不是颜色包，而是完整视觉哲学。用户不能传自定义主题、颜色、CSS 或外部模板。开发者扩展主题时，必须新增或更新 `themes/<theme-id>.json`、`themes/<theme-id>/DESIGN.md`，并登记到 `themes/registry.json`。
+
+## Theme Philosophy / 主题哲学
+
+`song`：
+
+```json
+{"mood":"literary","density":"airy","rhythm":"slow","hierarchy":"soft"}
+```
+
+`mimo`：
+
+```json
+{"mood":"analytical-tech","density":"compact","rhythm":"precise","hierarchy":"strong"}
+```
+
+`claude`：
+
+```json
+{"mood":"minimal-professional","density":"balanced","rhythm":"neutral","hierarchy":"clean"}
+```
+
+所有主题必须遵守：
+
+- Accent Color = 1
+- Highlight Frequency <= 8%
+- Component Variants <= 3
+- Heading Styles 固定
+- Divider Styles 固定
 
 ## Input / 输入
 
-一个标准 Markdown 文件路径，例如：
+标准 Markdown 文件路径，例如：
 
 ```text
-/absolute/path/article.md
+article.md
 ```
 
-支持的常见 Markdown 结构：
+支持：
 
 - `# / ## / ###` 标题
 - 普通段落
@@ -45,104 +144,78 @@ metadata:
 - 引用块 `>`
 - 分割线 `---` / `***` / `<!--段落分割线-->`
 - 粗体、斜体、删除线、行内代码、链接、图片
-- 简单表格（会降级为更适合微信的段落行）
+- 简单表格，渲染时会降级为微信移动端更稳定的堆叠信息卡
 - 围栏代码块
 
 额外约定：
 
-- `## 01 标题`、`## 1. 标题`、`## 02｜标题` 这类结构会自动渲染成“大号灰色数字 + 下划线标题”
-- `==需要强调的句子==` 会渲染成绿色虚线底边强调
-- `> [!NOTE]`、`> [!WARNING]`、`> [!TIP]` 这类提示块会渲染成不同风格的信息框
-
-## Output / 输出
-
-输出一个 HTML 文件：
-
-- 默认输出完整 HTML 文档，可直接浏览器打开预览
-- `body` 内部内容可直接复制到微信公众号编辑器 HTML 模式
-- 如果传入 `--fragment-only`，则只输出可粘贴的正文片段
-
-## Core Workflow / 核心流程
-
-1. 读取 Markdown 文件
-如果文件包含 YAML frontmatter，会自动剥离，并优先读取 `title` 作为页面标题。
-
-2. 解析常见 Markdown 结构
-脚本会把标题、段落、列表、引用、分割线、图片、链接、代码块等转换为适合微信编辑器的块级结构。
-
-3. 输出微信友好 HTML
-核心约束：
-
-- 只使用内联样式
-- 块级内容优先输出为平铺的 `<p>` 标签
-- 行内强调优先输出为 `<span>`
-- 避免依赖 `<div> / <section> / <style>`
-
-4. 最终检查
-生成后建议：
-
-- 在浏览器打开 HTML 文件快速预览
-- 复制 `body` 内内容到微信公众号后台 HTML 模式
-- 回到可视化模式检查图片、间距、强调样式是否保留
+- `## 01 标题`、`## 1. 标题`、`## 02｜标题` 会渲染成主题化章节数字 + 章节标题。
+- `==需要强调的句子==` 会渲染成主题强调样式。
+- `> [!NOTE]`、`> [!WARNING]`、`> [!TIP]` 会渲染成语义提示块。
 
 ## Commands / 命令
 
-基础用法：
+基础渲染：
 
 ```bash
-python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-wechat-typeset/scripts/render.py \
-  --input /absolute/path/article.md \
-  --output /absolute/path/article.html
+python3 scripts/render.py \
+  --theme song \
+  --input article.md \
+  --output article.html \
+  --verify
 ```
 
 仅输出可粘贴正文片段：
 
 ```bash
-python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-wechat-typeset/scripts/render.py \
-  --input /absolute/path/article.md \
-  --output /absolute/path/article.fragment.html \
-  --fragment-only
+python3 scripts/render.py \
+  --theme claude \
+  --input article.md \
+  --output article.fragment.html \
+  --fragment-only \
+  --verify
 ```
 
-## Style Rules / 样式规则
+单独验证已有 HTML：
 
-- 主标题：`22px`，黑色，加粗
-- 正文：`16px`，深灰，`line-height: 1.7`
-- 章节数字：`42px`，浅灰
-- 章节标题：`16px`，黑色，加粗，底部细线
-- 列表：用多个 `<p>` 模拟，不依赖 `<ul>/<li>`
-- 引用块：浅灰背景 + 左边框
-- 强调句：绿色虚线底边
-- 最大内容宽度：`680px`
-
-## Gotchas / 注意事项
-
-- 为了避免无效 HTML 被浏览器或微信自动重写，渲染器默认输出“平铺的 `<p>` 块”，而不是嵌套 `<p>`。
-- 微信编辑器对远程图片更友好；如果 Markdown 使用本地图片路径，最终是否可显示取决于粘贴环境。
-- 复杂嵌套列表、复杂表格会被有意降级为更稳定的公众号段落结构。
-- 如果输入中包含原始 HTML，脚本会按纯文本转义，而不是原样透传。
-
-## Example / 示例
-
-输入：
-
-```md
-# 一篇公众号文章
-
-## 01 为什么这件事值得写
-
-这是正文，其中 **重点句** 会被加粗，==核心观点== 会加虚线强调。
-
-> [!NOTE]
-> 这是一个提示框。
-
-- 第一条
-- 第二条
+```bash
+python3 scripts/verify.py \
+  --input article.html
 ```
 
-输出：
+## Quality Gates / 验收规则
 
-- 一个可直接预览的 `.html` 文件
-- 文章保留黑白灰极简风格
-- 章节标题自动转换成大数字样式
-- 列表与引用在微信编辑器中更稳定
+生成后必须检查：
+
+- 无 `<style>`
+- 无 `class=`
+- 无外部 CSS
+- 无 `<script>`
+- 无原生 `<table>`、`<ul>`、`<ol>`
+- 图片必须 `max-width: 100%`
+- 原始 HTML 必须被转义，不能透传
+- 移动端 390px / 430px 无横向滚动风险
+- 连续长 paragraph <= 3
+- 连续 emphasis <= 2
+- 高 density section 必须有 divider、quote 或 list 作为 breathing
+- heading hierarchy 禁止跳级
+
+## Golden System / 视觉母版
+
+`goldens/` 下保存人工精修的最高视觉标准：
+
+- `goldens/song-style.html`
+- `goldens/mimo-style.html`
+- `goldens/claude-style.html`
+
+这些文件是主题气质的参照，不是运行时模板。渲染器只能执行 layout decision，不得自由设计或动态创造样式。
+
+## Developer Theme Extension / 开发者扩展
+
+主题扩展使用 `DESIGN.md` 思路：
+
+- `themes/<theme-id>/DESIGN.md`：给开发者看的设计规范。
+- `themes/<theme-id>.json`：给脚本读取的确定性 visual philosophy、token、rhythm、constraints。
+- `themes/registry.json`：唯一对用户暴露的主题索引。
+
+新增主题必须先使用开发者自备 Markdown 样例渲染、验证、对照 `goldens/` 的视觉标准并完成移动端预览，再加入 registry。用户运行时不能新增主题。

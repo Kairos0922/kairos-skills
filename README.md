@@ -1,8 +1,8 @@
 # Kairos Skills
 
-> Personal skill collection for AI coding agents.
+Reusable skills for AI coding agents.
 
-This repository contains reusable skills that enhance AI coding agents (Claude Code, Cursor, VS Code, etc.) with automated workflows, optimizations, and specialized capabilities.
+This repository contains self-contained skills that enhance AI coding agents with automated workflows, deterministic tools, and specialized domain capabilities.
 
 ---
 ## Skills
@@ -10,7 +10,7 @@ This repository contains reusable skills that enhance AI coding agents (Claude C
 | Skill                   | Description                                                                 |
 |-------------------------|-----------------------------------------------------------------------------|
 | [skill-autoresearch](./skill-autoresearch/) | Automatically optimize any agent skill through edit → eval → keep/revert loops |
-| [kairos-wechat-typeset](./kairos-wechat-typeset/) | 把标准 Markdown 文章转换成适合微信公众号编辑器粘贴的内联样式 HTML |
+| [kairos-wechat-typeset](./kairos-wechat-typeset/) | Deterministic Markdown-to-WeChat editorial HTML typesetting |
 
 ---
 
@@ -20,7 +20,7 @@ This repository contains reusable skills that enhance AI coding agents (Claude C
 
 - Python 3.8+
 - Git
-- An AI agent CLI (e.g., Claude Code CLI) in PATH
+- An AI coding agent that supports local skills
 
 ### Quick Start
 
@@ -33,12 +33,11 @@ cd kairos-skills
 
 # 1) skill-autoresearch: run the optimization loop for a target skill
 cd skill-autoresearch
-python3 scripts/loop.py --skill-path /path/to/your/target-skill --max-iterations 20
+python3 scripts/loop.py --skill-path ../my-skill --max-iterations 20
 
 # 2) kairos-wechat-typeset: render a Markdown file to HTML suitable for WeChat editor
 cd ../kairos-wechat-typeset
-python3 scripts/render.py examples/demo.md > out.html
-
+python3 scripts/render.py --theme song --input article.md --output article.html --verify
 ```
 
 ---
@@ -72,4 +71,4 @@ skill-name/
 
 ## License
 
-MIT
+MIT. See [LICENSE](./LICENSE).

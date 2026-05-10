@@ -1,0 +1,79 @@
+{
+  "id": "claude",
+  "name": "Claude",
+  "name_zh": "Claude",
+  "description": "Minimal professional editorial system with warm neutrality, clean hierarchy, and low-interruption readability.",
+  "content_width": 640,
+  "philosophy": {
+    "mood": "minimal-professional",
+    "density": "balanced",
+    "rhythm": "neutral",
+    "hierarchy": "clean"
+  },
+  "constraints": {
+    "accent_color_count": 1,
+    "highlight_frequency_max": 0.08,
+    "component_variants_max": 3,
+    "forbidden": ["heavy decoration", "strong color blocks", "deep shadow", "marketing-style hero"]
+  },
+  "art_direction": {
+    "article_type": "professional",
+    "spacing_scale": 1.04,
+    "emphasis_mode": "quiet",
+    "visual_density": "medium",
+    "section_rhythm": "neutral"
+  },
+  "body": {
+    "background": "#faf8f4",
+    "padding": "24px 16px 44px 16px"
+  },
+  "fonts": {
+    "cjk": "'PingFang SC', 'Noto Sans CJK SC', 'Source Han Sans SC', 'Microsoft YaHei', sans-serif",
+    "latin": "'Inter', 'Helvetica Neue', Arial, sans-serif",
+    "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  },
+  "colors": {
+    "ink": "#2a241f",
+    "text": "#4b4540",
+    "muted": "#7a746e",
+    "soft": "#c7beb5",
+    "line": "#ddd5cc",
+    "line_soft": "#e9e1d9",
+    "surface": "#fffdf8",
+    "surface_alt": "#f2eee8",
+    "accent": "#8f5f45",
+    "warning": "#9a5b29",
+    "warning_bg": "#fff4e6",
+    "code_text": "#302a25"
+  },
+  "typography": {
+    "title_size": "30px",
+    "title_line": "1.42",
+    "body_size": "16px",
+    "body_line": "1.9",
+    "section_num_size": "32px",
+    "section_title_size": "22px",
+    "small_size": "13px",
+    "code_size": "12.5px"
+  },
+  "rhythm": {
+    "paragraph_gap": 22,
+    "heading_top": 42,
+    "heading_bottom": 24,
+    "quote_breathing": 32,
+    "section_break": 48
+  },
+  "shape": {
+    "radius": "8px",
+    "image_radius": "6px"
+  },
+  "components": {
+    "paragraph": { "variants": ["default", "lead", "compact"] },
+    "insight": { "variants": ["soft-surface", "sentence", "closing"] },
+    "quote": { "variants": ["weak-border", "note", "warning"] },
+    "summary": { "variants": ["clean", "numbered", "closing"] },
+    "divider": { "variants": ["hairline", "breath", "section"] },
+    "list": { "variants": ["clean", "ordered", "compact"] },
+    "cta": { "variants": ["text-only", "quiet-link", "closing-note"] }
+  }
+}

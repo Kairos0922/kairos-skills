@@ -1,0 +1,29 @@
+{
+  "default": "song",
+  "themes": [
+    {
+      "id": "song",
+      "name": "Song Aesthetic",
+      "name_zh": "宋式美学",
+      "path": "song.json",
+      "design": "song/DESIGN.md",
+      "suitable_for": ["人文评论", "生活方式", "长文随笔", "书评"]
+    },
+    {
+      "id": "mimo",
+      "name": "Xiaomi MiMo",
+      "name_zh": "Xiaomi MiMo",
+      "path": "mimo.json",
+      "design": "mimo/DESIGN.md",
+      "suitable_for": ["AI", "产品发布", "技术报告", "研究解读", "数据型文章"]
+    },
+    {
+      "id": "claude",
+      "name": "Claude",
+      "name_zh": "Claude",
+      "path": "claude.json",
+      "design": "claude/DESIGN.md",
+      "suitable_for": ["教程", "说明文档", "方法论", "技术观点", "深度解释"]
+    }
+  ]
+}

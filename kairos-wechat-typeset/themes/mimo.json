@@ -1,0 +1,79 @@
+{
+  "id": "mimo",
+  "name": "Xiaomi MiMo",
+  "name_zh": "Xiaomi MiMo",
+  "description": "Analytical technology editorial system with precise hierarchy, cool surfaces, and one restrained blue accent.",
+  "content_width": 640,
+  "philosophy": {
+    "mood": "analytical-tech",
+    "density": "compact",
+    "rhythm": "precise",
+    "hierarchy": "strong"
+  },
+  "constraints": {
+    "accent_color_count": 1,
+    "highlight_frequency_max": 0.08,
+    "component_variants_max": 3,
+    "forbidden": ["multiple accent colors", "neon glow", "decorative gradient", "soft literary ambiguity"]
+  },
+  "art_direction": {
+    "article_type": "tech",
+    "spacing_scale": 1.0,
+    "emphasis_mode": "precise",
+    "visual_density": "medium",
+    "section_rhythm": "report"
+  },
+  "body": {
+    "background": "#f7f8fa",
+    "padding": "24px 16px 44px 16px"
+  },
+  "fonts": {
+    "cjk": "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif",
+    "latin": "'Avenir Next', Avenir, 'Helvetica Neue', Arial, sans-serif",
+    "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  },
+  "colors": {
+    "ink": "#111827",
+    "text": "#333b46",
+    "muted": "#727b88",
+    "soft": "#b8c1cc",
+    "line": "#d9dee7",
+    "line_soft": "#e6eaf0",
+    "surface": "#ffffff",
+    "surface_alt": "#eef2f7",
+    "accent": "#2563EB",
+    "warning": "#9a5a12",
+    "warning_bg": "#fff5e8",
+    "code_text": "#1f2630"
+  },
+  "typography": {
+    "title_size": "32px",
+    "title_line": "1.38",
+    "body_size": "16px",
+    "body_line": "1.85",
+    "section_num_size": "34px",
+    "section_title_size": "24px",
+    "small_size": "12.5px",
+    "code_size": "12.4px"
+  },
+  "rhythm": {
+    "paragraph_gap": 20,
+    "heading_top": 40,
+    "heading_bottom": 22,
+    "quote_breathing": 30,
+    "section_break": 52
+  },
+  "shape": {
+    "radius": "7px",
+    "image_radius": "6px"
+  },
+  "components": {
+    "paragraph": { "variants": ["default", "dense", "lead"] },
+    "insight": { "variants": ["accent-bar", "metric", "minimal-tech"] },
+    "quote": { "variants": ["gray-surface", "note", "warning"] },
+    "summary": { "variants": ["structured", "compact", "closing"] },
+    "divider": { "variants": ["rule", "section-gap", "technical"] },
+    "list": { "variants": ["structured", "ordered", "dense"] },
+    "cta": { "variants": ["text-only", "reference", "closing-note"] }
+  }
+}

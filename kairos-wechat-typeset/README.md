@@ -1,139 +1,129 @@
 # kairos-wechat-typeset
 
-`kairos-wechat-typeset` 用来把标准 Markdown 文章转换成更适合微信公众号编辑器粘贴的 HTML。
-
-它的核心目标很直接：
-
-- 样式尽量不被微信编辑器打散
-- 输出黑白灰极简风格
-- 直接生成可预览、可复制的 HTML 文件
-- 中文以宋体为主，英文和数字有独立的衬线搭配
+`kairos-wechat-typeset` 把标准 Markdown 文章转换成微信公众号编辑器友好的多主题 HTML。它不是普通 Markdown Renderer，而是确定性的 WeChat Editorial Design Skill：先用人工视觉母版定义高级感，再用主题哲学、节奏引擎和校验规则稳定复现。
 
 ## 60 秒上手
 
-```bash
-python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-wechat-typeset/scripts/render.py \
-  --input /absolute/path/article.md \
-  --output /absolute/path/article.html
-```
-
-如果只想拿可粘贴到微信编辑器 HTML 模式里的正文片段：
+查看内置主题：
 
 ```bash
-python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-wechat-typeset/scripts/render.py \
-  --input /absolute/path/article.md \
-  --output /absolute/path/article.fragment.html \
-  --fragment-only
+python3 scripts/render.py --list-themes
 ```
 
-## 设计原则
+渲染文章：
 
-### 1. 兼容性优先
+```bash
+python3 scripts/render.py \
+  --theme song \
+  --input article.md \
+  --output article.html \
+  --verify
+```
 
-- 所有样式都写在标签的 `style` 属性里
-- 不使用外部 CSS，也不输出 `<style>` 标签
-- 块级结构以平铺的 `<p>` 为主
-- 行内强调优先使用 `<span>`
+只生成微信公众号 HTML 模式可粘贴片段：
 
-说明：
+```bash
+python3 scripts/render.py \
+  --theme claude \
+  --input article.md \
+  --output article.fragment.html \
+  --fragment-only \
+  --verify
+```
 
-严格的嵌套 `<p>` 在 HTML 里是无效结构，浏览器和微信编辑器都可能自动改写。为了让最终粘贴效果更稳定，渲染器采用“平铺块 + 重复基础样式”的方式来模拟统一容器。
+## 内置主题
 
-### 2. 视觉规范
+- `song`：宋式美学。人文、评论、书评、生活方式。
+- `mimo`：Xiaomi MiMo。AI、产品发布、技术报告、研究解读。
+- `claude`：Claude。教程、文档、方法论、技术观点。
 
-- 主标题：`22px`
-- 正文/小标题/列表：`16px`
-- 章节数字：`42px`
-- 中文字体：优先 `Songti SC / STSong / Noto Serif CJK SC`
-- 英文与数字：自动用 `Iowan Old Style / Baskerville / Georgia / Times New Roman` 一类衬线字体做平衡
-- 正文颜色：`#333`
-- 标题颜色：`#000`
-- 引用/辅助信息：`#555`
-- 分割与浅底：`#e0e0e0`、`#f5f5f5`、`#f9f9f9`
-- 重点划线：`border-bottom: 1px dashed #07C160`
-- 最大宽度：`680px`
-- 行高：`1.7`
-- 默认左对齐
+主题只能从 registry 中选择。用户不能传自定义 CSS、颜色、HTML 模板或运行时主题文件。
 
-## 支持的 Markdown 能力
+## 架构
 
-- `# / ## / ###` 标题
-- 段落
-- 无序列表 / 有序列表
-- 引用块
-- 分割线 `---` / `***` / `<!--段落分割线-->`
-- 粗体、斜体、删除线、行内代码
-- 链接、图片
+```text
+kairos-wechat-typeset/
+├── DESIGN.md
+├── SKILL.md
+├── goldens/
+│   ├── song-style.html
+│   ├── mimo-style.html
+│   └── claude-style.html
+├── themes/
+│   ├── registry.json
+│   ├── song.json
+│   ├── song/DESIGN.md
+│   ├── mimo.json
+│   ├── mimo/DESIGN.md
+│   ├── claude.json
+│   └── claude/DESIGN.md
+├── semantic/
+│   └── analyze.py
+├── art_direction/
+│   ├── mood.py
+│   ├── rhythm.py
+│   ├── hierarchy.py
+│   └── spacing.py
+├── renderer/
+│   ├── blocks.py
+│   ├── variants.py
+│   └── compiler.py
+├── verify/
+│   ├── html_verify.py
+│   └── editorial_verify.py
+└── scripts/
+    ├── render.py
+    └── verify.py
+```
+
+`themes/<theme-id>.json` 是确定性视觉契约，`themes/<theme-id>/DESIGN.md` 是人工设计说明，`goldens/` 是最高视觉参照。
+
+## V2 Pipeline
+
+```text
+Markdown
+  -> Structure Analysis
+  -> Semantic Analysis
+  -> Art Direction
+  -> Rhythm Engine
+  -> Layout Resolver
+  -> Deterministic Renderer
+  -> WeChat Verify + Editorial Verify
+```
+
+## LLM 与脚本分工
+
+- LLM 只优化 Markdown：标题层级、段落节奏、重点句、引用、列表、分隔线。
+- LLM 不生成 HTML、不写 CSS、不新增自定义标签，不决定 typography、spacing、layout。
+- 脚本负责确定性渲染：解析 Markdown、加载主题、分析语义、解析节奏、输出全内联 HTML、执行验证。
+
+## 支持的 Markdown
+
+- 标题、段落、列表、引用、分割线
+- 粗体、斜体、删除线、行内代码、链接、图片
 - 围栏代码块
-- 简单表格
+- 简单表格，自动降级为移动端堆叠信息卡
+- `==重点句==`
+- `> [!NOTE]` / `> [!TIP]` / `> [!WARNING]`
+- `## 01 标题` 数字章节标题
 
-当前列表、代码块、表格会做“公众号友好”的再设计：
+## 验证
 
-- 列表：改为更轻的悬挂缩进和更克制的标记符号
-- 代码块：改为编辑部注释感更强的细线标题 + 浅底代码卡片
-- 表格：不直接模拟原生表格，而是转成更稳定的卡片式信息块
-
-## 额外语法约定
-
-### 章节标题
-
-以下标题会自动转成“章节数字 + 下划线标题”：
-
-```md
-## 01 为什么这段值得单独展开
-## 1. 为什么这段值得单独展开
-## 02｜为什么这段值得单独展开
-```
-
-### 虚线强调
-
-使用 `==...==` 标记需要重点划线的内容：
-
-```md
-这是正文，==这一句会被渲染成绿色虚线底边==。
-```
-
-### 提示框
-
-支持常见提示块写法：
-
-```md
-> [!NOTE]
-> 这是备注信息
-
-> [!TIP]
-> 这是提示信息
-
-> [!WARNING]
-> 这是警告信息
-```
-
-## 微信后台使用方式
-
-1. 运行脚本生成 `.html`
-2. 用浏览器打开快速预览，确认层级、间距、图片和强调样式
-3. 进入微信公众号后台，新建图文消息
-4. 切到编辑器右上角的 HTML 模式
-5. 粘贴生成文件中的 `body` 内容，或直接使用 `--fragment-only` 生成的片段
-6. 回到可视化模式做最终检查
-
-## 示例输入
-
-仓库内附了一个示例文件：
-
-[`examples/demo.md`](./examples/demo.md)
-
-你可以直接运行：
+渲染时加 `--verify`，或单独运行：
 
 ```bash
-python3 /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-wechat-typeset/scripts/render.py \
-  --input /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-wechat-typeset/examples/demo.md \
-  --output /Users/kenpetex/Documents/GitHub/kairos-skills/kairos-wechat-typeset/examples/demo.html
+python3 scripts/verify.py \
+  --input article.html
 ```
 
-## 限制说明
+验证项包括：无 `<style>`、无 `class=`、无外部 CSS、无脚本、无原生宽表格、图片移动端安全，以及 heading 不跳级、连续长段不超过 3、连续强强调不超过 2、高密度区块必须有 breathing。
 
-- 复杂嵌套列表会自动降级为更稳定的段落列表
-- 表格会转换成更适合公众号的“行文本”结构，而不是原生 `<table>`
-- 原始 HTML 会被转义，避免把不稳定的标签直接带进微信编辑器
-- 本地图片路径不会自动上传到微信素材库，建议使用可访问的远程地址
+## 开发者新增主题
+
+见 [`themes/README.md`](themes/README.md)。新增主题需要：
+
+1. 新建 `themes/<theme-id>/DESIGN.md`
+2. 新建 `themes/<theme-id>.json`
+3. 注册到 `themes/registry.json`
+4. 使用开发者自备 Markdown 样例渲染完整 HTML
+5. 通过 `--verify`、检查 `goldens/` 对齐度，并进行移动端预览

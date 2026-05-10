@@ -118,7 +118,7 @@ target-skill/
 
 ```bash
 python3 scripts/loop.py \
-  --skill-path /path/to/target-skill \
+  --skill-path ../target-skill \
   --max-iterations 20
 ```
 

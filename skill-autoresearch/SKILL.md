@@ -73,14 +73,14 @@ If watchdog returns `should_stop: true`, the loop terminates.
 ### Basic
 
 ```
-/skill-autoresearch --skill-path /path/to/target-skill --max-iterations 20
+/skill-autoresearch --skill-path ../target-skill --max-iterations 20
 ```
 
 ### With Options
 
 ```
 /skill-autoresearch \
-  --skill-path /path/to/target-skill \
+  --skill-path ../target-skill \
   --max-iterations 50 \
   --epsilon 0.05 \
   --watchdog-interval 5
@@ -94,13 +94,13 @@ import json
 
 result = subprocess.run([
     "python3", "scripts/loop.py",
-    "--skill-path", "/path/to/target-skill",
+    "--skill-path", "../target-skill",
     "--max-iterations", "20",
     "--epsilon", "0.05",
     "--watchdog-interval", "5"
 ], capture_output=True, text=True)
 
-history = json.loads(open("/path/to/target-skill-eval/history.json").read())
+history = json.loads(open("runs/target-skill-eval/history.json").read())
 print(f"Final best: {history['running_best']:.1%}")
 ```
 

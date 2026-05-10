@@ -36,7 +36,7 @@
     "ink": "#2a241f",
     "text": "#4b4540",
     "muted": "#7a746e",
-    "soft": "#c7beb5",
+    "soft": "#b9afa5",
     "line": "#ddd5cc",
     "line_soft": "#e9e1d9",
     "surface": "#fffdf8",
@@ -51,7 +51,7 @@
     "title_line": "1.42",
     "body_size": "16px",
     "body_line": "1.9",
-    "section_num_size": "32px",
+    "section_num_size": "20px",
     "section_title_size": "22px",
     "small_size": "13px",
     "code_size": "12.5px"

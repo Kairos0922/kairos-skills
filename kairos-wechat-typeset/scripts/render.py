@@ -330,6 +330,7 @@ def placeholder_token(index: int) -> str:
 class Renderer:
     def __init__(self, theme: Dict[str, Any], plans: Optional[Sequence[Dict[str, Any]]] = None):
         self.theme = theme
+        self.theme_id = str(theme.get("id", ""))
         self.width = int(theme.get("content_width", 640))
         self.fonts = theme["fonts"]
         self.colors = theme["colors"]
@@ -364,6 +365,9 @@ class Renderer:
     def radius(self, key: str = "radius") -> str:
         return self.shape[key]
 
+    def is_theme(self, theme_id: str) -> bool:
+        return self.theme_id == theme_id
+
     def body_style(self) -> str:
         body = self.theme["body"]
         return (
@@ -388,6 +392,18 @@ class Renderer:
         )
 
     def section_num_p(self, top: int) -> str:
+        if self.is_theme("mimo"):
+            return (
+                f"max-width: {self.width}px; margin: {top}px auto 7px auto; font-family: {self.f('mono')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.3; font-weight: 700; "
+                f"letter-spacing: 0.16em; color: {self.c('accent')}; text-align: left;"
+            )
+        if self.is_theme("claude"):
+            return (
+                f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
+                "font-size: 20px; line-height: 1; font-weight: 600; "
+                f"letter-spacing: 0.08em; color: {self.c('soft')}; text-align: left;"
+            )
         return (
             f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
             f"font-size: {self.t('section_num_size')}; line-height: 1; font-weight: 500; "
@@ -395,11 +411,25 @@ class Renderer:
         )
 
     def section_title_p(self, bottom: int) -> str:
+        if self.is_theme("mimo"):
+            return (
+                f"max-width: {self.width}px; margin: 0 auto {bottom}px auto; font-family: {self.f('cjk')}; "
+                "font-size: 23px; line-height: 1.58; font-weight: 700; "
+                f"color: {self.c('ink')}; text-align: left; border-left: 3px solid {self.c('accent')}; "
+                f"border-bottom: 1px solid {self.c('line_soft')}; padding: 0 0 12px 12px; letter-spacing: 0;"
+            )
+        if self.is_theme("claude"):
+            return (
+                f"max-width: {self.width}px; margin: 0 auto {bottom}px auto; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('section_title_size')}; line-height: 1.72; font-weight: 700; "
+                f"color: {self.c('ink')}; text-align: left; border-bottom: 1px solid {self.c('line_soft')}; "
+                "padding-bottom: 9px; letter-spacing: 0;"
+            )
         return (
             f"max-width: {self.width}px; margin: 0 auto {bottom}px auto; font-family: {self.f('cjk')}; "
-            f"font-size: {self.t('section_title_size')}; line-height: 1.88; font-weight: 700; "
+            f"font-size: {self.t('section_title_size')}; line-height: 1.88; font-weight: 600; "
             f"color: {self.c('ink')}; text-align: left; border-bottom: 1px solid {self.c('line')}; "
-            "padding-bottom: 10px; letter-spacing: 0;"
+            "padding-bottom: 12px; letter-spacing: 0;"
         )
 
     def subtitle_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
@@ -423,6 +453,28 @@ class Renderer:
         return f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])};"
 
     def quote_p(self, border: str, background: Optional[str] = None, text: Optional[str] = None) -> str:
+        if self.is_theme("song"):
+            return (
+                f"display: block; padding: 8px 0 8px 18px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: 1.96; text-align: left; "
+                f"background-color: transparent; border-left: 2px solid {border}; border-radius: 0; "
+                f"color: {text or self.c('text')};"
+            )
+        if self.is_theme("mimo"):
+            return (
+                f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: 1.9; text-align: left; "
+                f"background-color: {background or self.c('surface')}; border-left: 4px solid {border}; "
+                f"border-top: 1px solid {self.c('line_soft')}; border-radius: {self.radius()}; "
+                f"color: {text or self.c('text')};"
+            )
+        if self.is_theme("claude"):
+            return (
+                f"display: block; padding: 17px 19px 17px 19px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: 1.9; text-align: left; "
+                f"background-color: {background or self.c('surface')}; border: 1px solid {self.c('line_soft')}; "
+                f"border-left: 3px solid {border}; border-radius: {self.radius()}; color: {text or self.c('text')};"
+            )
         return (
             f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('cjk')}; "
             f"font-size: {self.t('body_size')}; line-height: 1.92; text-align: left; "
@@ -486,6 +538,10 @@ class Renderer:
         return f"font-weight: 700; color: {self.c('ink')};"
 
     def highlight_style(self) -> str:
+        if self.is_theme("mimo"):
+            return f"border-bottom: 2px solid {self.c('accent')}; font-weight: 700; color: {self.c('ink')};"
+        if self.is_theme("song"):
+            return f"border-bottom: 1px solid {self.c('accent')}; font-weight: 600; color: {self.c('ink')};"
         return f"border-bottom: 1px dashed {self.c('accent')}; font-weight: 600;"
 
     def em_style(self) -> str:
@@ -501,10 +557,12 @@ class Renderer:
         )
 
     def marker_style(self, ordered: bool) -> str:
+        color = self.c("accent") if self.is_theme("mimo") else self.c("muted")
+        weight = "700" if self.is_theme("mimo") else "500"
         return (
             f"display: inline-block; width: 24px; margin-right: 10px; text-align: center; "
             f"vertical-align: top; font-family: {self.f('latin')}; font-size: 12px; line-height: 1.92; "
-            f"color: {self.c('muted')}; letter-spacing: {'0.04em' if ordered else '0'};"
+            f"font-weight: {weight}; color: {color}; letter-spacing: {'0.04em' if ordered else '0'};"
         )
 
     def render_image(self, alt_text: str, source: str) -> str:
@@ -639,9 +697,10 @@ class Renderer:
         numeric_match = NUMERIC_SECTION_RE.match(stripped)
         if numeric_match:
             number = numeric_match.group("num").zfill(2)
+            number_label = f"SECTION {number}" if self.is_theme("mimo") else number
             title = numeric_match.group("title").strip()
             return [
-                f'<p style="{self.section_num_p(spacing["top"])}">{html.escape(number)}</p>',
+                f'<p style="{self.section_num_p(spacing["top"])}">{html.escape(number_label)}</p>',
                 f'<p style="{self.section_title_p(spacing["bottom"])}">{self.render_inline(title)}</p>',
             ]
 
@@ -732,6 +791,21 @@ class Renderer:
 
     def render_divider(self, layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("section_break", 42))
+        if self.is_theme("mimo"):
+            return (
+                f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
+                'text-align: left; line-height: 1;">'
+                f'<span style="display: inline-block; width: 96px; border-top: 2px solid {self.c("accent")}; '
+                'vertical-align: middle;"></span>'
+                "</p>"
+            )
+        if self.is_theme("claude"):
+            return (
+                f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
+                'text-align: left; line-height: 1;">'
+                f'<span style="display: block; width: 100%; border-top: 1px solid {self.c("line_soft")};"></span>'
+                "</p>"
+            )
         return (
             f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; text-align: center; line-height: 1;">'
             f'<span style="display: inline-block; width: 54px; border-top: 1px solid {self.c("line_soft")}; '

@@ -25,7 +25,7 @@
   },
   "body": {
     "background": "#f6f1e8",
-    "padding": "28px 18px 48px 18px"
+    "padding": "32px 18px 54px 18px"
   },
   "fonts": {
     "cjk": "'Songti SC', 'STSong', 'Noto Serif CJK SC', 'Source Han Serif SC', SimSun, serif",
@@ -51,17 +51,17 @@
     "title_line": "1.45",
     "body_size": "17px",
     "body_line": "2.0",
-    "section_num_size": "38px",
-    "section_title_size": "24px",
+    "section_num_size": "42px",
+    "section_title_size": "23px",
     "small_size": "13px",
     "code_size": "12.5px"
   },
   "rhythm": {
-    "paragraph_gap": 26,
-    "heading_top": 48,
-    "heading_bottom": 28,
-    "quote_breathing": 42,
-    "section_break": 56
+    "paragraph_gap": 28,
+    "heading_top": 54,
+    "heading_bottom": 30,
+    "quote_breathing": 46,
+    "section_break": 62
   },
   "shape": {
     "radius": "6px",

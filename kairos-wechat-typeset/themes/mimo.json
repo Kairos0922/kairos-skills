@@ -25,7 +25,7 @@
   },
   "body": {
     "background": "#f7f8fa",
-    "padding": "24px 16px 44px 16px"
+    "padding": "26px 16px 46px 16px"
   },
   "fonts": {
     "cjk": "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif",
@@ -51,14 +51,14 @@
     "title_line": "1.38",
     "body_size": "16px",
     "body_line": "1.85",
-    "section_num_size": "34px",
+    "section_num_size": "14px",
     "section_title_size": "24px",
     "small_size": "12.5px",
     "code_size": "12.4px"
   },
   "rhythm": {
     "paragraph_gap": 20,
-    "heading_top": 40,
+    "heading_top": 44,
     "heading_bottom": 22,
     "quote_breathing": 30,
     "section_break": 52

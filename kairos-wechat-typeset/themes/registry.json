@@ -7,7 +7,7 @@
       "name_zh": "宋式美学",
       "path": "song.json",
       "design": "song/DESIGN.md",
-      "suitable_for": ["人文评论", "生活方式", "长文随笔", "书评"]
+      "suitable_for": ["技术长文", "方法论", "人文评论", "生活方式", "书评"]
     },
     {
       "id": "mimo",

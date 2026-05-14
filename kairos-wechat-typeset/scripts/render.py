@@ -31,6 +31,7 @@ from verify.markdown_verify import verify_markdown_safety
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
 UNORDERED_RE = re.compile(r"^(\s*)[-+*]\s+(.*)$")
 ORDERED_RE = re.compile(r"^(\s*)(\d+)[.)]\s+(.*)$")
+TASK_ITEM_RE = re.compile(r"^\[(?P<mark>[ xX])\]\s+(?P<text>.+)$")
 FENCE_RE = re.compile(r"^```([A-Za-z0-9_+-]*)\s*$")
 TABLE_DIVIDER_RE = re.compile(r"^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$")
 NUMERIC_SECTION_RE = re.compile(r"^(?P<num>\d{1,2})(?:[.、:：|｜\-\s]+)(?P<title>.+)$")
@@ -471,7 +472,7 @@ class Renderer:
         spacing = spacing or {"top": 0, "bottom": 34}
         if self.is_theme("song"):
             return (
-                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], max(spacing['bottom'], 44))}; "
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], max(spacing['bottom'], 24))}; "
                 f"padding: 0; font-family: {self.f('cjk')}; font-size: {self.t('title_size')}; "
                 f"line-height: {self.t('title_line')}; font-weight: 700; color: {self.c('ink')}; "
                 "text-align: left; letter-spacing: 0;"
@@ -497,8 +498,8 @@ class Renderer:
             )
         if self.is_theme("song"):
             return (
-                f"max-width: {self.width}px; margin: {top}px auto 0 auto; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('section_num_size')}; line-height: 1.72; font-weight: 700; "
+                f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('section_num_size')}; line-height: 1.6; font-weight: 700; "
                 f"letter-spacing: 0; color: {self.c('ink')}; text-align: left;"
             )
         return (
@@ -541,8 +542,8 @@ class Renderer:
         if self.is_theme("song"):
             return (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
-                f"font-family: {self.f('cjk')}; font-size: {self.t('section_title_size')}; line-height: 1.72; font-weight: 700; "
-                f"color: {self.c('ink')}; text-align: left; padding-left: 0; letter-spacing: 0;"
+                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.6; font-weight: 500; "
+                f"color: {self.c('ink')}; text-align: left; padding: 0; letter-spacing: 0;"
             )
         return (
             f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
@@ -555,7 +556,7 @@ class Renderer:
         spacing = spacing or {"top": 0, "bottom": 12}
         return (
             f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
-            f"font-size: {self.t('body_size')}; line-height: 1.92; color: {self.c('text')}; text-align: left;"
+            f"font-size: {self.t('small_size')}; line-height: 1.8; color: {self.c('text')}; text-align: left;"
         )
 
     def quote_wrap_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
@@ -565,9 +566,10 @@ class Renderer:
     def quote_p(self, border: str, background: Optional[str] = None, text: Optional[str] = None) -> str:
         if self.is_theme("song"):
             return (
-                f"display: block; padding: 12px 18px 12px 18px; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('body_size')}; line-height: 2; text-align: left; "
-                f"background-color: {background or self.c('surface')}; border-left: 2px solid {border}; border-radius: {self.radius()}; "
+                f"display: block; padding: 16px 20px 16px 20px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.8; text-align: left; "
+                f"background-color: {background or self.c('surface')}; border: 1px solid {self.c('line')}; "
+                f"border-radius: {self.radius()}; "
                 f"color: {text or self.c('text')};"
             )
         if self.is_theme("mimo"):
@@ -595,9 +597,9 @@ class Renderer:
     def code_meta_p(self, top: int) -> str:
         if self.is_theme("song"):
             return (
-                f"max-width: {self.width}px; margin: {top}px auto 9px auto; font-family: {self.f('latin')}; "
-                f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
-                "text-align: left; letter-spacing: 0.12em;"
+                f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.6; color: {self.c('muted')}; "
+                "text-align: left; letter-spacing: 0;"
             )
         return (
             f"max-width: {self.width}px; margin: {top}px auto 10px auto; font-family: {self.f('mono')}; "
@@ -608,11 +610,10 @@ class Renderer:
     def code_p(self) -> str:
         if self.is_theme("song"):
             return (
-                f"display: block; padding: 17px 19px 17px 19px; font-family: {self.f('mono')}; "
-                f"font-size: {self.t('code_size')}; line-height: 1.86; color: {self.c('code_text')}; "
+                f"display: block; padding: 14px 18px 14px 18px; font-family: {self.f('mono')}; "
+                f"font-size: {self.t('code_size')}; line-height: 1.6; color: {self.c('code_text')}; "
                 f"text-align: left; white-space: pre-wrap; background-color: {self.c('surface')}; "
-                f"border-top: 1px solid {self.c('line')}; border-bottom: 1px solid {self.c('line_soft')}; "
-                "border-left: 0; border-right: 0; border-radius: 0;"
+                f"border: 1px solid {self.c('line')}; border-radius: {self.radius()};"
             )
         return (
             f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('mono')}; "
@@ -628,8 +629,8 @@ class Renderer:
         if self.is_theme("song"):
             return (
                 f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
-                f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
-                "text-align: left; letter-spacing: 0.12em;"
+                f"font-size: {self.t('small_size')}; line-height: 1.6; color: {self.c('ink')}; "
+                "text-align: left; letter-spacing: 0;"
             )
         return (
             f"max-width: {self.width}px; margin: {top}px auto 12px auto; font-family: {self.f('mono')}; "
@@ -640,10 +641,9 @@ class Renderer:
     def table_card_p(self) -> str:
         if self.is_theme("song"):
             return (
-                f"display: block; padding: 11px 0 11px 16px; font-family: {self.f('cjk')}; "
+                f"display: block; padding: 0; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('body_size')}; line-height: 1.92; color: {self.c('text')}; "
-                f"text-align: left; background-color: transparent; border-left: 1px solid {self.c('line_soft')}; "
-                "border-top: 0; border-bottom: 0; border-right: 0; border-radius: 0;"
+                f"text-align: left; background-color: transparent;"
             )
         return (
             f"display: block; padding: 17px 20px 17px 20px; font-family: {self.f('cjk')}; "
@@ -659,8 +659,7 @@ class Renderer:
         bottom = "0" if is_last else "12px"
         if self.is_theme("song"):
             return (
-                f"display: block; margin-bottom: {bottom}; padding-bottom: 0; color: {self.c('text')}; "
-                "border-bottom: 0;"
+                f"display: block; margin-bottom: {bottom}; padding-bottom: 0; color: {self.c('text')};"
             )
         return (
             f"display: block; margin-bottom: 10px; color: {self.c('text')};"
@@ -673,7 +672,7 @@ class Renderer:
             return (
                 f"display: block; margin-bottom: 3px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.48; color: {self.c('muted')}; "
-                "letter-spacing: 0.04em;"
+                "letter-spacing: 0;"
             )
         return (
             f"display: block; margin-bottom: 4px; font-family: {self.f('mono')}; "
@@ -681,11 +680,42 @@ class Renderer:
             "letter-spacing: 0.08em;"
         )
 
+    def song_table_cell_style(self, index: int, total: int, header: bool, last_row: bool) -> str:
+        weight = "700" if header else "400"
+        color = self.c("ink") if header else self.c("text")
+        background = self.c("surface_alt") if header else "transparent"
+        return (
+            f"display: table-cell; width: {100 / max(total, 1):.4f}%; box-sizing: border-box; "
+            f"padding: 8px 8px; font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; "
+            f"line-height: 1.6; color: {color}; font-weight: {weight}; text-align: center; "
+            f"vertical-align: middle; overflow-wrap: anywhere; word-break: break-word; "
+            f"background-color: {background}; border: 1px solid {self.c('line_soft')};"
+        )
+
+    def song_table_row(self, cells: Sequence[str], total: int, header: bool, last_row: bool) -> str:
+        normalized = list(cells[:total]) + [""] * max(0, total - len(cells))
+        cells_html = "".join(
+            f'<span style="{self.song_table_cell_style(index, total, header, last_row)}">{self.render_inline(cell)}</span>'
+            for index, cell in enumerate(normalized)
+        )
+        return f'<span style="display: table-row;">{cells_html}</span>'
+
+    def task_box_style(self, checked: bool) -> str:
+        return (
+            f"display: inline-block; width: 12px; height: 12px; margin: 0 10px 0 0; "
+            f"line-height: 12px; text-align: center; vertical-align: middle; "
+            f"font-family: {self.f('latin')}; font-size: {self.t('small_size')}; color: {self.c('accent')}; "
+            f"border: 1px solid {self.c('accent')}; background-color: "
+            f"{self.c('surface_alt') if checked else 'transparent'};"
+        )
+
     def inline_code_style(self) -> str:
         if self.is_theme("song"):
             return (
-                f"font-family: {self.f('mono')}; font-size: {self.t('body_size')}; background-color: {self.c('surface')}; "
-                f"color: {self.c('code_text')}; padding: 1px 5px; border-radius: 1px;"
+                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: {self.c('surface')}; "
+                f"color: {self.c('code_text')}; padding: 1px 5px; border-radius: 1px; "
+                f"border: 1px solid {self.c('line')}; "
+                "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
             )
         return (
             f"font-family: {self.f('mono')}; font-size: 0.9em; background-color: {self.c('surface_alt')}; "
@@ -704,7 +734,7 @@ class Renderer:
         if self.is_theme("mimo"):
             return f"border-bottom: 2px solid {self.c('accent')}; font-weight: 700; color: {self.c('ink')};"
         if self.is_theme("song"):
-            return f"border-bottom: 1px solid {self.c('accent')}; font-weight: 700; color: {self.c('ink')};"
+            return f"font-weight: 700; color: {self.c('ink')};"
         return f"border-bottom: 1px dashed {self.c('accent')}; font-weight: 600;"
 
     def em_style(self) -> str:
@@ -716,7 +746,7 @@ class Renderer:
     def latin_inline_style(self) -> str:
         if self.is_theme("song"):
             return (
-                f"font-family: {self.f('latin')}; font-size: {self.t('body_size')}; letter-spacing: 0; "
+                f"font-family: {self.f('latin')}; letter-spacing: 0; "
                 f"color: {self.c('ink')};"
             )
         return (
@@ -728,11 +758,11 @@ class Renderer:
         color = self.c("accent") if self.is_theme("mimo") else self.c("muted")
         weight = "700" if self.is_theme("mimo") else "500"
         if self.is_theme("song"):
-            color = self.c("accent") if ordered else self.c("accent")
-            weight = "600" if ordered else "500"
+            color = self.c("accent")
+            weight = "400"
         return (
-            f"display: inline-block; width: 22px; margin-right: 8px; text-align: center; "
-            f"vertical-align: top; font-family: {self.f('latin')}; font-size: {self.t('body_size') if self.is_theme('song') else '12px'}; line-height: 1.92; "
+            f"display: inline-block; width: 22px; margin-right: 8px; text-align: left; "
+            f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size') if self.is_theme('song') else '12px'}; line-height: 1.8; "
             f"font-weight: {weight}; color: {color}; letter-spacing: {'0.04em' if ordered else '0'};"
         )
 
@@ -770,8 +800,8 @@ class Renderer:
         if self.is_theme("song"):
             style = (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
-                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 2.08; "
-                f"color: {self.c('ink')}; text-align: left; letter-spacing: 0; font-weight: 500;"
+                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.8; "
+                f"color: {self.c('text')}; text-align: left; letter-spacing: 0; font-weight: 400;"
             )
         else:
             style = self.base_p(spacing)
@@ -782,9 +812,9 @@ class Renderer:
         if self.is_theme("song"):
             style = (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
-                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 2; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; line-height: 1.8; "
                 f"color: {self.c('ink')}; text-align: left; letter-spacing: 0; font-weight: 700; "
-                f"border-left: 2px solid {self.c('accent')}; padding-left: 14px;"
+                f"border-left: 2px solid {self.c('accent')}; padding: 2px 0 2px 14px;"
             )
         elif self.is_theme("mimo"):
             style = (
@@ -805,10 +835,10 @@ class Renderer:
         spacing = spacing_from_layout(layout, self.rhythm("quote_breathing", 18))
         if self.is_theme("song"):
             quote_style = (
-                f"display: block; padding: 12px 18px 12px 18px; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('body_size')}; line-height: 2; text-align: center; "
+                f"display: block; padding: 18px 24px 18px 24px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.8; text-align: left; "
                 f"color: {self.c('ink')}; background-color: {self.c('surface')}; "
-                f"border-left: 2px solid {self.c('accent')}; border-radius: {self.radius()};"
+                f"border-left: 3px solid {self.c('accent')}; border-radius: 0;"
             )
         else:
             quote_style = self.quote_p(self.c("accent"), self.c("surface"), self.c("ink"))
@@ -835,7 +865,7 @@ class Renderer:
             )
             caption_style = (
                 f"display: block; width: 88%; margin: 10px auto 0 auto; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('small_size')}; line-height: 1.72; color: {self.c('muted')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.8; color: {self.c('muted')}; "
                 "text-align: center; letter-spacing: 0.02em;"
             )
         else:
@@ -865,8 +895,8 @@ class Renderer:
         rendered: List[str] = []
         marker_style = (
             f"display: inline-block; width: 22px; margin-right: 8px; text-align: center; "
-            f"vertical-align: top; font-family: {self.f('latin')}; font-size: {self.t('body_size')}; "
-            f"line-height: 1.92; color: {self.c('accent')};"
+            f"vertical-align: top; font-family: {self.f('latin')}; font-size: {self.t('small_size')}; "
+            f"line-height: 1.8; color: {self.c('accent')}; font-weight: 400;"
         )
         content_style = "display: inline-block; max-width: 88%; vertical-align: top;"
         for index, item in enumerate(items):
@@ -883,7 +913,7 @@ class Renderer:
         if self.is_theme("song"):
             style = (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
-                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 2; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; line-height: 1.8; "
                 f"color: {self.c('muted')}; text-align: center; letter-spacing: 0;"
             )
         else:
@@ -1009,12 +1039,12 @@ class Renderer:
             escaped = escaped.replace(placeholder_token(index), fragment)
         return escaped
 
-    def render_heading_inline(self, text: str) -> str:
+    def render_heading_inline(self, text: str, size_key: str = "section_title_size") -> str:
         rendered = self.render_inline(text)
         if self.is_theme("song"):
             rendered = rendered.replace(
                 f"font-size: {self.t('body_size')};",
-                f"font-size: {self.t('section_title_size')};",
+                f"font-size: {self.t(size_key)};",
             )
         return rendered
 
@@ -1032,7 +1062,7 @@ class Renderer:
         spacing = spacing_from_layout(layout, self.rhythm("heading_bottom", 24))
         stripped = text.strip()
         if level == 1:
-            return [f'<p style="{self.title_p(spacing)}">{self.render_heading_inline(stripped)}</p>']
+            return [f'<p style="{self.title_p(spacing)}">{self.render_heading_inline(stripped, "title_size")}</p>']
 
         numeric_match = NUMERIC_SECTION_RE.match(stripped)
         if numeric_match:
@@ -1042,7 +1072,7 @@ class Renderer:
                 label = self.chinese_section_label(number)
                 return [
                     f'<p style="{self.section_num_p(spacing["top"])}">'
-                    f'{html.escape(label)}、{self.render_heading_inline(title)}</p>'
+                    f'{html.escape(label)}、{self.render_heading_inline(title, "section_title_size")}</p>'
                 ]
             number_label = f"SECTION {number}" if self.is_theme("mimo") else number
             return [
@@ -1050,7 +1080,13 @@ class Renderer:
                 f'<p style="{self.section_title_p(spacing["bottom"])}">{self.render_heading_inline(title)}</p>',
             ]
 
-        return [f'<p style="{self.subtitle_p(spacing)}">{self.render_heading_inline(stripped)}</p>']
+        if self.is_theme("song") and level == 2:
+            return [
+                f'<p style="{self.section_num_p(spacing["top"])}">'
+                f'{self.render_heading_inline(stripped, "section_title_size")}</p>'
+            ]
+
+        return [f'<p style="{self.subtitle_p(spacing)}">{self.render_heading_inline(stripped, "body_size")}</p>']
 
     def render_quote(self, lines: Sequence[str], layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("quote_breathing", 34))
@@ -1104,11 +1140,23 @@ class Renderer:
 
     def render_list(self, items: Sequence[Dict[str, Any]], ordered: bool, layout: Optional[Dict[str, Any]] = None) -> List[str]:
         rendered = []
-        content_style = "display: inline-block; max-width: 88%; vertical-align: top;"
+        content_style = "display: inline-block; max-width: 88%; vertical-align: middle;"
         spacing = spacing_from_layout(layout, 12)
         for index, item in enumerate(items):
-            marker = "○" if self.is_theme("song") else f"{item['number']}." if ordered else "•"
-            content = self.render_inline(item["text"])
+            item_text = item["text"]
+            task_match = TASK_ITEM_RE.match(item_text)
+            if self.is_theme("song") and task_match:
+                checked = task_match.group("mark").lower() == "x"
+                content = self.render_inline(task_match.group("text"))
+                item_spacing = {"top": spacing["top"] if index == 0 else 0, "bottom": spacing["bottom"]}
+                rendered.append(
+                    f'<p style="{self.list_p(item_spacing)}">'
+                    f'<span style="{self.task_box_style(checked)}">{"✓" if checked else ""}</span>'
+                    f'<span style="{content_style}">{content}</span></p>'
+                )
+                continue
+            marker = f"{item['number']}." if ordered else "○" if self.is_theme("song") else "•"
+            content = self.render_inline(item_text)
             item_spacing = {"top": spacing["top"] if index == 0 else 0, "bottom": spacing["bottom"]}
             rendered.append(
                 f'<p style="{self.list_p(item_spacing)}"><span style="{self.marker_style(ordered)}">{html.escape(marker)}</span>'
@@ -1125,6 +1173,19 @@ class Renderer:
                 f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
                 'margin: 0 10px 4px 0;"></span>'
             )
+        if self.is_theme("song"):
+            numbered = []
+            for line_number, line in enumerate(text.splitlines() or [""], start=1):
+                numbered.append(
+                    f'<span style="display: block;">'
+                    f'<span style="display: inline-block; width: 24px; margin-right: 14px; '
+                    f'color: {self.c("muted")}; text-align: right;">{line_number}</span>'
+                    f'{html.escape(line)}</span>'
+                )
+            return [
+                f'<p style="{self.code_meta_p(spacing["top"])}">{label}</p>',
+                f'<p style="{self.code_wrap_p(spacing["bottom"])}"><span style="{self.code_p()}">{"".join(numbered)}</span></p>',
+            ]
         return [
             f'<p style="{self.code_meta_p(spacing["top"])}">{rule}{label}</p>',
             f'<p style="{self.code_wrap_p(spacing["bottom"])}"><span style="{self.code_p()}">{html.escape(text)}</span></p>',
@@ -1132,6 +1193,19 @@ class Renderer:
 
     def render_table(self, header: Sequence[str], rows: Sequence[Sequence[str]], layout: Optional[Dict[str, Any]] = None) -> List[str]:
         spacing = spacing_from_layout(layout, 20)
+        if self.is_theme("song"):
+            total = max(len(header), max((len(row) for row in rows), default=0), 1)
+            body_rows = [self.song_table_row(header, total, True, not rows)]
+            for row_index, row in enumerate(rows):
+                body_rows.append(self.song_table_row(row, total, False, row_index == len(rows) - 1))
+            rows_html = "".join(body_rows)
+            return [
+                f'<p style="{self.table_wrap_p(spacing["bottom"])}">'
+                f'<span style="{self.table_card_p()}">'
+                f'<span style="display: table; width: 100%; table-layout: fixed; border-collapse: collapse;">'
+                f"{rows_html}"
+                "</span></span></p>"
+            ]
         rule = ""
         if not self.is_theme("song"):
             rule = (

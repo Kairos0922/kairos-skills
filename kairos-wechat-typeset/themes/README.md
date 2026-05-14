@@ -9,7 +9,7 @@ Themes implement the shared semantic component contract in [`../COMPONENTS.md`](
 1. Create `themes/<theme-id>/DESIGN.md`.
 2. Create `themes/<theme-id>.json`.
 3. Add the theme to `themes/registry.json`.
-4. Render a real article fixture with `--verify`; for `song`, use `fixtures/agent-skills-technical-article.md`.
+4. Render a real article fixture with `--verify`; for `song`, use `fixtures/song-style-system.md`.
 5. Compare the output against the nearest `goldens/` reference.
 6. Review mobile output at 390px and 430px.
 
@@ -54,7 +54,7 @@ python3 scripts/render.py \
 
 Use a realistic article fixture to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, steps, quote, NOTE/TIP/WARNING, Kairos lead, insight, pullquote, figure, soft-list, closing-note, image caption, code block, table fallback, divider, and escaped raw HTML.
 
-`goldens/song-style.html` is rendered from `fixtures/agent-skills-technical-article.md` so the Song reference stays close to a real technical article instead of a synthetic component matrix.
+`goldens/song-style.html` is rendered from `fixtures/song-style-system.md` so the Song reference stays close to its design-system master and article sample.
 
 Run the visual audit after every polish pass:
 
@@ -68,9 +68,11 @@ For themes with strict type or spacing rules, pass explicit gates:
 ```bash
 python3 scripts/audit_visual.py \
   --input goldens/song-style.html \
+  --allowed-font-size 14px \
   --allowed-font-size 16px \
-  --allowed-font-size 18px \
-  --max-margin-px 44
+  --allowed-font-size 20px \
+  --allowed-font-size 28px \
+  --max-margin-px 48
 ```
 
 ## Polish Heuristics

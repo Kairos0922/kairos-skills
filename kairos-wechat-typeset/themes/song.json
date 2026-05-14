@@ -2,11 +2,11 @@
   "id": "song",
   "name": "Song Aesthetic",
   "name_zh": "宋式美学",
-  "description": "Modern Chinese mobile editorial system built on Source Han Serif, restrained ink, compact rhythm, and Song-style warmth.",
-  "content_width": 640,
+  "description": "Modern Chinese body system built on Source Han Serif, paper warmth, restrained ink, technical order, and Song-style editorial breath.",
+  "content_width": 720,
   "philosophy": {
     "mood": "literary",
-    "density": "airy",
+    "density": "balanced",
     "rhythm": "mobile",
     "hierarchy": "soft"
   },
@@ -17,15 +17,15 @@
     "forbidden": ["card-heavy layout", "color CTA", "strong shadow", "multiple accent colors", "high-contrast blocks", "gradient", "large tinted backgrounds"]
   },
   "art_direction": {
-    "article_type": "literary",
-    "spacing_scale": 1.0,
+    "article_type": "technical-editorial",
+    "spacing_scale": 0.94,
     "emphasis_mode": "restrained",
-    "visual_density": "low",
-    "section_rhythm": "mobile-editorial"
+    "visual_density": "medium-low",
+    "section_rhythm": "technical-editorial"
   },
   "body": {
-    "background": "#fbf8f2",
-    "padding": "28px 18px 48px 18px"
+    "background": "#f7f5f0",
+    "padding": "24px 24px 48px 24px"
   },
   "fonts": {
     "cjk": "'Source Han Serif SC', 'Noto Serif CJK SC', 'Songti SC', 'STSong', SimSun, serif",
@@ -33,35 +33,35 @@
     "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
   },
   "colors": {
-    "ink": "#1f1914",
-    "text": "#3f3932",
-    "muted": "#80766b",
-    "soft": "#c8b8a4",
-    "line": "#cdbfae",
-    "line_soft": "#e4d8c8",
-    "surface": "#f6f0e7",
-    "surface_alt": "#f1e8dc",
-    "accent": "#8f3f2b",
-    "warning": "#8f3f2b",
-    "warning_bg": "#fbf8f2",
-    "code_text": "#2f2923"
+    "ink": "#2b2b2b",
+    "text": "#2b2b2b",
+    "muted": "#7a7a72",
+    "soft": "#a6a197",
+    "line": "#d8d2c8",
+    "line_soft": "#e5dfd5",
+    "surface": "#f7f5f0",
+    "surface_alt": "#efebe3",
+    "accent": "#7a7a72",
+    "warning": "#7a7a72",
+    "warning_bg": "#f7f5f0",
+    "code_text": "#2b2b2b"
   },
   "typography": {
-    "title_size": "18px",
-    "title_line": "1.72",
+    "title_size": "28px",
+    "title_line": "1.6",
     "body_size": "16px",
-    "body_line": "2.06",
-    "section_num_size": "18px",
-    "section_title_size": "18px",
-    "small_size": "16px",
-    "code_size": "16px"
+    "body_line": "1.8",
+    "section_num_size": "20px",
+    "section_title_size": "20px",
+    "small_size": "14px",
+    "code_size": "14px"
   },
   "rhythm": {
-    "paragraph_gap": 22,
-    "heading_top": 28,
-    "heading_bottom": 18,
-    "quote_breathing": 14,
-    "section_break": 22
+    "paragraph_gap": 24,
+    "heading_top": 32,
+    "heading_bottom": 16,
+    "quote_breathing": 20,
+    "section_break": 24
   },
   "shape": {
     "radius": "2px",

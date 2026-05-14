@@ -236,9 +236,11 @@ python3 scripts/verify_markdown.py \
 ```bash
 python3 scripts/audit_visual.py \
   --input goldens/song-style.html \
+  --allowed-font-size 14px \
   --allowed-font-size 16px \
-  --allowed-font-size 18px \
-  --max-margin-px 44
+  --allowed-font-size 20px \
+  --allowed-font-size 28px \
+  --max-margin-px 48
 ```
 
 ## 开发者新增主题
@@ -248,6 +250,6 @@ python3 scripts/audit_visual.py \
 1. 新建 `themes/<theme-id>/DESIGN.md`
 2. 新建 `themes/<theme-id>.json`
 3. 注册到 `themes/registry.json`
-4. 使用对应的真实文章 fixture 渲染 `goldens/<theme-id>-style.html`，例如 `song` 使用 `fixtures/agent-skills-technical-article.md`
+4. 使用对应的真实文章 fixture 渲染 `goldens/<theme-id>-style.html`，例如 `song` 使用 `fixtures/song-style-system.md`
 5. 通过真实文章样例检查标题、段落、引用、代码、表格、分割符、图片、链接和安全转义
 6. 通过 `--verify`、`scripts/audit_visual.py`、检查 `goldens/` 对齐度，并进行移动端预览

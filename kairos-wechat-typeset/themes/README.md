@@ -4,6 +4,8 @@ Themes are developer-maintained design systems. Users select one registered buil
 
 Themes implement the shared semantic component contract in [`../COMPONENTS.md`](../COMPONENTS.md). Expanding a theme should mean giving the same component matrix a deliberate visual treatment, not adding new user syntax or one-off decorative blocks.
 
+Read [`METHODOLOGY.md`](METHODOLOGY.md) before adding or substantially polishing a theme. It captures the Song finalization process: visual reference translation, semantic component mapping, token contracts, fixture/golden promotion, browser QA, and validation gates.
+
 ## Add a Theme
 
 1. Create `themes/<theme-id>/DESIGN.md`.
@@ -35,7 +37,7 @@ Each JSON theme must define:
 
 Theme quality comes from a repeatable design pass, not one-off CSS edits.
 
-1. Define the theme thesis in `DESIGN.md`: audience, mood, typography, color limits, forbidden moves, and component language.
+1. Define the theme thesis in `DESIGN.md`: audience, mood, typography, color limits, forbidden moves, component language, article type strategy, mobile rules, and quality gates.
 2. Decide whether the visual target is a normal Markdown block or a Kairos semantic component. Markdown owns technical article structure; semantic components own body-safe magazine expression such as lead, insight, pullquote, figure, soft-list, and closing-note.
 3. Tune the deterministic tokens in `themes/<theme-id>.json`: fonts, ink, paper, one accent color, rhythm, shape, and component variants.
 4. Render the theme's real article fixture:
@@ -85,16 +87,17 @@ Use these checks before accepting a theme:
 - Color: keep background fills rare. Prefer paper, ink, one accent, and subtle line color over multiple tinted surfaces.
 - Components: each block should have a role. If quote, code, table, and callout all look like similar boxes, the theme is not specific enough.
 - Platform boundary: WeChat body themes cannot control the article title, cover image, account header, menus, or external page chrome. Translate references into body-safe components instead of adding seals, free positioning, or cover-like decoration.
+- Alignment: measure table cells, task checkboxes, ordered markers, and unordered markers against their text when the component uses inline faux layout.
 - Mobile first: judge density at phone width. A spacing system that feels elegant on desktop can become fragmented on WeChat mobile.
 
-`song` is the reference example for an intentionally restrained theme: two font sizes, no gradients, minimal borders, compact mobile rhythm, and no decorative horizontal divider rules.
+`song` is the reference example for an intentionally restrained theme: bounded type scale, no gradients, minimal borders, compact mobile rhythm, stable faux tables, aligned list/checklist markers, and no decorative horizontal divider noise.
 
 ## Rules
 
 - Keep the total WeChat article shape mobile-first and single-column.
 - Keep all output styles inline.
 - Do not add `<style>`, external CSS, classes, or JavaScript.
-- Tables must remain stacked cards, not native wide tables.
+- Tables must remain WeChat-mobile-safe faux layouts, not native wide tables.
 - Accent color count is 1.
 - Highlight frequency target is <= 8%.
 - Gradients are forbidden in all themes unless a future theme explicitly documents a strong product reason and still passes WeChat compatibility review.

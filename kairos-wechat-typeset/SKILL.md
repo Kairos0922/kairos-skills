@@ -121,18 +121,18 @@ python3 scripts/render.py --list-themes
 
 v2 内置：
 
-- `song`：宋式美学。适合人文评论、生活方式、长文随笔、书评。
+- `song`：宋式美学。适合技术长文、方法论、人文评论、生活方式、书评。
 - `mimo`：Xiaomi MiMo。适合 AI、产品发布、技术报告、研究解读、数据型文章。
 - `claude`：Claude。适合教程、说明文档、方法论、技术观点、深度解释。
 
-主题不是颜色包，而是完整视觉哲学。用户不能传自定义主题、颜色、CSS 或外部模板。开发者扩展主题时，必须新增或更新 `themes/<theme-id>.json`、`themes/<theme-id>/DESIGN.md`，并登记到 `themes/registry.json`。
+主题不是颜色包，而是完整视觉哲学。用户不能传自定义主题、颜色、CSS 或外部模板。开发者扩展主题时，必须先遵守 `themes/METHODOLOGY.md`，再新增或更新 `themes/<theme-id>.json`、`themes/<theme-id>/DESIGN.md`，并登记到 `themes/registry.json`。
 
 ## Theme Philosophy / 主题哲学
 
 `song`：
 
 ```json
-{"mood":"literary","density":"airy","rhythm":"slow","hierarchy":"soft"}
+{"mood":"literary","density":"balanced","rhythm":"mobile","hierarchy":"soft"}
 ```
 
 `mimo`：
@@ -313,12 +313,15 @@ python3 scripts/verify_markdown.py \
 
 ## Developer Theme Extension / 开发者扩展
 
-主题扩展使用 `DESIGN.md` 思路：
+主题扩展必须先读 `themes/METHODOLOGY.md`。扩展主题不是写 CSS，而是把视觉母版转译为确定性的语义组件、设计 token、renderer 规则、fixture、golden 和验证门槛。
 
+主题扩展使用以下资产：
+
+- `themes/METHODOLOGY.md`：从 Song 定稿沉淀出的主题扩展方法论。
 - `themes/<theme-id>/DESIGN.md`：给开发者看的设计规范。
 - `themes/<theme-id>.json`：给脚本读取的确定性 visual philosophy、token、rhythm、constraints。
 - `themes/registry.json`：唯一对用户暴露的主题索引。
 - `fixtures/song-style-system.md`：`song` 设计规范与文章样例 golden 来源。
 - `scripts/audit_visual.py`：渲染后视觉库存审计，用于发现字号漂移、间距过大、边框过密和背景色过多。
 
-新增主题必须先使用对应真实文章 fixture 渲染、验证、对照 `goldens/` 的视觉标准并完成移动端预览，再加入 registry。用户运行时不能新增主题。
+新增主题必须先完成设计确认，再使用对应真实文章 fixture 渲染、验证、对照 `goldens/` 的视觉标准并完成 390px / 430px 移动端预览。对齐敏感组件必须量测表格、列表 marker 和任务清单 checkbox 的视觉中心。用户运行时不能新增主题。

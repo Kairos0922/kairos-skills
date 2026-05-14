@@ -62,7 +62,7 @@ python3 scripts/render.py \
 
 ## 内置主题
 
-- `song`：宋式美学。人文、评论、书评、生活方式。
+- `song`：宋式美学。技术长文、方法论、人文评论、生活方式、书评。
 - `mimo`：Xiaomi MiMo。AI、产品发布、技术报告、研究解读。
 - `claude`：Claude。教程、文档、方法论、技术观点。
 
@@ -245,11 +245,12 @@ python3 scripts/audit_visual.py \
 
 ## 开发者新增主题
 
-见 [`themes/README.md`](themes/README.md)。新增主题需要：
+见 [`themes/METHODOLOGY.md`](themes/METHODOLOGY.md) 与 [`themes/README.md`](themes/README.md)。新增主题需要：
 
-1. 新建 `themes/<theme-id>/DESIGN.md`
-2. 新建 `themes/<theme-id>.json`
-3. 注册到 `themes/registry.json`
-4. 使用对应的真实文章 fixture 渲染 `goldens/<theme-id>-style.html`，例如 `song` 使用 `fixtures/song-style-system.md`
-5. 通过真实文章样例检查标题、段落、引用、代码、表格、分割符、图片、链接和安全转义
-6. 通过 `--verify`、`scripts/audit_visual.py`、检查 `goldens/` 对齐度，并进行移动端预览
+1. 先写主题 thesis、适用文章类型、禁用视觉手法和组件规则。
+2. 新建 `themes/<theme-id>/DESIGN.md`。
+3. 新建 `themes/<theme-id>.json`。
+4. 注册到 `themes/registry.json`。
+5. 使用对应的真实文章 fixture 渲染 `goldens/<theme-id>-style.html`，例如 `song` 使用 `fixtures/song-style-system.md`。
+6. 通过真实文章样例检查标题、段落、引用、代码、表格、分割符、图片、链接和安全转义。
+7. 通过 `--verify`、`scripts/audit_visual.py`、检查 `goldens/` 对齐度，并进行 390px / 430px 移动端预览。

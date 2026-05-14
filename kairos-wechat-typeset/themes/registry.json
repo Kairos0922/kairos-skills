@@ -23,7 +23,7 @@
       "name_zh": "Claude",
       "path": "claude.json",
       "design": "claude/DESIGN.md",
-      "suitable_for": ["教程", "说明文档", "方法论", "技术观点", "深度解释"]
+      "suitable_for": ["教程", "说明文档", "方法论", "技术观点", "产品说明", "深度解释"]
     }
   ]
 }

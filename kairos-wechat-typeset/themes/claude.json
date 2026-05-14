@@ -2,29 +2,29 @@
   "id": "claude",
   "name": "Claude",
   "name_zh": "Claude",
-  "description": "Minimal professional editorial system with warm neutrality, clean hierarchy, and low-interruption readability.",
+  "description": "Warm low-noise documentation system for tutorials, explanations, methodology, product notes, and technical viewpoints.",
   "content_width": 640,
   "philosophy": {
     "mood": "minimal-professional",
-    "density": "balanced",
-    "rhythm": "neutral",
+    "density": "medium",
+    "rhythm": "calm",
     "hierarchy": "clean"
   },
   "constraints": {
     "accent_color_count": 1,
     "highlight_frequency_max": 0.08,
     "component_variants_max": 3,
-    "forbidden": ["heavy decoration", "strong color blocks", "deep shadow", "marketing-style hero"]
+    "forbidden": ["heavy decoration", "strong color blocks", "deep shadow", "marketing-style hero", "large decorative section numbers", "frequent divider lines"]
   },
   "art_direction": {
-    "article_type": "professional",
-    "spacing_scale": 1.04,
+    "article_type": "explanatory-document",
+    "spacing_scale": 0.98,
     "emphasis_mode": "quiet",
-    "visual_density": "medium",
-    "section_rhythm": "neutral"
+    "visual_density": "medium-low",
+    "section_rhythm": "calm-document"
   },
   "body": {
-    "background": "#faf8f4",
+    "background": "#faf9f5",
     "padding": "24px 16px 44px 16px"
   },
   "fonts": {
@@ -33,35 +33,35 @@
     "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
   },
   "colors": {
-    "ink": "#2a241f",
-    "text": "#4b4540",
-    "muted": "#7a746e",
-    "soft": "#b9afa5",
-    "line": "#ddd5cc",
-    "line_soft": "#e9e1d9",
-    "surface": "#fffdf8",
-    "surface_alt": "#f2eee8",
-    "accent": "#8f5f45",
+    "ink": "#141413",
+    "text": "#3d3d3a",
+    "muted": "#73726c",
+    "soft": "#aaa79f",
+    "line": "#dedcd1",
+    "line_soft": "#ece9df",
+    "surface": "#fffefa",
+    "surface_alt": "#f3f1ea",
+    "accent": "#8a5a44",
     "warning": "#9a5b29",
-    "warning_bg": "#fff4e6",
-    "code_text": "#302a25"
+    "warning_bg": "#fff7ec",
+    "code_text": "#242421"
   },
   "typography": {
-    "title_size": "30px",
-    "title_line": "1.42",
+    "title_size": "28px",
+    "title_line": "1.36",
     "body_size": "16px",
-    "body_line": "1.9",
+    "body_line": "1.78",
     "section_num_size": "20px",
-    "section_title_size": "22px",
-    "small_size": "13px",
-    "code_size": "12.5px"
+    "section_title_size": "20px",
+    "small_size": "14px",
+    "code_size": "14px"
   },
   "rhythm": {
-    "paragraph_gap": 22,
-    "heading_top": 42,
-    "heading_bottom": 24,
-    "quote_breathing": 32,
-    "section_break": 48
+    "paragraph_gap": 20,
+    "heading_top": 34,
+    "heading_bottom": 18,
+    "quote_breathing": 24,
+    "section_break": 30
   },
   "shape": {
     "radius": "8px",

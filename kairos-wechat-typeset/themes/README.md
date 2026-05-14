@@ -45,7 +45,7 @@ Theme quality comes from a repeatable design pass, not one-off CSS edits.
 ```bash
 python3 scripts/render.py \
   --theme <theme-id> \
-  --input fixtures/<theme-id>-article.md \
+  --input fixtures/<theme-id>-style-system.md \
   --output /tmp/<theme-id>-article.html \
   --verify
 ```
@@ -56,7 +56,7 @@ python3 scripts/render.py \
 
 Use a realistic article fixture to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, steps, quote, NOTE/TIP/WARNING, Kairos lead, insight, pullquote, figure, soft-list, closing-note, image caption, code block, table fallback, divider, and escaped raw HTML.
 
-`goldens/song-style.html` is rendered from `fixtures/song-style-system.md` so the Song reference stays close to its design-system master and article sample.
+`goldens/song-style.html` is rendered from `fixtures/song-style-system.md` so the Song reference stays close to its design-system master and article sample. `goldens/claude-style.html` is rendered from `fixtures/claude-style-system.md` so Claude stays anchored to explanatory documentation content.
 
 Run the visual audit after every polish pass:
 
@@ -75,6 +75,16 @@ python3 scripts/audit_visual.py \
   --allowed-font-size 20px \
   --allowed-font-size 28px \
   --max-margin-px 48
+```
+
+```bash
+python3 scripts/audit_visual.py \
+  --input goldens/claude-style.html \
+  --allowed-font-size 14px \
+  --allowed-font-size 16px \
+  --allowed-font-size 20px \
+  --allowed-font-size 28px \
+  --max-margin-px 40
 ```
 
 ## Polish Heuristics

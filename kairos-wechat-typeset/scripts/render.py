@@ -477,6 +477,13 @@ class Renderer:
                 f"line-height: {self.t('title_line')}; font-weight: 700; color: {self.c('ink')}; "
                 "text-align: left; letter-spacing: 0;"
             )
+        if self.is_theme("claude"):
+            return (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('title_size')}; "
+                f"line-height: {self.t('title_line')}; font-weight: 600; color: {self.c('ink')}; "
+                "text-align: left; letter-spacing: 0;"
+            )
         return (
             f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
             f"font-size: {self.t('title_size')}; line-height: {self.t('title_line')}; font-weight: 700; "
@@ -493,8 +500,8 @@ class Renderer:
         if self.is_theme("claude"):
             return (
                 f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
-                "font-size: 20px; line-height: 1; font-weight: 600; "
-                f"letter-spacing: 0.08em; color: {self.c('soft')}; text-align: left;"
+                f"font-size: {self.t('small_size')}; line-height: 1.35; font-weight: 600; "
+                f"letter-spacing: 0.04em; color: {self.c('accent')}; text-align: left;"
             )
         if self.is_theme("song"):
             return (
@@ -519,9 +526,8 @@ class Renderer:
         if self.is_theme("claude"):
             return (
                 f"max-width: {self.width}px; margin: 0 auto {bottom}px auto; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('section_title_size')}; line-height: 1.72; font-weight: 700; "
-                f"color: {self.c('ink')}; text-align: left; border-bottom: 1px solid {self.c('line_soft')}; "
-                "padding-bottom: 9px; letter-spacing: 0;"
+                f"font-size: {self.t('section_title_size')}; line-height: 1.55; font-weight: 600; "
+                f"color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
             )
         if self.is_theme("song"):
             return (
@@ -544,6 +550,12 @@ class Renderer:
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.6; font-weight: 500; "
                 f"color: {self.c('ink')}; text-align: left; padding: 0; letter-spacing: 0;"
+            )
+        if self.is_theme("claude"):
+            return (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.6; font-weight: 600; "
+                f"color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
             )
         return (
             f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
@@ -582,8 +594,8 @@ class Renderer:
             )
         if self.is_theme("claude"):
             return (
-                f"display: block; padding: 17px 19px 17px 19px; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('body_size')}; line-height: 1.9; text-align: left; "
+                f"display: block; padding: 14px 16px 14px 16px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: {self.t('body_line')}; text-align: left; "
                 f"background-color: {background or self.c('surface')}; border: 1px solid {self.c('line_soft')}; "
                 f"border-left: 3px solid {border}; border-radius: {self.radius()}; color: {text or self.c('text')};"
             )
@@ -601,6 +613,12 @@ class Renderer:
                 f"font-size: {self.t('small_size')}; line-height: 1.6; color: {self.c('muted')}; "
                 "text-align: left; letter-spacing: 0;"
             )
+        if self.is_theme("claude"):
+            return (
+                f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.45; color: {self.c('muted')}; "
+                "text-align: left; letter-spacing: 0;"
+            )
         return (
             f"max-width: {self.width}px; margin: {top}px auto 10px auto; font-family: {self.f('mono')}; "
             f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
@@ -614,6 +632,13 @@ class Renderer:
                 f"font-size: {self.t('code_size')}; line-height: 1.6; color: {self.c('code_text')}; "
                 f"text-align: left; white-space: pre-wrap; background-color: {self.c('surface')}; "
                 f"border: 1px solid {self.c('line')}; border-radius: {self.radius()};"
+            )
+        if self.is_theme("claude"):
+            return (
+                f"display: block; padding: 14px 16px 14px 16px; font-family: {self.f('mono')}; "
+                f"font-size: {self.t('code_size')}; line-height: 1.6; color: {self.c('code_text')}; "
+                f"text-align: left; white-space: pre-wrap; background-color: {self.c('surface_alt')}; "
+                f"border: 1px solid {self.c('line_soft')}; border-radius: {self.radius()};"
             )
         return (
             f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('mono')}; "
@@ -632,6 +657,12 @@ class Renderer:
                 f"font-size: {self.t('small_size')}; line-height: 1.6; color: {self.c('ink')}; "
                 "text-align: left; letter-spacing: 0;"
             )
+        if self.is_theme("claude"):
+            return (
+                f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.45; color: {self.c('muted')}; "
+                "text-align: left; letter-spacing: 0;"
+            )
         return (
             f"max-width: {self.width}px; margin: {top}px auto 12px auto; font-family: {self.f('mono')}; "
             f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')}; "
@@ -644,6 +675,13 @@ class Renderer:
                 f"display: block; padding: 0; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('body_size')}; line-height: 1.92; color: {self.c('text')}; "
                 f"text-align: left; background-color: transparent;"
+            )
+        if self.is_theme("claude"):
+            return (
+                f"display: block; padding: 14px 16px 14px 16px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.65; color: {self.c('text')}; "
+                f"text-align: left; background-color: {self.c('surface')}; border: 1px solid {self.c('line_soft')}; "
+                f"border-radius: {self.radius()};"
             )
         return (
             f"display: block; padding: 17px 20px 17px 20px; font-family: {self.f('cjk')}; "
@@ -661,6 +699,10 @@ class Renderer:
             return (
                 f"display: block; margin-bottom: {bottom}; padding-bottom: 0; color: {self.c('text')};"
             )
+        if self.is_theme("claude"):
+            return (
+                f"display: block; margin-bottom: {'0' if is_last else '8px'}; color: {self.c('text')};"
+            )
         return (
             f"display: block; margin-bottom: 10px; color: {self.c('text')};"
             if not is_last
@@ -672,6 +714,12 @@ class Renderer:
             return (
                 f"display: block; margin-bottom: 3px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.48; color: {self.c('muted')}; "
+                "letter-spacing: 0;"
+            )
+        if self.is_theme("claude"):
+            return (
+                f"display: block; margin-bottom: 3px; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.35; color: {self.c('muted')}; "
                 "letter-spacing: 0;"
             )
         return (
@@ -717,6 +765,12 @@ class Renderer:
                 f"border: 1px solid {self.c('line')}; "
                 "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
             )
+        if self.is_theme("claude"):
+            return (
+                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: {self.c('surface_alt')}; "
+                f"color: {self.c('code_text')}; padding: 1px 5px; border-radius: 4px; "
+                f"border: 1px solid {self.c('line_soft')}; vertical-align: middle;"
+            )
         return (
             f"font-family: {self.f('mono')}; font-size: 0.9em; background-color: {self.c('surface_alt')}; "
             f"color: {self.c('code_text')}; padding: 1px 6px; border-radius: 4px;"
@@ -728,6 +782,8 @@ class Renderer:
         return f"color: {self.c('ink')}; text-decoration: none; border-bottom: 1px solid {self.c('accent')};"
 
     def strong_style(self) -> str:
+        if self.is_theme("claude"):
+            return f"font-weight: 600; color: {self.c('ink')};"
         return f"font-weight: 700; color: {self.c('ink')};"
 
     def highlight_style(self) -> str:
@@ -735,6 +791,8 @@ class Renderer:
             return f"border-bottom: 2px solid {self.c('accent')}; font-weight: 700; color: {self.c('ink')};"
         if self.is_theme("song"):
             return f"font-weight: 700; color: {self.c('ink')};"
+        if self.is_theme("claude"):
+            return f"font-weight: 600; color: {self.c('ink')};"
         return f"border-bottom: 1px dashed {self.c('accent')}; font-weight: 600;"
 
     def em_style(self) -> str:
@@ -745,6 +803,11 @@ class Renderer:
 
     def latin_inline_style(self) -> str:
         if self.is_theme("song"):
+            return (
+                f"font-family: {self.f('latin')}; letter-spacing: 0; "
+                f"color: {self.c('ink')};"
+            )
+        if self.is_theme("claude"):
             return (
                 f"font-family: {self.f('latin')}; letter-spacing: 0; "
                 f"color: {self.c('ink')};"
@@ -760,9 +823,12 @@ class Renderer:
         if self.is_theme("song"):
             color = self.c("accent")
             weight = "400"
+        if self.is_theme("claude"):
+            color = self.c("muted")
+            weight = "400"
         return (
             f"display: inline-block; width: 22px; margin-right: 8px; text-align: left; "
-            f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size') if self.is_theme('song') else '12px'}; line-height: 1.8; "
+            f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size') if (self.is_theme('song') or self.is_theme('claude')) else '12px'}; line-height: 1.8; "
             f"font-weight: {weight}; color: {color}; letter-spacing: {'0.04em' if ordered else '0'};"
         )
 
@@ -780,6 +846,13 @@ class Renderer:
                     f'<span style="display: block; width: 88%; margin: 10px auto 0 auto; padding-top: 0; '
                     f'font-size: {self.t("small_size")}; line-height: 1.72; color: {self.c("muted")}; '
                     f'text-align: center; letter-spacing: 0.02em; font-family: {self.f("cjk")};">'
+                    f'{self.balance_latin_text(safe_alt)}</span>'
+                )
+            elif self.is_theme("claude"):
+                image_html += (
+                    f'<span style="display: block; width: 88%; margin: 10px auto 0 auto; '
+                    f'font-size: {self.t("small_size")}; line-height: 1.6; color: {self.c("muted")}; '
+                    f'text-align: center; letter-spacing: 0; font-family: {self.f("cjk")};">'
                     f'{self.balance_latin_text(safe_alt)}</span>'
                 )
             else:
@@ -803,6 +876,12 @@ class Renderer:
                 f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.8; "
                 f"color: {self.c('text')}; text-align: left; letter-spacing: 0; font-weight: 400;"
             )
+        elif self.is_theme("claude"):
+            style = (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.72; "
+                f"color: {self.c('text')}; text-align: left; letter-spacing: 0; font-weight: 400;"
+            )
         else:
             style = self.base_p(spacing)
         return f'<p style="{style}">{self.render_inline(text)}</p>'
@@ -824,6 +903,13 @@ class Renderer:
                 f"border-left: 4px solid {self.c('accent')}; padding: 12px 16px; "
                 f"background-color: {self.c('surface')}; border-radius: {self.radius()};"
             )
+        elif self.is_theme("claude"):
+            style = (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.72; "
+                f"color: {self.c('ink')}; text-align: left; letter-spacing: 0; font-weight: 600; "
+                f"border-left: 3px solid {self.c('accent')}; padding: 2px 0 2px 13px;"
+            )
         else:
             style = (
                 f"{self.base_p(spacing)} font-weight: 700; color: {self.c('ink')}; "
@@ -839,6 +925,13 @@ class Renderer:
                 f"font-size: {self.t('small_size')}; line-height: 1.8; text-align: left; "
                 f"color: {self.c('ink')}; background-color: {self.c('surface')}; "
                 f"border-left: 3px solid {self.c('accent')}; border-radius: 0;"
+            )
+        elif self.is_theme("claude"):
+            quote_style = (
+                f"display: block; padding: 14px 16px 14px 16px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: 1.72; text-align: left; "
+                f"color: {self.c('ink')}; background-color: {self.c('surface')}; "
+                f"border-left: 3px solid {self.c('accent')}; border-radius: {self.radius()};"
             )
         else:
             quote_style = self.quote_p(self.c("accent"), self.c("surface"), self.c("ink"))
@@ -868,6 +961,16 @@ class Renderer:
                 f"font-size: {self.t('small_size')}; line-height: 1.8; color: {self.c('muted')}; "
                 "text-align: center; letter-spacing: 0.02em;"
             )
+        elif self.is_theme("claude"):
+            image_style = (
+                f"display: block; width: 100%; max-width: 100%; height: auto; margin: 0 auto; "
+                f"border-radius: {self.radius('image_radius')};"
+            )
+            caption_style = (
+                f"display: block; width: 88%; margin: 10px auto 0 auto; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.6; color: {self.c('muted')}; "
+                "text-align: center; letter-spacing: 0;"
+            )
         else:
             image_style = (
                 f"display: block; width: 100%; max-width: 100%; height: auto; margin: 0 auto; "
@@ -895,10 +998,10 @@ class Renderer:
         rendered: List[str] = []
         marker_style = (
             f"display: inline-block; width: 22px; margin-right: 8px; text-align: center; "
-            f"vertical-align: top; font-family: {self.f('latin')}; font-size: {self.t('small_size')}; "
+            f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size')}; "
             f"line-height: 1.8; color: {self.c('accent')}; font-weight: 400;"
         )
-        content_style = "display: inline-block; max-width: 88%; vertical-align: top;"
+        content_style = "display: inline-block; max-width: 88%; vertical-align: middle;"
         for index, item in enumerate(items):
             item_spacing = {"top": spacing["top"] if index == 0 else 0, "bottom": spacing["bottom"]}
             rendered.append(
@@ -914,6 +1017,12 @@ class Renderer:
             style = (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; line-height: 1.8; "
+                f"color: {self.c('muted')}; text-align: center; letter-spacing: 0;"
+            )
+        elif self.is_theme("claude"):
+            style = (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; line-height: 1.7; "
                 f"color: {self.c('muted')}; text-align: center; letter-spacing: 0;"
             )
         else:
@@ -1145,7 +1254,7 @@ class Renderer:
         for index, item in enumerate(items):
             item_text = item["text"]
             task_match = TASK_ITEM_RE.match(item_text)
-            if self.is_theme("song") and task_match:
+            if (self.is_theme("song") or self.is_theme("claude")) and task_match:
                 checked = task_match.group("mark").lower() == "x"
                 content = self.render_inline(task_match.group("text"))
                 item_spacing = {"top": spacing["top"] if index == 0 else 0, "bottom": spacing["bottom"]}
@@ -1168,7 +1277,7 @@ class Renderer:
         spacing = spacing_from_layout(layout, 32)
         label = html.escape(language.upper() if language else "CODE")
         rule = ""
-        if not self.is_theme("song"):
+        if not self.is_theme("song") and not self.is_theme("claude"):
             rule = (
                 f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
                 'margin: 0 10px 4px 0;"></span>'
@@ -1207,7 +1316,7 @@ class Renderer:
                 "</span></span></p>"
             ]
         rule = ""
-        if not self.is_theme("song"):
+        if not self.is_theme("song") and not self.is_theme("claude"):
             rule = (
                 f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
                 'margin: 0 10px 4px 0;"></span>'
@@ -1240,8 +1349,9 @@ class Renderer:
         if self.is_theme("claude"):
             return (
                 f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
-                'text-align: left; line-height: 1;">'
-                f'<span style="display: block; width: 100%; border-top: 1px solid {self.c("line_soft")};"></span>'
+                'text-align: center; line-height: 1;">'
+                f'<span style="display: inline-block; width: 48px; border-top: 1px solid {self.c("line_soft")}; '
+                'vertical-align: middle;"></span>'
                 "</p>"
             )
         if self.is_theme("song"):

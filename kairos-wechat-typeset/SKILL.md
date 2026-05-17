@@ -144,7 +144,7 @@ v2 内置：
 `claude`：
 
 ```json
-{"mood":"minimal-professional","density":"balanced","rhythm":"neutral","hierarchy":"clean"}
+{"mood":"calm-intelligent","density":"balanced","rhythm":"measured","hierarchy":"editorial"}
 ```
 
 所有主题必须遵守：
@@ -171,7 +171,7 @@ article.md
 - 引用块 `>`
 - 分割线 `---` / `***` / `<!--段落分割线-->`
 - 粗体、斜体、删除线、行内代码、链接、图片
-- 简单表格，渲染时会降级为微信移动端更稳定的堆叠信息卡
+- 简单表格，渲染为微信移动端安全的 faux table 或主题化信息卡
 - 围栏代码块
 
 额外约定：

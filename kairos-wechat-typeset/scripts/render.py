@@ -462,8 +462,9 @@ class Renderer:
 
     def base_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
         spacing = spacing or {"top": 0, "bottom": self.rhythm("paragraph_gap", 22)}
+        font_family = self.f("latin") if self.is_theme("claude") else self.f("cjk")
         return (
-            f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
+            f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {font_family}; "
             f"font-size: {self.t('body_size')}; line-height: {self.t('body_line')}; color: {self.c('text')}; "
             "text-align: left; letter-spacing: 0;"
         )
@@ -481,7 +482,7 @@ class Renderer:
             return (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"font-family: {self.f('cjk')}; font-size: {self.t('title_size')}; "
-                f"line-height: {self.t('title_line')}; font-weight: 600; color: {self.c('ink')}; "
+                f"line-height: {self.t('title_line')}; font-weight: 400; color: {self.c('ink')}; "
                 "text-align: left; letter-spacing: 0;"
             )
         return (
@@ -501,7 +502,7 @@ class Renderer:
             return (
                 f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.35; font-weight: 600; "
-                f"letter-spacing: 0.04em; color: {self.c('accent')}; text-align: left;"
+                f"letter-spacing: 0; color: {self.c('ink')}; text-align: left;"
             )
         if self.is_theme("song"):
             return (
@@ -526,7 +527,7 @@ class Renderer:
         if self.is_theme("claude"):
             return (
                 f"max-width: {self.width}px; margin: 0 auto {bottom}px auto; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('section_title_size')}; line-height: 1.55; font-weight: 600; "
+                f"font-size: {self.t('section_title_size')}; line-height: 1.25; font-weight: 400; "
                 f"color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
             )
         if self.is_theme("song"):
@@ -554,7 +555,7 @@ class Renderer:
         if self.is_theme("claude"):
             return (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
-                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.6; font-weight: 600; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('subhead_size')}; line-height: 1.35; font-weight: 400; "
                 f"color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
             )
         return (
@@ -566,6 +567,12 @@ class Renderer:
 
     def list_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
         spacing = spacing or {"top": 0, "bottom": 12}
+        if self.is_theme("claude"):
+            return (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"font-family: {self.f('latin')}; font-size: {self.t('small_size')}; line-height: 1.6; "
+                f"color: {self.c('text')}; text-align: left;"
+            )
         return (
             f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; font-family: {self.f('cjk')}; "
             f"font-size: {self.t('small_size')}; line-height: 1.8; color: {self.c('text')}; text-align: left;"
@@ -594,10 +601,10 @@ class Renderer:
             )
         if self.is_theme("claude"):
             return (
-                f"display: block; padding: 14px 16px 14px 16px; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('body_size')}; line-height: {self.t('body_line')}; text-align: left; "
-                f"background-color: {background or self.c('surface')}; border: 1px solid {self.c('line_soft')}; "
-                f"border-left: 3px solid {border}; border-radius: {self.radius()}; color: {text or self.c('text')};"
+                f"display: block; padding: 18px 20px 18px 18px; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.55; text-align: left; "
+                f"background-color: {background or self.c('surface_alt')}; border-left: 2px solid {border}; "
+                f"color: {text or self.c('text')};"
             )
         return (
             f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('cjk')}; "
@@ -635,10 +642,11 @@ class Renderer:
             )
         if self.is_theme("claude"):
             return (
-                f"display: block; padding: 14px 16px 14px 16px; font-family: {self.f('mono')}; "
-                f"font-size: {self.t('code_size')}; line-height: 1.6; color: {self.c('code_text')}; "
-                f"text-align: left; white-space: pre-wrap; background-color: {self.c('surface_alt')}; "
-                f"border: 1px solid {self.c('line_soft')}; border-radius: {self.radius()};"
+                f"display: block; padding: 16px 18px 16px 18px; font-family: {self.f('mono')}; "
+                f"font-size: {self.t('code_size')}; line-height: 1.65; color: {self.c('code_text')}; "
+                f"text-align: left; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; "
+                f"background-color: {self.c('surface_alt')}; border: 1px solid {self.c('line')}; "
+                f"border-radius: 0;"
             )
         return (
             f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('mono')}; "
@@ -678,10 +686,9 @@ class Renderer:
             )
         if self.is_theme("claude"):
             return (
-                f"display: block; padding: 14px 16px 14px 16px; font-family: {self.f('cjk')}; "
+                f"display: block; padding: 0; font-family: {self.f('latin')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.65; color: {self.c('text')}; "
-                f"text-align: left; background-color: {self.c('surface')}; border: 1px solid {self.c('line_soft')}; "
-                f"border-radius: {self.radius()};"
+                f"text-align: left; background-color: {self.c('surface')}; border: 1px solid {self.c('line')};"
             )
         return (
             f"display: block; padding: 17px 20px 17px 20px; font-family: {self.f('cjk')}; "
@@ -701,7 +708,7 @@ class Renderer:
             )
         if self.is_theme("claude"):
             return (
-                f"display: block; margin-bottom: {'0' if is_last else '8px'}; color: {self.c('text')};"
+                f"display: block; margin-bottom: 0; color: {self.c('text')};"
             )
         return (
             f"display: block; margin-bottom: 10px; color: {self.c('text')};"
@@ -718,8 +725,8 @@ class Renderer:
             )
         if self.is_theme("claude"):
             return (
-                f"display: block; margin-bottom: 3px; font-family: {self.f('latin')}; "
-                f"font-size: {self.t('small_size')}; line-height: 1.35; color: {self.c('muted')}; "
+                f"display: block; margin-bottom: 0; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.35; color: {self.c('ink')}; "
                 "letter-spacing: 0;"
             )
         return (
@@ -748,12 +755,34 @@ class Renderer:
         )
         return f'<span style="display: table-row;">{cells_html}</span>'
 
+    def claude_table_cell_style(self, index: int, total: int, header: bool, last_row: bool) -> str:
+        weight = "600" if header else "400"
+        background = self.c("surface_alt") if header else "transparent"
+        right_border = f"border-right: 1px solid {self.c('line')};" if index < total - 1 else "border-right: 0;"
+        bottom_border = f"border-bottom: 1px solid {self.c('line')};" if not last_row else "border-bottom: 0;"
+        return (
+            f"display: table-cell; width: {100 / max(total, 1):.4f}%; box-sizing: border-box; "
+            f"padding: 8px 10px; font-family: {self.f('latin')}; font-size: {self.t('small_size')}; "
+            f"line-height: 1.55; color: {self.c('text')}; font-weight: {weight}; text-align: left; "
+            f"vertical-align: middle; overflow-wrap: anywhere; word-break: break-word; "
+            f"background-color: {background}; {right_border} {bottom_border}"
+        )
+
+    def claude_table_row(self, cells: Sequence[str], total: int, header: bool, last_row: bool) -> str:
+        normalized = list(cells[:total]) + [""] * max(0, total - len(cells))
+        cells_html = "".join(
+            f'<span style="{self.claude_table_cell_style(index, total, header, last_row)}">{self.render_inline(cell)}</span>'
+            for index, cell in enumerate(normalized)
+        )
+        return f'<span style="display: table-row;">{cells_html}</span>'
+
     def task_box_style(self, checked: bool) -> str:
+        mark = self.c("ink") if self.is_theme("claude") else self.c("accent")
         return (
             f"display: inline-block; width: 12px; height: 12px; margin: 0 10px 0 0; "
             f"line-height: 12px; text-align: center; vertical-align: middle; "
-            f"font-family: {self.f('latin')}; font-size: {self.t('small_size')}; color: {self.c('accent')}; "
-            f"border: 1px solid {self.c('accent')}; background-color: "
+            f"font-family: {self.f('latin')}; font-size: {self.t('small_size')}; color: {mark}; "
+            f"border: 1px solid {mark}; background-color: "
             f"{self.c('surface_alt') if checked else 'transparent'};"
         )
 
@@ -768,7 +797,7 @@ class Renderer:
         if self.is_theme("claude"):
             return (
                 f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: {self.c('surface_alt')}; "
-                f"color: {self.c('code_text')}; padding: 1px 5px; border-radius: 4px; "
+                f"color: {self.c('code_text')}; padding: 1px 4px; border-radius: 0; "
                 f"border: 1px solid {self.c('line_soft')}; vertical-align: middle;"
             )
         return (
@@ -779,6 +808,8 @@ class Renderer:
     def link_style(self) -> str:
         if self.is_theme("song"):
             return f"color: {self.c('ink')}; text-decoration: none; border-bottom: 1px solid {self.c('accent')};"
+        if self.is_theme("claude"):
+            return f"color: {self.c('ink')}; text-decoration: none; border-bottom: 1px solid {self.c('line')};"
         return f"color: {self.c('ink')}; text-decoration: none; border-bottom: 1px solid {self.c('accent')};"
 
     def strong_style(self) -> str:
@@ -827,8 +858,8 @@ class Renderer:
             color = self.c("muted")
             weight = "400"
         return (
-            f"display: inline-block; width: 22px; margin-right: 8px; text-align: left; "
-            f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size') if (self.is_theme('song') or self.is_theme('claude')) else '12px'}; line-height: 1.8; "
+            f"display: inline-block; width: 18px; margin-right: 10px; text-align: center; "
+            f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size') if (self.is_theme('song') or self.is_theme('claude')) else '12px'}; line-height: 1.6; "
             f"font-weight: {weight}; color: {color}; letter-spacing: {'0.04em' if ordered else '0'};"
         )
 
@@ -879,7 +910,7 @@ class Renderer:
         elif self.is_theme("claude"):
             style = (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
-                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.72; "
+                f"font-family: {self.f('latin')}; font-size: {self.t('body_size')}; line-height: 1.5; "
                 f"color: {self.c('text')}; text-align: left; letter-spacing: 0; font-weight: 400;"
             )
         else:
@@ -906,9 +937,9 @@ class Renderer:
         elif self.is_theme("claude"):
             style = (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
-                f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: 1.72; "
-                f"color: {self.c('ink')}; text-align: left; letter-spacing: 0; font-weight: 600; "
-                f"border-left: 3px solid {self.c('accent')}; padding: 2px 0 2px 13px;"
+                f"font-family: {self.f('latin')}; font-size: {self.t('body_size')}; line-height: 1.5; "
+                f"color: {self.c('ink')}; text-align: left; letter-spacing: 0; font-weight: 400; "
+                f"border-left: 2px solid {self.c('line')}; padding: 0 0 0 14px;"
             )
         else:
             style = (
@@ -928,13 +959,24 @@ class Renderer:
             )
         elif self.is_theme("claude"):
             quote_style = (
-                f"display: block; padding: 14px 16px 14px 16px; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('body_size')}; line-height: 1.72; text-align: left; "
-                f"color: {self.c('ink')}; background-color: {self.c('surface')}; "
-                f"border-left: 3px solid {self.c('accent')}; border-radius: {self.radius()};"
+                f"display: block; padding: 14px 0 14px 18px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('subhead_size')}; line-height: 1.5; text-align: left; "
+                f"color: {self.c('ink')}; background-color: transparent; "
+                f"border-left: 2px solid {self.c('line')};"
             )
         else:
             quote_style = self.quote_p(self.c("accent"), self.c("surface"), self.c("ink"))
+        if self.is_theme("claude"):
+            return (
+                f'<p style="{self.component_wrap_p(spacing)}">'
+                f'<span style="{quote_style}">'
+                f'<span style="display: inline-block; width: 30px; margin-right: 8px; '
+                f'font-family: {self.f("cjk")}; font-size: {self.t("section_title_size")}; '
+                f'line-height: 1; color: {self.c("soft")}; vertical-align: top;">“</span>'
+                f'<span style="display: inline-block; max-width: 84%; vertical-align: top;">'
+                f'{self.render_inline(text, balance_latin=False)}</span>'
+                f'</span></p>'
+            )
         return (
             f'<p style="{self.component_wrap_p(spacing)}">'
             f'<span style="{quote_style}">{self.render_inline(text)}</span>'
@@ -964,10 +1006,10 @@ class Renderer:
         elif self.is_theme("claude"):
             image_style = (
                 f"display: block; width: 100%; max-width: 100%; height: auto; margin: 0 auto; "
-                f"border-radius: {self.radius('image_radius')};"
+                "border-radius: 0;"
             )
             caption_style = (
-                f"display: block; width: 88%; margin: 10px auto 0 auto; font-family: {self.f('cjk')}; "
+                f"display: block; width: 88%; margin: 10px auto 0 auto; font-family: {self.f('latin')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.6; color: {self.c('muted')}; "
                 "text-align: center; letter-spacing: 0;"
             )
@@ -997,11 +1039,11 @@ class Renderer:
         spacing = spacing_from_layout(layout, 12)
         rendered: List[str] = []
         marker_style = (
-            f"display: inline-block; width: 22px; margin-right: 8px; text-align: center; "
+            f"display: inline-block; width: 18px; margin-right: 10px; text-align: center; "
             f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size')}; "
-            f"line-height: 1.8; color: {self.c('accent')}; font-weight: 400;"
+            f"line-height: 1.6; color: {self.c('accent')}; font-weight: 400;"
         )
-        content_style = "display: inline-block; max-width: 88%; vertical-align: middle;"
+        content_style = "display: inline-block; max-width: 88%; vertical-align: middle; line-height: 1.6;"
         for index, item in enumerate(items):
             item_spacing = {"top": spacing["top"] if index == 0 else 0, "bottom": spacing["bottom"]}
             rendered.append(
@@ -1020,10 +1062,22 @@ class Renderer:
                 f"color: {self.c('muted')}; text-align: center; letter-spacing: 0;"
             )
         elif self.is_theme("claude"):
-            style = (
+            outer_style = (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
-                f"font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; line-height: 1.7; "
-                f"color: {self.c('muted')}; text-align: center; letter-spacing: 0;"
+                f"padding: 16px 20px; background-color: {self.c('surface_alt')}; "
+                f"border-bottom: 1px solid {self.c('line_soft')}; text-align: left;"
+            )
+            star_style = (
+                f"display: inline-block; width: 20px; margin-right: 14px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('subhead_size')}; line-height: 1; color: {self.c('soft')}; vertical-align: middle;"
+            )
+            text_style = (
+                f"display: inline-block; max-width: 86%; font-family: {self.f('latin')}; font-size: {self.t('small_size')}; "
+                f"line-height: 1.7; color: {self.c('muted')}; vertical-align: middle;"
+            )
+            return (
+                f'<p style="{outer_style}"><span style="{star_style}">★</span>'
+                f'<span style="{text_style}">{self.render_inline(text)}</span></p>'
             )
         else:
             style = self.base_p(spacing) + " text-align: center;"
@@ -1089,7 +1143,7 @@ class Renderer:
             )
         return "".join(balanced)
 
-    def render_inline(self, text: str) -> str:
+    def render_inline(self, text: str, balance_latin: bool = True) -> str:
         placeholders: List[str] = []
 
         def stash(fragment: str) -> str:
@@ -1142,14 +1196,15 @@ class Renderer:
             re.compile(r"(?<!_)_(?!_)(.+?)(?<!_)_(?!_)", re.DOTALL),
             lambda inner: f'<span style="{self.em_style()}">{inner}</span>',
         )
-        escaped = self.balance_latin_text(escaped)
+        if balance_latin:
+            escaped = self.balance_latin_text(escaped)
 
         for index, fragment in enumerate(placeholders):
             escaped = escaped.replace(placeholder_token(index), fragment)
         return escaped
 
-    def render_heading_inline(self, text: str, size_key: str = "section_title_size") -> str:
-        rendered = self.render_inline(text)
+    def render_heading_inline(self, text: str, size_key: str = "section_title_size", balance_latin: bool = True) -> str:
+        rendered = self.render_inline(text, balance_latin=balance_latin)
         if self.is_theme("song"):
             rendered = rendered.replace(
                 f"font-size: {self.t('body_size')};",
@@ -1171,7 +1226,9 @@ class Renderer:
         spacing = spacing_from_layout(layout, self.rhythm("heading_bottom", 24))
         stripped = text.strip()
         if level == 1:
-            return [f'<p style="{self.title_p(spacing)}">{self.render_heading_inline(stripped, "title_size")}</p>']
+            return [
+                f'<p style="{self.title_p(spacing)}">{self.render_heading_inline(stripped, "title_size", balance_latin=not self.is_theme("claude"))}</p>'
+            ]
 
         numeric_match = NUMERIC_SECTION_RE.match(stripped)
         if numeric_match:
@@ -1186,7 +1243,7 @@ class Renderer:
             number_label = f"SECTION {number}" if self.is_theme("mimo") else number
             return [
                 f'<p style="{self.section_num_p(spacing["top"])}">{html.escape(number_label)}</p>',
-                f'<p style="{self.section_title_p(spacing["bottom"])}">{self.render_heading_inline(title)}</p>',
+                f'<p style="{self.section_title_p(spacing["bottom"])}">{self.render_heading_inline(title, balance_latin=not self.is_theme("claude"))}</p>',
             ]
 
         if self.is_theme("song") and level == 2:
@@ -1195,7 +1252,9 @@ class Renderer:
                 f'{self.render_heading_inline(stripped, "section_title_size")}</p>'
             ]
 
-        return [f'<p style="{self.subtitle_p(spacing)}">{self.render_heading_inline(stripped, "body_size")}</p>']
+        return [
+            f'<p style="{self.subtitle_p(spacing)}">{self.render_heading_inline(stripped, "body_size", balance_latin=not self.is_theme("claude"))}</p>'
+        ]
 
     def render_quote(self, lines: Sequence[str], layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("quote_breathing", 34))
@@ -1223,6 +1282,17 @@ class Renderer:
             border = self.c("muted")
 
         text = merge_lines(cleaned)
+        if self.is_theme("claude") and quote_kind == "QUOTE":
+            return (
+                f'<p style="{self.quote_wrap_p(spacing)}">'
+                f'<span style="display: block; padding: 6px 0 6px 0; font-family: {self.f("cjk")}; '
+                f'font-size: {self.t("body_size")}; line-height: 1.75; color: {self.c("ink")}; text-align: left;">'
+                f'<span style="display: inline-block; width: 30px; margin-right: 8px; '
+                f'font-family: {self.f("cjk")}; font-size: {self.t("section_title_size")}; '
+                f'line-height: 1; color: {self.c("soft")}; vertical-align: top;">“</span>'
+                f'<span style="display: inline-block; max-width: 84%; vertical-align: top;">'
+                f'{self.render_inline(text, balance_latin=False)}</span></span></p>'
+            )
         if self.is_theme("song") and quote_kind != "QUOTE":
             labels = {
                 "NOTE": "注",
@@ -1249,7 +1319,7 @@ class Renderer:
 
     def render_list(self, items: Sequence[Dict[str, Any]], ordered: bool, layout: Optional[Dict[str, Any]] = None) -> List[str]:
         rendered = []
-        content_style = "display: inline-block; max-width: 88%; vertical-align: middle;"
+        content_style = "display: inline-block; max-width: 88%; vertical-align: middle; line-height: 1.6;"
         spacing = spacing_from_layout(layout, 12)
         for index, item in enumerate(items):
             item_text = item["text"]
@@ -1276,6 +1346,8 @@ class Renderer:
     def render_code(self, text: str, language: str, layout: Optional[Dict[str, Any]] = None) -> List[str]:
         spacing = spacing_from_layout(layout, 32)
         label = html.escape(language.upper() if language else "CODE")
+        if self.is_theme("claude"):
+            label = html.escape(language.lower() if language else "code")
         rule = ""
         if not self.is_theme("song") and not self.is_theme("claude"):
             rule = (
@@ -1295,6 +1367,26 @@ class Renderer:
                 f'<p style="{self.code_meta_p(spacing["top"])}">{label}</p>',
                 f'<p style="{self.code_wrap_p(spacing["bottom"])}"><span style="{self.code_p()}">{"".join(numbered)}</span></p>',
             ]
+        if self.is_theme("claude"):
+            panel_style = (
+                f"display: block; padding: 12px 16px 16px 16px; text-align: left; "
+                f"background-color: {self.c('surface_alt')}; border: 1px solid {self.c('line')}; "
+                "border-radius: 0;"
+            )
+            label_style = (
+                f"display: block; margin: 0 0 8px 0; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('small_size')}; line-height: 1.4; color: {self.c('muted')};"
+            )
+            code_style = (
+                f"display: block; padding: 0; font-family: {self.f('mono')}; "
+                f"font-size: {self.t('code_size')}; line-height: 1.65; color: {self.c('code_text')}; "
+                "white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;"
+            )
+            return [
+                f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])};">'
+                f'<span style="{panel_style}"><span style="{label_style}">{label}</span>'
+                f'<span style="{code_style}">{html.escape(text)}</span></span></p>'
+            ]
         return [
             f'<p style="{self.code_meta_p(spacing["top"])}">{rule}{label}</p>',
             f'<p style="{self.code_wrap_p(spacing["bottom"])}"><span style="{self.code_p()}">{html.escape(text)}</span></p>',
@@ -1313,6 +1405,18 @@ class Renderer:
                 f'<span style="{self.table_card_p()}">'
                 f'<span style="display: table; width: 100%; table-layout: fixed; border-collapse: collapse;">'
                 f"{rows_html}"
+                "</span></span></p>"
+            ]
+        if self.is_theme("claude"):
+            total = max(len(header), max((len(row) for row in rows), default=0), 1)
+            body_rows = [self.claude_table_row(header, total, True, not rows)]
+            for row_index, row in enumerate(rows):
+                body_rows.append(self.claude_table_row(row, total, False, row_index == len(rows) - 1))
+            return [
+                f'<p style="{self.table_wrap_p(spacing["bottom"])}">'
+                f'<span style="{self.table_card_p()}">'
+                f'<span style="display: table; width: 100%; table-layout: fixed; border-collapse: collapse;">'
+                f"{''.join(body_rows)}"
                 "</span></span></p>"
             ]
         rule = ""
@@ -1349,8 +1453,8 @@ class Renderer:
         if self.is_theme("claude"):
             return (
                 f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
-                'text-align: center; line-height: 1;">'
-                f'<span style="display: inline-block; width: 48px; border-top: 1px solid {self.c("line_soft")}; '
+                'text-align: left; line-height: 1;">'
+                f'<span style="display: block; width: 100%; border-top: 1px solid {self.c("line_soft")}; '
                 'vertical-align: middle;"></span>'
                 "</p>"
             )

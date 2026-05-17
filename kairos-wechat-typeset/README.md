@@ -163,7 +163,7 @@ Markdown path / Markdown text / non-Markdown text
 - 标题、段落、列表、引用、分割线
 - 粗体、斜体、删除线、行内代码、链接、图片
 - 围栏代码块
-- 简单表格，自动降级为移动端堆叠信息卡
+- 简单表格，渲染为微信移动端安全的 faux table 或主题化信息卡
 - `==重点句==`
 - `> [!NOTE]` / `> [!TIP]` / `> [!WARNING]`
 - `## 01 标题` 数字章节标题
@@ -209,7 +209,7 @@ Markdown path / Markdown text / non-Markdown text
 - 稳定输出：白名单语义组件、全内联样式、无任意 HTML/CSS。
 - 快速扩主题：每个主题实现同一套组件矩阵，而不是为每篇文章临场补样式。
 - 高级感：靠语义选择、留白、阅读节奏、克制强调和图文关系建立，不靠堆装饰。
-- 移动端适配：表格降级为堆叠信息卡，代码块不依赖横向滚动，图片始终移动端安全。
+- 移动端适配：表格使用微信移动端安全的 faux layout，代码块不依赖横向滚动，图片始终移动端安全。
 
 ## 验证
 
@@ -246,11 +246,12 @@ python3 scripts/audit_visual.py \
 ```bash
 python3 scripts/audit_visual.py \
   --input goldens/claude-style.html \
-  --allowed-font-size 14px \
+  --allowed-font-size 13px \
   --allowed-font-size 16px \
   --allowed-font-size 20px \
   --allowed-font-size 28px \
-  --max-margin-px 40
+  --allowed-font-size 52px \
+  --max-margin-px 48
 ```
 
 ## 开发者新增主题

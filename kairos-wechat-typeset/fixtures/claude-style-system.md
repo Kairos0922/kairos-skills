@@ -1,102 +1,84 @@
 ---
-title: Claude 主题设计样例
+title: Connect Claude to the tools you use
 ---
-
-# 把复杂系统解释清楚
 
 :::lead
-Claude 主题服务于教程、文档、方法论和技术观点。它应该像一份耐读的解释型文档：层级清楚，语气温和，组件低噪声，读者可以连续阅读十分钟而不被装饰打断。
+May 20, 2024　·　Connectors
 :::
 
-本文用一个“构建可维护 Agent 工作流”的例子，覆盖 Claude 主题需要稳定处理的正文组件：标题、段落、引用、提示块、代码、表格、列表、任务清单、图片和收束段。
+# Connect Claude to the tools you use
 
-> [!NOTE]
-> Claude 主题不是官网复刻，也不是聊天界面截图。它把 Claude 产品常见的温和、清晰、低干扰和文档感转译为微信公众号正文里的内联 HTML。
-
-## 01 先建立读者的心智模型
-
-一个复杂系统通常不是因为信息太少而难懂，而是因为入口太多。解释型文章需要先告诉读者：这套系统解决什么问题，它由哪些部分组成，读者应该按什么顺序理解。
-
-:::insight
-好的解释不是把所有细节一次性摊开，而是给读者一条稳定的路径。
-:::
-
-### 三个基本问题
-
-- 这个系统服务什么任务？
-- 哪些步骤必须确定性执行？
-- 哪些判断可以交给模型完成？
-
-如果文章里出现 `API`、`SDK`、`CLI`、`JSON Schema` 和 `Markdown Renderer` 这样的英文术语，它们应该融入正文，而不是让行高和视觉中心漂移。
-
-## 02 把流程写成可验证步骤
-
-方法论文章最怕只讲理念，不给执行路径。Claude 主题需要让步骤和检查项非常清楚，同时保持页面安静。
-
-1. 归一化输入，确认用户提供的是文件路径、Markdown 文本还是普通文本。
-2. 根据文章类型选择主题，并锁定主题 registry 中的合法 id。
-3. 生成布局稿时只使用 Markdown 和白名单 Kairos 组件。
-4. 渲染 HTML 后运行验证，再进行移动端预览。
-
-> [!TIP]
-> 如果一个步骤会影响输出结构，就把它写进工作流；如果只是临时审美偏好，就不要把它变成用户可调参数。
-
-### 任务检查清单
-
-- [x] 主题来自 `themes/registry.json`
-- [x] 布局稿通过 Markdown safety verify
-- [ ] 在 390px 和 430px 移动端检查横向溢出
-- [ ] 量测列表 marker 与文字是否垂直居中
-
-## 03 用代码块承载确定性部分
-
-代码块应该像文档里的工具说明：边界清楚、标签可读、背景轻，不要像一个高对比的终端截图。
-
-```python
-from pathlib import Path
-
-def output_dir(article_slug: str, version: int) -> Path:
-    root = Path.home() / ".wechat-typeset"
-    return root / article_slug / f"v{version:03d}"
-```
-
-行内代码例如 `output.html`、`layout.md`、`meta.json` 需要清晰，但不能打断段落。
-
-## 04 用表格解释取舍
-
-表格在微信公众号里不能假设桌面宽度。Claude 主题应该把表格处理成文档式 ledger：可扫描，边界温和，字段和值的关系明确。
-
-| 选择 | 适合场景 | 风险 |
-| --- | --- | --- |
-| 直接渲染 | 用户已有成熟 Markdown | 原文结构可能不够公众号友好 |
-| 优化布局 | 需要增强阅读节奏 | 需要验证不新增事实 |
-| 新增主题 | 有稳定文章类型和视觉方向 | 容易变成一次性 CSS |
-
-:::pullquote
-稳定的主题不是一组漂亮样式，而是一套可重复执行的解释秩序。
-:::
-
-## 05 让视觉服务内容
-
-Claude 主题可以使用图片，但图片应该解释状态或结构，而不是成为装饰背景。
+Connectors bring the tools and data you rely on into Claude, so you can work with context that matters.
 
 :::figure
-![文档流程示意](https://placehold.co/1280x720/f3f1ea/5f5d56.png?text=Claude+Document+Flow)
-一个好的文档流从输入开始，经过语义判断、主题渲染和验证，最后才进入发布。
+![Mountain lake in mist](https://placehold.co/1280x720/e8e3da/7f7a72.png?text=Claude+Landscape)
+A quiet landscape image supports context without becoming decoration.
 :::
 
+Claude works best when it has the right context. Connectors let you securely connect Claude to external systems-like your internal tools, documentation, and data sources.
+
+> [!NOTE]
+> Connectors follow the Model Context Protocol (MCP), an open standard that helps AI systems securely access external data.
+
+:::pullquote
+The best AI systems don't replace your tools — they integrate with them.
+:::
+
+## 01 Get started in minutes
+
+You can set up a connector in just a few steps.
+
+1. Choose a tool or service
+2. Authorize the connection
+3. Start using it in Claude
+
+```bash
+curl -X POST https://api.anthropic.com/v1/connectors \
+  -H "Authorization: Bearer $ANTHROPIC_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "notion",
+    "type": "oauth",
+    "config": { ... }
+  }'
+```
+
+## 02 What you can connect
+
 :::soft-list
-- 少用强调，让真正重要的句子自然浮出来。
-- 少用边框，让组件之间的语义差异更清楚。
-- 少用装饰，让读者把注意力放回解释路径。
+- Knowledge bases
+- Project management tools
+- Internal documentation
+- Databases and warehouses
+- And more
+:::
+
+### Best practices
+
+- [x] Start with one connector
+- [x] Use least-privilege permissions
+- [x] Keep credentials secure
+- [ ] Review and refine access
+
+## 03 Supported auth types
+
+| Auth type | Description | Best for | Status |
+| --- | --- | --- | --- |
+| OAuth 2.0 | Secure user authorization | SaaS tools | Supported |
+| API Key | Simple token-based auth | Internal APIs | Supported |
+| Custom | Custom headers or flows | Advanced use cases | Beta |
+
+:::figure
+![Sand dunes in soft light](https://placehold.co/1280x360/ede9e1/817b73.png?text=Claude+Image+Band)
+Wide imagery should feel quiet, tonal, and supportive.
+:::
+
+:::insight
+Connectors unlock Claude's full potential by bringing your world into the conversation.
 :::
 
 ---
 
-## 06 收束
-
-Claude 主题的目标不是让文章显得“设计很多”，而是让复杂内容变得更容易相信、更容易跟随、更容易复查。
-
 :::closing-note
-清晰是一种设计选择：把必要的信息留下，把多余的噪声拿走。
+Design for clarity first: use structure, spacing, and quiet contrast to make complex systems understandable.
 :::

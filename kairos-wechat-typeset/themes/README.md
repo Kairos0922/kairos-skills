@@ -80,11 +80,8 @@ python3 scripts/audit_visual.py \
 ```bash
 python3 scripts/audit_visual.py \
   --input goldens/claude-style.html \
-  --allowed-font-size 13px \
   --allowed-font-size 16px \
-  --allowed-font-size 20px \
-  --allowed-font-size 28px \
-  --allowed-font-size 52px \
+  --allowed-font-size 18px \
   --max-margin-px 48
 ```
 

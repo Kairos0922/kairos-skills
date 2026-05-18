@@ -2,7 +2,7 @@
   "id": "claude",
   "name": "Claude",
   "name_zh": "Claude",
-  "description": "Claude design-language editorial system with paper warmth, Instrument Serif hierarchy, stone neutrals, fine rules, and structured content components.",
+  "description": "Claude design-language editorial system with paper warmth, system-font hierarchy, stone neutrals, fine rules, and structured content components.",
   "content_width": 720,
   "philosophy": {
     "mood": "calm-intelligent",
@@ -28,8 +28,8 @@
     "padding": "32px 24px 48px 24px"
   },
   "fonts": {
-    "cjk": "'Instrument Serif', 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', 'Songti SC', 'STSong', serif",
-    "latin": "'Inter', 'Helvetica Neue', Arial, 'PingFang SC', sans-serif",
+    "cjk": "-apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif",
+    "latin": "-apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif",
     "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
   },
   "colors": {
@@ -47,16 +47,16 @@
     "code_text": "#2b2a27"
   },
   "typography": {
-    "brand_size": "28px",
-    "title_size": "52px",
-    "title_line": "1.1",
+    "brand_size": "18px",
+    "title_size": "18px",
+    "title_line": "1.35",
     "body_size": "16px",
     "body_line": "1.75",
-    "section_num_size": "13px",
-    "section_title_size": "28px",
-    "subhead_size": "20px",
-    "small_size": "13px",
-    "code_size": "13px"
+    "section_num_size": "16px",
+    "section_title_size": "18px",
+    "subhead_size": "18px",
+    "small_size": "16px",
+    "code_size": "16px"
   },
   "rhythm": {
     "paragraph_gap": 24,

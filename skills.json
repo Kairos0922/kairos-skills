@@ -36,7 +36,7 @@
         "python3 scripts/audit_visual.py --input goldens/song-style.html --allowed-font-size 14px --allowed-font-size 16px --allowed-font-size 20px --allowed-font-size 28px --max-margin-px 48",
         "python3 scripts/verify.py --input goldens/mimo-style.html",
         "python3 scripts/verify.py --input goldens/claude-style.html",
-        "python3 scripts/audit_visual.py --input goldens/claude-style.html --allowed-font-size 13px --allowed-font-size 16px --allowed-font-size 20px --allowed-font-size 28px --allowed-font-size 52px --max-margin-px 48"
+        "python3 scripts/audit_visual.py --input goldens/claude-style.html --allowed-font-size 16px --allowed-font-size 18px --max-margin-px 48"
       ]
     }
   ]

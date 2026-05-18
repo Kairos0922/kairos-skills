@@ -482,7 +482,7 @@ class Renderer:
             return (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"font-family: {self.f('cjk')}; font-size: {self.t('title_size')}; "
-                f"line-height: {self.t('title_line')}; font-weight: 400; color: {self.c('ink')}; "
+                f"line-height: {self.t('title_line')}; font-weight: 600; color: {self.c('ink')}; "
                 "text-align: left; letter-spacing: 0;"
             )
         return (
@@ -500,9 +500,9 @@ class Renderer:
             )
         if self.is_theme("claude"):
             return (
-                f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
-                f"font-size: {self.t('small_size')}; line-height: 1.35; font-weight: 600; "
-                f"letter-spacing: 0; color: {self.c('ink')}; text-align: left;"
+                f"max-width: {self.width}px; margin: {top}px auto 6px auto; font-family: {self.f('latin')}; "
+                f"font-size: {self.t('section_num_size')}; line-height: 1.35; font-weight: 500; "
+                f"letter-spacing: 0.08em; color: {self.c('muted')}; text-align: left;"
             )
         if self.is_theme("song"):
             return (
@@ -527,7 +527,7 @@ class Renderer:
         if self.is_theme("claude"):
             return (
                 f"max-width: {self.width}px; margin: 0 auto {bottom}px auto; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('section_title_size')}; line-height: 1.25; font-weight: 400; "
+                f"font-size: {self.t('section_title_size')}; line-height: 1.45; font-weight: 600; "
                 f"color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
             )
         if self.is_theme("song"):
@@ -555,7 +555,7 @@ class Renderer:
         if self.is_theme("claude"):
             return (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
-                f"font-family: {self.f('cjk')}; font-size: {self.t('subhead_size')}; line-height: 1.35; font-weight: 400; "
+                f"font-family: {self.f('cjk')}; font-size: {self.t('subhead_size')}; line-height: 1.45; font-weight: 600; "
                 f"color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
             )
         return (

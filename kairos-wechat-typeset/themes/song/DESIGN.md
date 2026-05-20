@@ -23,12 +23,13 @@
 - Muted: neutral gray-brown for captions, labels, and secondary metadata.
 - Accent: one muted gold-brown, only for rare emphasis, links, semantic callouts, list markers, and fine rules.
 - Serif-first: CJK uses Source Han Serif first; Latin and numbers use classic serif.
-- Type scale: H1 is 28px, H2 is 20px, H3/body text is 16px, annotations/quotes/code/tables are 14px.
+- Type scale: H1 is 28px, H2 main titles are 25px with 12px section metadata, H3/body text is 16px, annotations/quotes/code/tables are 14px.
 
 ## Components
 
 - H1: 28px calm opening title, left aligned, heavier than body but not poster-sized; separated by whitespace rather than a rule.
-- H2 numeric: 20px Chinese section label in the form `一、标题`; hierarchy comes from weight and rhythm, not decoration.
+- H2 numeric: magazine-style section heading with a 12px serif metadata line such as `SECTION 02`, a 25px Chinese main title in the form `二、标题`, and one thin bottom rule. Hierarchy comes from controlled metadata, type contrast, and rhythm rather than decoration.
+- H2 non-numeric: the same 25px main-title treatment and bottom rule without fabricated section metadata.
 - H3-H6: 16px restrained subsection headings; they support scanability in technical articles without becoming repeated H2 blocks.
 - Paragraph: comfortable line-height, low contrast text, mobile-first rhythm. Technical paragraphs stay compact; literary paragraphs may breathe through semantic layout.
 - Lead: opening body paragraph for the editable article body; it creates tone without relying on the WeChat article title area.

@@ -544,6 +544,27 @@ class Renderer:
             "padding-bottom: 12px; letter-spacing: 0;"
         )
 
+    def song_section_heading_p(self, spacing: Dict[str, int]) -> str:
+        return (
+            f"max-width: {self.width}px; margin: {spacing['top']}px auto {spacing['bottom']}px auto; "
+            f"padding: 0 0 14px 0; border-bottom: 1px solid {self.c('line')}; "
+            f"font-family: {self.f('cjk')}; color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
+        )
+
+    def song_section_meta_span(self) -> str:
+        return (
+            f"display: block; margin: 0 0 10px 0; font-family: {self.f('latin')}; "
+            "font-size: 12px; line-height: 1.2; font-weight: 400; "
+            f"color: {self.c('muted')}; letter-spacing: 0.14em;"
+        )
+
+    def song_section_title_span(self) -> str:
+        return (
+            "display: block; "
+            f"font-size: {self.t('section_title_size')}; line-height: 1.44; "
+            f"font-weight: 700; color: {self.c('ink')};"
+        )
+
     def subtitle_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
         spacing = spacing or {"top": 36, "bottom": 22}
         if self.is_theme("song"):
@@ -1237,8 +1258,10 @@ class Renderer:
             if self.is_theme("song"):
                 label = self.chinese_section_label(number)
                 return [
-                    f'<p style="{self.section_num_p(spacing["top"])}">'
-                    f'{html.escape(label)}、{self.render_heading_inline(title, "section_title_size")}</p>'
+                    f'<p style="{self.song_section_heading_p(spacing)}">'
+                    f'<span style="{self.song_section_meta_span()}">SECTION {html.escape(number)}</span>'
+                    f'<span style="{self.song_section_title_span()}">'
+                    f'{html.escape(label)}、{self.render_heading_inline(title, "section_title_size")}</span></p>'
                 ]
             number_label = f"SECTION {number}" if self.is_theme("mimo") else number
             return [
@@ -1248,8 +1271,9 @@ class Renderer:
 
         if self.is_theme("song") and level == 2:
             return [
-                f'<p style="{self.section_num_p(spacing["top"])}">'
-                f'{self.render_heading_inline(stripped, "section_title_size")}</p>'
+                f'<p style="{self.song_section_heading_p(spacing)}">'
+                f'<span style="{self.song_section_title_span()}">'
+                f'{self.render_heading_inline(stripped, "section_title_size")}</span></p>'
             ]
 
         return [

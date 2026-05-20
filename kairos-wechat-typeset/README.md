@@ -132,6 +132,18 @@ kairos-wechat-typeset/
 
 `COMPONENTS.md` 是语义组件契约，`themes/<theme-id>.json` 是确定性视觉契约，`themes/<theme-id>/DESIGN.md` 是人工设计说明，`goldens/` 是最高视觉参照。
 
+## Fixtures
+
+`fixtures/` 中的文章既是可读样文，也是组件覆盖样例。维护 fixture 时应覆盖微信公众号文章里的中高频正文元素：
+
+- 文章标题、作者/来源/日期信息、导语和正文段落。
+- H1、数字 H2、H3、普通引用、`NOTE` / `TIP` / `WARNING` 提示块。
+- 加粗、斜体、删除线、`==重点==`、行内代码、链接和拉丁文本。
+- 普通图片、`:::figure` 图文组件、图注、分隔线和结尾收束。
+- 有序列表、无序列表、任务清单、`:::soft-list`、表格、代码块、FAQ 和延伸阅读。
+
+新增或大改 fixture 后，至少运行对应 Markdown 合约验证和主题渲染验证。
+
 ## V3 Pipeline
 
 ```text
@@ -236,9 +248,10 @@ python3 scripts/verify_markdown.py \
 ```bash
 python3 scripts/audit_visual.py \
   --input goldens/song-style.html \
+  --allowed-font-size 12px \
   --allowed-font-size 14px \
   --allowed-font-size 16px \
-  --allowed-font-size 20px \
+  --allowed-font-size 25px \
   --allowed-font-size 28px \
   --max-margin-px 48
 ```

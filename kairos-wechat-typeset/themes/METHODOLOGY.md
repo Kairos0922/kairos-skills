@@ -94,11 +94,12 @@ Each theme needs one canonical acceptance fixture. Avoid multiple competing fixt
 The fixture should cover:
 
 - H1, numeric H2, and fallback H3.
+- Article byline or meta line, opening lead, FAQ, related reading, and closing note patterns common in WeChat articles.
 - Paragraph rhythm and inline emphasis.
 - Links, inline code, Latin text, and escaped raw HTML where relevant.
 - Ordered, unordered, and task lists.
 - Quotes, NOTE/TIP/WARNING callouts, lead, insight, pullquote, figure, soft-list, and closing-note.
-- Code block, image caption, divider, and table.
+- Plain images, figure images with captions, code block, divider, and table.
 
 Song uses `fixtures/song-style-system.md` because it combines the design-system sample with representative article content. Future themes should use `fixtures/<theme-id>-style-system.md` or another single documented canonical source.
 
@@ -148,9 +149,10 @@ For Song, keep the strict audit gate:
 ```bash
 python3 scripts/audit_visual.py \
   --input goldens/song-style.html \
+  --allowed-font-size 12px \
   --allowed-font-size 14px \
   --allowed-font-size 16px \
-  --allowed-font-size 20px \
+  --allowed-font-size 25px \
   --allowed-font-size 28px \
   --max-margin-px 48
 ```

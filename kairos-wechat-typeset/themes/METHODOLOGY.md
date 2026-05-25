@@ -13,8 +13,6 @@ Every theme must answer this sentence before implementation:
 Examples:
 
 - Song expresses technical longform, methodology, humanities, lifestyle, and book reviews through paper warmth, restrained ink, fine lines, clear hierarchy, and compact mobile rhythm while forbidding decorative scenery, seals, gradients, heavy cards, and ad hoc CSS.
-- MiMo expresses AI, product release, research, and data articles through compact analytical hierarchy, precise spacing, and technical contrast while forbidding decorative editorial flourishes.
-- Claude expresses tutorials, documentation, methodology, and technical viewpoints through quiet professional structure while forbidding branded noise and over-designed callouts.
 
 ## Design-First Checkpoint
 

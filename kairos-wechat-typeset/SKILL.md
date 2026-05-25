@@ -8,7 +8,7 @@ description: |
   - “把 Markdown 转成可直接贴进微信编辑器的 HTML”
   - “给公众号文章做兼容微信编辑器的排版”
   - “把 .md 文件输出成排版好的 html 文件”
-  - “用宋式美学 / MiMo / Claude 风格排版公众号文章”
+  - “用宋式美学排版公众号文章”
 metadata:
   version: "2.0"
 ---
@@ -122,8 +122,6 @@ python3 scripts/render.py --list-themes
 v2 内置：
 
 - `song`：宋式美学。适合技术长文、方法论、人文评论、生活方式、书评。
-- `mimo`：Xiaomi MiMo。适合 AI、产品发布、技术报告、研究解读、数据型文章。
-- `claude`：Claude。适合教程、说明文档、方法论、技术观点、产品说明、深度解释。
 
 主题不是颜色包，而是完整视觉哲学。用户不能传自定义主题、颜色、CSS 或外部模板。开发者扩展主题时，必须先遵守 `themes/METHODOLOGY.md`，再新增或更新 `themes/<theme-id>.json`、`themes/<theme-id>/DESIGN.md`，并登记到 `themes/registry.json`。
 
@@ -133,18 +131,6 @@ v2 内置：
 
 ```json
 {"mood":"literary","density":"balanced","rhythm":"mobile","hierarchy":"soft"}
-```
-
-`mimo`：
-
-```json
-{"mood":"analytical-tech","density":"compact","rhythm":"precise","hierarchy":"strong"}
-```
-
-`claude`：
-
-```json
-{"mood":"calm-intelligent","density":"balanced","rhythm":"measured","hierarchy":"editorial"}
 ```
 
 所有主题必须遵守：
@@ -240,7 +226,7 @@ python3 scripts/typeset.py \
 ```bash
 python3 scripts/typeset.py \
   --input article.md \
-  --theme claude \
+  --theme song \
   --optimize-layout no \
   --non-interactive
 ```
@@ -259,7 +245,7 @@ python3 scripts/render.py \
 
 ```bash
 python3 scripts/render.py \
-  --theme claude \
+  --theme song \
   --input article.md \
   --output article.fragment.html \
   --fragment-only \
@@ -304,12 +290,10 @@ python3 scripts/verify_markdown.py \
 `goldens/` 下保存人工精修的最高视觉标准：
 
 - `goldens/song-style.html`
-- `goldens/mimo-style.html`
-- `goldens/claude-style.html`
 
 这些文件是主题气质的参照，不是运行时模板。渲染器只能执行 layout decision，不得自由设计或动态创造样式。
 
-`fixtures/song-style-system.md` 是 `song` 的设计规范与文章样例来源。`fixtures/claude-style-system.md` 是 `claude` 的解释型文档样例来源。新增或重打磨主题时，使用对应真实文章 fixture 覆盖标题、段落、引用、代码、表格、分割符、图片、链接和安全转义，再把通过人工审核的结果提升为 golden。
+`fixtures/song-style-system.md` 是 `song` 的设计规范与文章样例来源。新增或重打磨主题时，使用对应真实文章 fixture 覆盖标题、段落、引用、代码、表格、分割符、图片、链接和安全转义，再把通过人工审核的结果提升为 golden。
 
 ## Developer Theme Extension / 开发者扩展
 
@@ -322,7 +306,6 @@ python3 scripts/verify_markdown.py \
 - `themes/<theme-id>.json`：给脚本读取的确定性 visual philosophy、token、rhythm、constraints。
 - `themes/registry.json`：唯一对用户暴露的主题索引。
 - `fixtures/song-style-system.md`：`song` 设计规范与文章样例 golden 来源。
-- `fixtures/claude-style-system.md`：`claude` 解释型文档 golden 来源。
 - `scripts/audit_visual.py`：渲染后视觉库存审计，用于发现字号漂移、间距过大、边框过密和背景色过多。
 
 新增主题必须先完成设计确认，再使用对应真实文章 fixture 渲染、验证、对照 `goldens/` 的视觉标准并完成 390px / 430px 移动端预览。对齐敏感组件必须量测表格、列表 marker 和任务清单 checkbox 的视觉中心。用户运行时不能新增主题。

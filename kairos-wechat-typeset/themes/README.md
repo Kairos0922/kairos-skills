@@ -56,7 +56,7 @@ python3 scripts/render.py \
 
 Use a realistic article fixture to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, steps, quote, NOTE/TIP/WARNING, Kairos lead, insight, pullquote, figure, soft-list, closing-note, image caption, code block, faux table layout, divider, and escaped raw HTML.
 
-`goldens/song-style.html` is rendered from `fixtures/song-style-system.md` so the Song reference stays close to its design-system master and article sample. `goldens/claude-style.html` is rendered from `fixtures/claude-style-system.md` so Claude stays anchored to explanatory documentation content.
+`goldens/song-style.html` is rendered from `fixtures/song-style-system.md` so the Song reference stays close to its design-system master and article sample.
 
 Run the visual audit after every polish pass:
 
@@ -74,14 +74,6 @@ python3 scripts/audit_visual.py \
   --allowed-font-size 16px \
   --allowed-font-size 20px \
   --allowed-font-size 28px \
-  --max-margin-px 48
-```
-
-```bash
-python3 scripts/audit_visual.py \
-  --input goldens/claude-style.html \
-  --allowed-font-size 16px \
-  --allowed-font-size 18px \
   --max-margin-px 48
 ```
 

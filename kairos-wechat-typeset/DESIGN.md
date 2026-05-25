@@ -37,7 +37,7 @@ Runtime article-type, density, and tone controls are not part of the user workfl
 
 ## Golden System
 
-`goldens/song-style.html`, `goldens/mimo-style.html`, and `goldens/claude-style.html` are the highest visual references. They are intentionally handmade or carefully curated. They are not runtime templates and should not be copied blindly by the renderer.
+`goldens/song-style.html` is the highest visual reference. It is intentionally handmade or carefully curated. It is not a runtime template and should not be copied blindly by the renderer.
 
 ## Semantic Component Contract
 

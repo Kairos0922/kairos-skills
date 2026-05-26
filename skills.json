@@ -33,7 +33,9 @@
         "python3 scripts/render.py --list-themes",
         "python3 scripts/typeset.py --check",
         "python3 scripts/verify.py --input goldens/song-style.html",
-        "python3 scripts/audit_visual.py --input goldens/song-style.html --allowed-font-size 12px --allowed-font-size 14px --allowed-font-size 16px --allowed-font-size 25px --allowed-font-size 28px --max-margin-px 48"
+        "python3 scripts/audit_visual.py --input goldens/song-style.html --allowed-font-size 12px --allowed-font-size 14px --allowed-font-size 16px --allowed-font-size 25px --allowed-font-size 28px --max-margin-px 48",
+        "python3 scripts/verify.py --input goldens/wending-style.html --source fixtures/wending-style-system.md --theme wending",
+        "python3 scripts/audit_visual.py --input goldens/wending-style.html --allowed-font-size 14px --allowed-font-size 16px --allowed-font-size 18px --allowed-font-size 22px --allowed-font-size 28px --allowed-font-size 32px --allowed-font-size 42px --max-margin-px 48"
       ]
     }
   ]

@@ -58,6 +58,8 @@ Use a realistic article fixture to judge component completeness: H1, numeric H2,
 
 `goldens/song-style.html` is rendered from `fixtures/song-style-system.md` so the Song reference stays close to its design-system master and article sample.
 
+`goldens/wending-style.html` is rendered from `fixtures/wending-style-system.md` so the Wending reference stays aligned with the attached mobile component specification: 28px H1, 22px H2, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, fine-line tables, 8px image radius, and shallow gray quote surfaces.
+
 Run the visual audit after every polish pass:
 
 ```bash

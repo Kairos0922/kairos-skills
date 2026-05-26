@@ -1,0 +1,87 @@
+{
+  "id": "wending",
+  "name": "Wending Paper",
+  "name_zh": "稳境白纸",
+  "description": "Mobile-first WeChat article system based on warm white paper, heavy serif headings, quiet gray metadata, precise fine rules, dark code panels, and restrained self-growth editorial rhythm.",
+  "content_width": 640,
+  "philosophy": {
+    "mood": "quiet",
+    "density": "balanced",
+    "rhythm": "mobile",
+    "hierarchy": "precise"
+  },
+  "constraints": {
+    "accent_color_count": 1,
+    "highlight_frequency_max": 0.08,
+    "component_variants_max": 3,
+    "forbidden": ["gradient", "strong shadow", "color CTA", "multi-accent palette", "decorative icons", "rounded pill-heavy layout", "large tinted backgrounds"]
+  },
+  "art_direction": {
+    "article_type": "self-growth-editorial",
+    "spacing_scale": 0.92,
+    "emphasis_mode": "restrained",
+    "visual_density": "medium",
+    "section_rhythm": "mobile-spec"
+  },
+  "body": {
+    "background": "#fbfaf7",
+    "padding": "22px 20px 42px 20px"
+  },
+  "fonts": {
+    "cjk": "'Source Han Serif CN', 'Source Han Serif SC', 'Noto Serif CJK SC', 'Songti SC', 'STSong', SimSun, serif",
+    "latin": "'Baskerville', 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif",
+    "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  },
+  "colors": {
+    "ink": "#111111",
+    "text": "#333333",
+    "muted": "#888888",
+    "soft": "#b7b0a4",
+    "line": "#dedbd3",
+    "line_soft": "#ece9e2",
+    "surface": "#fbfaf7",
+    "surface_alt": "#f4f3f1",
+    "accent": "#a89f90",
+    "warning": "#111111",
+    "warning_bg": "#f4f3f1",
+    "code_text": "#e8e4dc",
+    "code_bg": "#1f2227",
+    "code_muted": "#9ca1aa"
+  },
+  "typography": {
+    "title_size": "28px",
+    "title_line": "1.4",
+    "section_num_size": "42px",
+    "section_title_size": "22px",
+    "h3_size": "18px",
+    "body_size": "16px",
+    "body_line": "1.75",
+    "small_size": "14px",
+    "code_size": "14px"
+  },
+  "rhythm": {
+    "paragraph_gap": 20,
+    "heading_top": 34,
+    "heading_bottom": 18,
+    "quote_breathing": 22,
+    "section_break": 28
+  },
+  "shape": {
+    "radius": "2px",
+    "image_radius": "8px"
+  },
+  "components": {
+    "paragraph": { "variants": ["default", "lead", "quiet"] },
+    "lead": { "variants": ["opening"] },
+    "pullquote": { "variants": ["paper-quote"] },
+    "figure": { "variants": ["captioned"] },
+    "softlist": { "variants": ["plain"] },
+    "closingnote": { "variants": ["quiet"] },
+    "insight": { "variants": ["soft-panel", "sentence"] },
+    "quote": { "variants": ["paper", "note", "warning"] },
+    "summary": { "variants": ["plain", "numbered"] },
+    "divider": { "variants": ["thin-rule"] },
+    "list": { "variants": ["plain", "ordered", "task"] },
+    "cta": { "variants": ["text-only"] }
+  }
+}

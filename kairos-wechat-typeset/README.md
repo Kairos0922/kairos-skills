@@ -63,6 +63,7 @@ python3 scripts/render.py \
 ## 内置主题
 
 - `song`：宋式美学。技术长文、方法论、人文评论、生活方式、书评。
+- `wending`：稳境白纸。个人成长、心理秩序、生活方式、轻方法论、公众号规范。
 
 主题只能从 registry 中选择。用户不能传自定义 CSS、颜色、HTML 模板或运行时主题文件。
 
@@ -95,11 +96,14 @@ kairos-wechat-typeset/
 ├── DESIGN.md
 ├── SKILL.md
 ├── goldens/
-│   └── song-style.html
+│   ├── song-style.html
+│   └── wending-style.html
 ├── themes/
 │   ├── registry.json
 │   ├── song.json
-│   └── song/DESIGN.md
+│   ├── song/DESIGN.md
+│   ├── wending.json
+│   └── wending/DESIGN.md
 ├── semantic/
 │   └── analyze.py
 ├── art_direction/
@@ -257,5 +261,6 @@ python3 scripts/audit_visual.py \
 3. 新建 `themes/<theme-id>.json`。
 4. 注册到 `themes/registry.json`。
 5. 使用对应的真实文章 fixture 渲染 `goldens/<theme-id>-style.html`，例如 `song` 使用 `fixtures/song-style-system.md`。
-6. 通过真实文章样例检查标题、段落、引用、代码、表格、分割符、图片、链接和安全转义。
 7. 通过 `--verify`、`scripts/audit_visual.py`、检查 `goldens/` 对齐度，并进行 390px / 430px 移动端预览。
+
+`wending` 使用 `fixtures/wending-style-system.md` 生成 `goldens/wending-style.html`，验收重点是附件规格里的 28px H1、22px H2、18px H3、16px 正文、14px 辅助/代码文字、暗色代码块、细线表格、8px 图片圆角和浅灰引用面。

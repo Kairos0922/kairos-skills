@@ -8,6 +8,14 @@
       "path": "song.json",
       "design": "song/DESIGN.md",
       "suitable_for": ["技术长文", "方法论", "人文评论", "生活方式", "书评"]
+    },
+    {
+      "id": "wending",
+      "name": "Wending Paper",
+      "name_zh": "稳境白纸",
+      "path": "wending.json",
+      "design": "wending/DESIGN.md",
+      "suitable_for": ["个人成长", "心理秩序", "生活方式", "轻方法论", "公众号规范"]
     }
   ]
 }

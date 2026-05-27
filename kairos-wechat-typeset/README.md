@@ -64,6 +64,7 @@ python3 scripts/render.py \
 
 - `song`：宋式美学。技术长文、方法论、人文评论、生活方式、书评。
 - `wending`：稳境白纸。个人成长、心理秩序、生活方式、轻方法论、公众号规范。
+- `techspec`：蓝图科技规范。AI 技术文章、工程实践、产品方案、研发规范、工具教程。
 
 主题只能从 registry 中选择。用户不能传自定义 CSS、颜色、HTML 模板或运行时主题文件。
 
@@ -103,7 +104,9 @@ kairos-wechat-typeset/
 │   ├── song.json
 │   ├── song/DESIGN.md
 │   ├── wending.json
-│   └── wending/DESIGN.md
+│   ├── wending/DESIGN.md
+│   ├── techspec.json
+│   └── techspec/DESIGN.md
 ├── semantic/
 │   └── analyze.py
 ├── art_direction/

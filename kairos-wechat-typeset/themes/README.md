@@ -60,6 +60,8 @@ Use a realistic article fixture to judge component completeness: H1, numeric H2,
 
 `goldens/wending-style.html` is rendered from `fixtures/wending-style-system.md` so the Wending reference stays aligned with the attached mobile component specification: 28px H1, 22px H2, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, fine-line tables, 8px image radius, and shallow gray quote surfaces.
 
+`goldens/techspec-style.html` is rendered from `fixtures/techspec-style-system.md` so the Tech Spec Blue reference stays aligned with the attached blue technology component specification: 28px H1, 32px blue section numbers, 22px H2 titles, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, light-blue information panels, fine-line tables, and 8px image radius.
+
 Run the visual audit after every polish pass:
 
 ```bash

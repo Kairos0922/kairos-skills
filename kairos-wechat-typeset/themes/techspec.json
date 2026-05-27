@@ -1,0 +1,89 @@
+{
+  "id": "techspec",
+  "name": "Tech Spec Blue",
+  "name_zh": "蓝图科技规范",
+  "description": "Mobile-first WeChat article component system translated from the blue magazine tech specification reference: strong black headings, precise blue section numbers, clean sans typography, dark code blocks, light-blue info panels, fine-rule tables, and compact editorial rhythm.",
+  "content_width": 640,
+  "philosophy": {
+    "mood": "technical",
+    "density": "balanced",
+    "rhythm": "mobile",
+    "hierarchy": "explicit"
+  },
+  "constraints": {
+    "accent_color_count": 1,
+    "highlight_frequency_max": 0.08,
+    "component_variants_max": 3,
+    "forbidden": ["gradient", "strong shadow", "multi-accent palette", "decorative bokeh", "rounded pill-heavy layout", "marketing CTA", "dark full-page background"]
+  },
+  "art_direction": {
+    "article_type": "technology-specification-editorial",
+    "spacing_scale": 0.9,
+    "emphasis_mode": "precise",
+    "visual_density": "medium",
+    "section_rhythm": "mobile-spec"
+  },
+  "body": {
+    "background": "#ffffff",
+    "padding": "28px 20px 46px 20px"
+  },
+  "fonts": {
+    "cjk": "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif",
+    "latin": "Inter, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif",
+    "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  },
+  "colors": {
+    "ink": "#111827",
+    "text": "#374151",
+    "muted": "#6b7280",
+    "soft": "#93a4bd",
+    "line": "#dbe5f2",
+    "line_soft": "#edf2f8",
+    "surface": "#ffffff",
+    "surface_alt": "#f6f9ff",
+    "accent": "#0b6dff",
+    "accent_soft": "#eaf2ff",
+    "warning": "#0b6dff",
+    "warning_bg": "#eef5ff",
+    "code_text": "#dbeafe",
+    "code_bg": "#111a27",
+    "code_muted": "#7f93ad"
+  },
+  "typography": {
+    "title_size": "28px",
+    "title_line": "1.42",
+    "section_num_size": "32px",
+    "section_title_size": "22px",
+    "h3_size": "18px",
+    "body_size": "16px",
+    "body_line": "1.75",
+    "small_size": "14px",
+    "caption_size": "13px",
+    "code_size": "14px"
+  },
+  "rhythm": {
+    "paragraph_gap": 18,
+    "heading_top": 32,
+    "heading_bottom": 18,
+    "quote_breathing": 22,
+    "section_break": 26
+  },
+  "shape": {
+    "radius": "8px",
+    "image_radius": "8px"
+  },
+  "components": {
+    "paragraph": { "variants": ["default", "lead", "highlight"] },
+    "lead": { "variants": ["metadata-like"] },
+    "pullquote": { "variants": ["blue-rule"] },
+    "figure": { "variants": ["captioned"] },
+    "softlist": { "variants": ["blue-dot"] },
+    "closingnote": { "variants": ["info-panel"] },
+    "insight": { "variants": ["info-panel", "sentence"] },
+    "quote": { "variants": ["blue-rule", "note", "warning"] },
+    "summary": { "variants": ["numbered"] },
+    "divider": { "variants": ["thin", "dashed", "blue-rule"] },
+    "list": { "variants": ["blue-marker", "ordered", "task"] },
+    "cta": { "variants": ["text-only"] }
+  }
+}

@@ -123,6 +123,7 @@ v2 内置：
 
 - `song`：宋式美学。适合技术长文、方法论、人文评论、生活方式、书评。
 - `wending`：稳境白纸。适合个人成长、心理秩序、生活方式、轻方法论、公众号规范。
+- `techspec`：蓝图科技规范。适合 AI 技术文章、工程实践、产品方案、研发规范、工具教程。
 
 主题不是颜色包，而是完整视觉哲学。用户不能传自定义主题、颜色、CSS 或外部模板。开发者扩展主题时，必须先遵守 `themes/METHODOLOGY.md`，再新增或更新 `themes/<theme-id>.json`、`themes/<theme-id>/DESIGN.md`，并登记到 `themes/registry.json`。
 

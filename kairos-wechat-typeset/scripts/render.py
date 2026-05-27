@@ -477,6 +477,13 @@ class Renderer:
                 f"line-height: {self.t('title_line')}; font-weight: 800; color: {self.c('ink')}; "
                 "text-align: left; letter-spacing: 0;"
             )
+        if self.is_theme("techspec"):
+            return (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], max(spacing['bottom'], 18))}; "
+                f"padding: 0; font-family: {self.f('cjk')}; font-size: {self.t('title_size')}; "
+                f"line-height: {self.t('title_line')}; font-weight: 800; color: {self.c('ink')}; "
+                "text-align: left; letter-spacing: 0;"
+            )
         if self.is_theme("song"):
             return (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], max(spacing['bottom'], 24))}; "
@@ -575,9 +582,47 @@ class Renderer:
             f"color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
         )
 
+    def techspec_section_heading_p(self, spacing: Dict[str, int]) -> str:
+        return (
+            f"max-width: {self.width}px; margin: {spacing['top']}px auto {spacing['bottom']}px auto; "
+            f"font-family: {self.f('cjk')}; color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
+        )
+
+    def techspec_section_num_span(self) -> str:
+        return (
+            f"display: block; margin: 0 0 4px 0; font-family: {self.f('latin')}; "
+            f"font-size: {self.t('section_num_size')}; line-height: 1; font-weight: 800; "
+            f"color: {self.c('accent')}; letter-spacing: 0;"
+        )
+
+    def techspec_section_title_span(self) -> str:
+        return (
+            f"display: block; margin: 0 0 10px 0; font-family: {self.f('cjk')}; "
+            f"font-size: {self.t('section_title_size')}; line-height: 1.45; font-weight: 800; "
+            f"color: {self.c('ink')};"
+        )
+
+    def techspec_heading_rule_span(self) -> str:
+        return (
+            f"display: block; width: 100%; height: 1px; line-height: 1px; "
+            f"border-top: 1px solid {self.c('line_soft')};"
+        )
+
+    def techspec_heading_rule_accent_span(self) -> str:
+        return (
+            f"display: block; width: 42px; height: 2px; line-height: 2px; "
+            f"margin: 0 0 -1px 0; border-top: 2px solid {self.c('accent')};"
+        )
+
+    def techspec_rule_heading_p(self, spacing: Dict[str, int]) -> str:
+        return (
+            f"max-width: {self.width}px; margin: {spacing['top']}px auto {spacing['bottom']}px auto; "
+            f"font-family: {self.f('cjk')}; color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
+        )
+
     def subtitle_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
         spacing = spacing or {"top": 36, "bottom": 22}
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             return (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"font-family: {self.f('cjk')}; font-size: {self.t('h3_size')}; line-height: 1.6; "
@@ -598,7 +643,7 @@ class Renderer:
 
     def list_p(self, spacing: Optional[Dict[str, int]] = None) -> str:
         spacing = spacing or {"top": 0, "bottom": 12}
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             return (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; line-height: 1.75; "
@@ -621,6 +666,13 @@ class Renderer:
                 f"background-color: {background or self.c('surface_alt')}; border: 0; "
                 f"border-radius: {self.radius()}; color: {text or '#666666'};"
             )
+        if self.is_theme("techspec"):
+            return (
+                f"display: block; padding: 14px 18px 14px 18px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: 1.75; text-align: left; "
+                f"background-color: {background or self.c('surface')}; border-left: 2px solid {border}; "
+                f"border-radius: 0; color: {text or self.c('text')};"
+            )
         if self.is_theme("song"):
             return (
                 f"display: block; padding: 16px 20px 16px 20px; font-family: {self.f('cjk')}; "
@@ -637,7 +689,7 @@ class Renderer:
         )
 
     def code_meta_p(self, top: int) -> str:
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             return (
                 f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.6; color: {self.c('ink')}; "
@@ -656,7 +708,7 @@ class Renderer:
         )
 
     def code_p(self) -> str:
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             return (
                 f"display: block; padding: 16px 18px 16px 18px; font-family: {self.f('mono')}; "
                 f"font-size: {self.t('code_size')}; line-height: 1.75; color: {self.c('code_text')}; "
@@ -681,7 +733,7 @@ class Renderer:
         return f"max-width: {self.width}px; margin: 0 auto {bottom}px auto;"
 
     def table_meta_p(self, top: int) -> str:
-        if self.is_theme("song"):
+        if self.is_theme("song") or self.is_theme("techspec"):
             return (
                 f"max-width: {self.width}px; margin: {top}px auto 8px auto; font-family: {self.f('latin')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.6; color: {self.c('ink')}; "
@@ -694,7 +746,7 @@ class Renderer:
         )
 
     def table_card_p(self) -> str:
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             return (
                 f"display: block; padding: 0; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.6; color: {self.c('text')}; "
@@ -729,7 +781,7 @@ class Renderer:
         )
 
     def table_label_style(self) -> str:
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             return (
                 f"display: block; margin-bottom: 3px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.48; color: {self.c('muted')}; "
@@ -787,13 +839,35 @@ class Renderer:
         )
         return f'<span style="display: table-row;">{cells_html}</span>'
 
+    def techspec_table_cell_style(self, index: int, total: int, header: bool, last_row: bool) -> str:
+        weight = "700" if header else "400"
+        color = self.c("ink") if header else self.c("text")
+        background = self.c("accent_soft") if header else "transparent"
+        return (
+            f"display: table-cell; width: {100 / max(total, 1):.4f}%; box-sizing: border-box; "
+            f"padding: 10px 8px; font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; "
+            f"line-height: 1.55; color: {color}; font-weight: {weight}; text-align: center; "
+            f"vertical-align: middle; overflow-wrap: anywhere; word-break: break-word; "
+            f"background-color: {background}; border: 1px solid {self.c('line')};"
+        )
+
+    def techspec_table_row(self, cells: Sequence[str], total: int, header: bool, last_row: bool) -> str:
+        normalized = list(cells[:total]) + [""] * max(0, total - len(cells))
+        cells_html = "".join(
+            f'<span style="{self.techspec_table_cell_style(index, total, header, last_row)}">{self.render_inline(cell)}</span>'
+            for index, cell in enumerate(normalized)
+        )
+        return f'<span style="display: table-row;">{cells_html}</span>'
+
     def task_box_style(self, checked: bool) -> str:
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
+            fill = self.c("accent") if self.is_theme("techspec") else self.c("ink")
+            mark_size = "12px" if self.is_theme("techspec") else "11px"
             return (
                 f"display: inline-block; width: 12px; height: 12px; margin: 0 10px 0 0; "
                 "line-height: 12px; text-align: center; vertical-align: middle; "
-                f"font-family: {self.f('latin')}; font-size: 11px; color: #ffffff; "
-                f"border: 1px solid {self.c('ink')}; background-color: {self.c('ink') if checked else 'transparent'};"
+                f"font-family: {self.f('latin')}; font-size: {mark_size}; color: #ffffff; "
+                f"border: 1px solid {fill}; background-color: {fill if checked else 'transparent'};"
             )
         mark = self.c("accent")
         return (
@@ -812,6 +886,13 @@ class Renderer:
                 f"border: 1px solid {self.c('line_soft')}; "
                 "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
             )
+        if self.is_theme("techspec"):
+            return (
+                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: {self.c('accent_soft')}; "
+                f"color: {self.c('ink')}; padding: 1px 6px; border-radius: 3px; "
+                f"border: 1px solid {self.c('line_soft')}; "
+                "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
+            )
         if self.is_theme("song"):
             return (
                 f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: {self.c('surface')}; "
@@ -825,6 +906,8 @@ class Renderer:
         )
 
     def link_style(self) -> str:
+        if self.is_theme("techspec"):
+            return f"color: {self.c('accent')}; text-decoration: none; border-bottom: 1px solid {self.c('accent')};"
         if self.is_theme("song"):
             return f"color: {self.c('ink')}; text-decoration: none; border-bottom: 1px solid {self.c('accent')};"
         return f"color: {self.c('ink')}; text-decoration: none; border-bottom: 1px solid {self.c('accent')};"
@@ -835,6 +918,11 @@ class Renderer:
     def highlight_style(self) -> str:
         if self.is_theme("wending"):
             return f"font-weight: 700; color: {self.c('ink')}; border-bottom: 1px solid {self.c('line')};"
+        if self.is_theme("techspec"):
+            return (
+                f"font-weight: 700; color: {self.c('accent')}; background-color: {self.c('accent_soft')}; "
+                "padding: 1px 4px; border-radius: 3px;"
+            )
         if self.is_theme("song"):
             return f"font-weight: 700; color: {self.c('ink')};"
         return f"border-bottom: 1px dashed {self.c('accent')}; font-weight: 600;"
@@ -846,7 +934,7 @@ class Renderer:
         return f"text-decoration: line-through; color: {self.c('muted')};"
 
     def latin_inline_style(self) -> str:
-        if self.is_theme("song") or self.is_theme("wending"):
+        if self.is_theme("song") or self.is_theme("wending") or self.is_theme("techspec"):
             return (
                 f"font-family: {self.f('latin')}; letter-spacing: 0; "
                 f"color: {self.c('ink')};"
@@ -868,6 +956,13 @@ class Renderer:
                 f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {marker_size}; line-height: 1.6; "
                 f"font-weight: {weight}; color: {color}; letter-spacing: 0;"
             )
+        if self.is_theme("techspec"):
+            marker_size = self.t("small_size")
+            return (
+                f"display: inline-block; width: 18px; margin-right: 10px; text-align: center; "
+                f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {marker_size}; line-height: 1.6; "
+                f"font-weight: 700; color: {self.c('accent')}; letter-spacing: 0;"
+            )
         if self.is_theme("song"):
             color = self.c("accent")
             weight = "400"
@@ -880,7 +975,7 @@ class Renderer:
     def render_image(self, alt_text: str, source: str) -> str:
         safe_alt = html.escape(alt_text.strip())
         safe_source = html.escape(source.strip(), quote=True)
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             image_html = (
                 f'<img src="{safe_source}" alt="{safe_alt}" '
                 f'style="display: block; max-width: 100%; height: auto; margin: 14px auto; '
@@ -922,11 +1017,12 @@ class Renderer:
 
     def render_component_lead(self, text: str, layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("paragraph_gap", 22))
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
+            color = "#666666" if self.is_theme("wending") else self.c("text")
             style = (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; line-height: {self.t('body_line')}; "
-                f"color: #666666; text-align: left; letter-spacing: 0; font-weight: 400;"
+                f"color: {color}; text-align: left; letter-spacing: 0; font-weight: 400;"
             )
         elif self.is_theme("song"):
             style = (
@@ -940,13 +1036,17 @@ class Renderer:
 
     def render_component_insight(self, text: str, layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("paragraph_gap", 22) + 4)
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
+            bg = self.c("surface_alt")
+            fg = "#666666" if self.is_theme("wending") else self.c("accent")
+            weight = "400" if self.is_theme("wending") else "600"
+            border = "" if self.is_theme("wending") else f"border-left: 2px solid {self.c('accent')}; "
             style = (
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"padding: 18px 22px; font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; "
                 "line-height: 1.75; "
-                f"color: #666666; text-align: left; letter-spacing: 0; font-weight: 400; "
-                f"background-color: {self.c('surface_alt')}; border-radius: {self.radius()};"
+                f"color: {fg}; text-align: left; letter-spacing: 0; font-weight: {weight}; "
+                f"background-color: {bg}; {border}border-radius: {self.radius()};"
             )
         elif self.is_theme("song"):
             style = (
@@ -969,6 +1069,13 @@ class Renderer:
                 f"display: block; padding: 20px 24px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('body_size')}; line-height: 1.75; text-align: left; "
                 f"color: #666666; background-color: {self.c('surface_alt')}; border-radius: {self.radius()};"
+            )
+        elif self.is_theme("techspec"):
+            quote_style = (
+                f"display: block; padding: 20px 24px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: 1.75; text-align: left; "
+                f"color: {self.c('text')}; background-color: {self.c('surface')}; "
+                f"border-left: 2px solid {self.c('accent')}; border-radius: 0;"
             )
         elif self.is_theme("song"):
             quote_style = (
@@ -995,7 +1102,7 @@ class Renderer:
         spacing = spacing_from_layout(layout, 22)
         safe_source = html.escape(source.strip(), quote=True)
         safe_alt = html.escape(alt.strip())
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             image_style = (
                 f"display: block; width: 100%; max-width: 100%; height: auto; margin: 0 auto; "
                 f"border-radius: {self.radius('image_radius')};"
@@ -1040,10 +1147,12 @@ class Renderer:
     ) -> List[str]:
         spacing = spacing_from_layout(layout, 12)
         rendered: List[str] = []
+        marker_weight = "700" if self.is_theme("techspec") else "400"
         marker_style = (
             f"display: inline-block; width: 18px; margin-right: 10px; text-align: center; "
             f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size')}; "
-            f"line-height: 1.6; color: {self.c('ink') if self.is_theme('wending') else self.c('accent')}; font-weight: 400;"
+            f"line-height: 1.6; color: {self.c('ink') if self.is_theme('wending') else self.c('accent')}; "
+            f"font-weight: {marker_weight};"
         )
         content_style = "display: inline-block; max-width: 88%; vertical-align: middle; line-height: 1.6;"
         for index, item in enumerate(items):
@@ -1062,6 +1171,13 @@ class Renderer:
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; line-height: 1.8; "
                 f"color: {self.c('muted')}; text-align: center; letter-spacing: 0;"
+            )
+        elif self.is_theme("techspec"):
+            style = (
+                f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
+                f"padding: 16px 20px; font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; "
+                f"line-height: 1.75; color: {self.c('accent')}; text-align: left; letter-spacing: 0; "
+                f"background-color: {self.c('surface_alt')}; border-radius: {self.radius()};"
             )
         elif self.is_theme("song"):
             style = (
@@ -1195,7 +1311,7 @@ class Renderer:
 
     def render_heading_inline(self, text: str, size_key: str = "section_title_size", balance_latin: bool = True) -> str:
         rendered = self.render_inline(text, balance_latin=balance_latin)
-        if self.is_theme("song"):
+        if self.is_theme("song") or self.is_theme("techspec"):
             rendered = rendered.replace(
                 f"font-size: {self.t('body_size')};",
                 f"font-size: {self.t(size_key)};",
@@ -1232,6 +1348,15 @@ class Renderer:
                     f'<span style="{self.wending_section_title_span()}">{self.render_heading_inline(title, "section_title_size")}</span>'
                     "</p>"
                 ]
+            if self.is_theme("techspec"):
+                return [
+                    f'<p style="{self.techspec_section_heading_p(spacing)}">'
+                    f'<span style="{self.techspec_section_num_span()}">{html.escape(number)}</span>'
+                    f'<span style="{self.techspec_section_title_span()}">{self.render_heading_inline(title, "section_title_size")}</span>'
+                    f'<span style="{self.techspec_heading_rule_accent_span()}"></span>'
+                    f'<span style="{self.techspec_heading_rule_span()}"></span>'
+                    "</p>"
+                ]
             if self.is_theme("song"):
                 label = self.chinese_section_label(number)
                 return [
@@ -1257,6 +1382,17 @@ class Renderer:
                 f'<p style="{self.wending_rule_heading_p(spacing)}">{self.render_heading_inline(stripped, "section_title_size")}</p>'
             ]
 
+        if self.is_theme("techspec") and level == 2:
+            return [
+                f'<p style="{self.techspec_rule_heading_p(spacing)}">'
+                f'<span style="display: inline-block; margin: 0 10px 0 0; font-family: {self.f("latin")}; '
+                f'font-size: {self.t("section_title_size")}; line-height: 1; font-weight: 800; color: {self.c("accent")}; '
+                f'vertical-align: -1px;">—</span>'
+                f'<span style="display: inline; font-size: {self.t("section_title_size")}; line-height: 1.45; '
+                f'font-weight: 800; color: {self.c("ink")};">{self.render_heading_inline(stripped, "section_title_size")}</span>'
+                "</p>"
+            ]
+
         return [
             f'<p style="{self.subtitle_p(spacing)}">{self.render_heading_inline(stripped, "body_size")}</p>'
         ]
@@ -1266,7 +1402,11 @@ class Renderer:
         cleaned = [line for line in lines if line.strip()]
         quote_kind = "QUOTE"
         border = self.c("line")
-        background = self.c("surface_alt") if self.is_theme("wending") else self.c("surface")
+        background = (
+            self.c("surface_alt")
+            if self.is_theme("wending")
+            else self.c("surface") if self.is_theme("techspec") else self.c("surface")
+        )
         text_color = "#666666" if self.is_theme("wending") else self.c("text")
 
         if cleaned:
@@ -1287,20 +1427,20 @@ class Renderer:
             border = self.c("muted")
 
         text = merge_lines(cleaned)
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             if quote_kind != "QUOTE":
                 labels = {
-                    "NOTE": "注",
-                    "IMPORTANT": "要",
-                    "CAUTION": "慎",
-                    "TIP": "笺",
-                    "WARNING": "警",
+                    "NOTE": "注" if self.is_theme("wending") else "INFO",
+                    "IMPORTANT": "要" if self.is_theme("wending") else "INFO",
+                    "CAUTION": "慎" if self.is_theme("wending") else "INFO",
+                    "TIP": "笺" if self.is_theme("wending") else "TIP",
+                    "WARNING": "警" if self.is_theme("wending") else "WARN",
                 }
                 label = labels.get(quote_kind, "注")
                 label_html = (
                     f'<span style="display: inline-block; margin: 0 10px 0 0; '
                     f'font-family: {self.f("cjk")}; font-size: {self.t("small_size")}; line-height: 1; '
-                    f'font-weight: 700; color: {self.c("ink")}; vertical-align: 0.08em;">'
+                    f'font-weight: 700; color: {self.c("ink") if self.is_theme("wending") else self.c("accent")}; vertical-align: 0.08em;">'
                     f'{html.escape(label)}</span>'
                 )
                 text = f"{label_html}{self.render_inline(text)}"
@@ -1342,7 +1482,7 @@ class Renderer:
         for index, item in enumerate(items):
             item_text = item["text"]
             task_match = TASK_ITEM_RE.match(item_text)
-            if self.is_theme("song") and task_match:
+            if (self.is_theme("song") or self.is_theme("techspec")) and task_match:
                 checked = task_match.group("mark").lower() == "x"
                 content = self.render_inline(task_match.group("text"))
                 item_spacing = {"top": spacing["top"] if index == 0 else 0, "bottom": spacing["bottom"]}
@@ -1370,10 +1510,10 @@ class Renderer:
                 f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
                 'margin: 0 10px 4px 0;"></span>'
             )
-        if self.is_theme("song") or self.is_theme("wending"):
+        if self.is_theme("song") or self.is_theme("wending") or self.is_theme("techspec"):
             numbered = []
             for line_number, line in enumerate(text.splitlines() or [""], start=1):
-                number_color = self.c("code_muted") if self.is_theme("wending") else self.c("muted")
+                number_color = self.c("code_muted") if self.is_theme("wending") or self.is_theme("techspec") else self.c("muted")
                 numbered.append(
                     f'<span style="display: block;">'
                     f'<span style="display: inline-block; width: 24px; margin-right: 14px; '
@@ -1391,11 +1531,12 @@ class Renderer:
 
     def render_table(self, header: Sequence[str], rows: Sequence[Sequence[str]], layout: Optional[Dict[str, Any]] = None) -> List[str]:
         spacing = spacing_from_layout(layout, 20)
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
             total = max(len(header), max((len(row) for row in rows), default=0), 1)
-            body_rows = [self.wending_table_row(header, total, True, not rows)]
+            row_renderer = self.techspec_table_row if self.is_theme("techspec") else self.wending_table_row
+            body_rows = [row_renderer(header, total, True, not rows)]
             for row_index, row in enumerate(rows):
-                body_rows.append(self.wending_table_row(row, total, False, row_index == len(rows) - 1))
+                body_rows.append(row_renderer(row, total, False, row_index == len(rows) - 1))
             rows_html = "".join(body_rows)
             return [
                 f'<p style="{self.table_wrap_p(spacing["bottom"])}">'
@@ -1440,11 +1581,13 @@ class Renderer:
 
     def render_divider(self, layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("section_break", 42))
-        if self.is_theme("wending"):
+        if self.is_theme("wending") or self.is_theme("techspec"):
+            border_style = "dashed" if self.is_theme("techspec") else "solid"
+            border_color = self.c("line") if self.is_theme("techspec") else self.c("line_soft")
             return (
                 f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
                 'text-align: center; line-height: 1;">'
-                f'<span style="display: block; width: 100%; border-top: 1px solid {self.c("line_soft")};"></span>'
+                f'<span style="display: block; width: 100%; border-top: 1px {border_style} {border_color};"></span>'
                 "</p>"
             )
         if self.is_theme("song"):

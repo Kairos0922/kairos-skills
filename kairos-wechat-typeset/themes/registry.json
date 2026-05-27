@@ -16,6 +16,14 @@
       "path": "wending.json",
       "design": "wending/DESIGN.md",
       "suitable_for": ["个人成长", "心理秩序", "生活方式", "轻方法论", "公众号规范"]
+    },
+    {
+      "id": "techspec",
+      "name": "Tech Spec Blue",
+      "name_zh": "蓝图科技规范",
+      "path": "techspec.json",
+      "design": "techspec/DESIGN.md",
+      "suitable_for": ["AI 技术文章", "工程实践", "产品方案", "研发规范", "工具教程"]
     }
   ]
 }

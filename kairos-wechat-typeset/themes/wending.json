@@ -1,8 +1,9 @@
 {
   "id": "wending",
-  "name": "Wending Paper",
-  "name_zh": "稳境白纸",
-  "description": "Mobile-first WeChat article system based on warm white paper, heavy serif headings, quiet gray metadata, precise fine rules, dark code panels, and restrained self-growth editorial rhythm.",
+  "name": "Wending Theme",
+  "name_zh": "稳境白纸主题",
+  "description": "Mobile-first WeChat article theme for self-growth, psychological order, lifestyle writing, light methodology, and slow-reading essays, based on warm white paper, heavy serif headings, quiet gray metadata, precise fine rules, dark code panels, and restrained editorial rhythm.",
+  "suitable_for": ["个人成长", "心理秩序", "生活方式", "轻方法论", "慢阅读文章"],
   "content_width": 640,
   "philosophy": {
     "mood": "quiet",

@@ -3,24 +3,24 @@
   "themes": [
     {
       "id": "song",
-      "name": "Song Aesthetic",
-      "name_zh": "宋式美学",
+      "name": "Song Theme",
+      "name_zh": "宋式美学主题",
       "path": "song.json",
       "design": "song/DESIGN.md",
       "suitable_for": ["技术长文", "方法论", "人文评论", "生活方式", "书评"]
     },
     {
       "id": "wending",
-      "name": "Wending Paper",
-      "name_zh": "稳境白纸",
+      "name": "Wending Theme",
+      "name_zh": "稳境白纸主题",
       "path": "wending.json",
       "design": "wending/DESIGN.md",
-      "suitable_for": ["个人成长", "心理秩序", "生活方式", "轻方法论", "公众号规范"]
+      "suitable_for": ["个人成长", "心理秩序", "生活方式", "轻方法论", "慢阅读文章"]
     },
     {
       "id": "techspec",
-      "name": "Tech Spec Blue",
-      "name_zh": "蓝图科技规范",
+      "name": "Technology Theme",
+      "name_zh": "科技主题",
       "path": "techspec.json",
       "design": "techspec/DESIGN.md",
       "suitable_for": ["AI 技术文章", "工程实践", "产品方案", "研发规范", "工具教程"]

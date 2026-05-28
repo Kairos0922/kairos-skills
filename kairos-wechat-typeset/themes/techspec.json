@@ -1,8 +1,9 @@
 {
   "id": "techspec",
-  "name": "Tech Spec Blue",
-  "name_zh": "蓝图科技规范",
-  "description": "Mobile-first WeChat article component system translated from the blue magazine tech specification reference: strong black headings, precise blue section numbers, clean sans typography, dark code blocks, light-blue info panels, fine-rule tables, and compact editorial rhythm.",
+  "name": "Technology Theme",
+  "name_zh": "科技主题",
+  "description": "Mobile-first WeChat article theme for AI technology articles, engineering practice, product solutions, R&D specifications, and tool tutorials, translated from the blue technology magazine reference with strong black headings, precise blue section numbers, clean sans typography, dark code blocks, light-blue info panels, fine-rule tables, and compact editorial rhythm.",
+  "suitable_for": ["AI 技术文章", "工程实践", "产品方案", "研发规范", "工具教程"],
   "content_width": 640,
   "philosophy": {
     "mood": "technical",

@@ -1,8 +1,9 @@
 {
   "id": "song",
-  "name": "Song Aesthetic",
-  "name_zh": "宋式美学",
-  "description": "Modern Chinese body system built on Source Han Serif, paper warmth, restrained ink, technical order, and Song-style editorial breath.",
+  "name": "Song Theme",
+  "name_zh": "宋式美学主题",
+  "description": "Modern Chinese WeChat article theme for technical longform, methodology essays, humanities commentary, lifestyle writing, and book reviews, built on Source Han Serif, paper warmth, restrained ink, technical order, and Song-style editorial breath.",
+  "suitable_for": ["技术长文", "方法论", "人文评论", "生活方式", "书评"],
   "content_width": 720,
   "philosophy": {
     "mood": "literary",

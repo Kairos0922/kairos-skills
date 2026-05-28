@@ -56,11 +56,11 @@ python3 scripts/render.py \
 
 Use a realistic article fixture to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, steps, quote, NOTE/TIP/WARNING, Kairos lead, insight, pullquote, figure, soft-list, closing-note, image caption, code block, faux table layout, divider, and escaped raw HTML.
 
-`goldens/song-style.html` is rendered from `fixtures/song-style-system.md` so the Song reference stays close to its design-system master and article sample.
+`goldens/song-style.html` is rendered from `fixtures/song-style-system.md` so the Song Theme reference stays close to its design-system master and article sample. Its suitable article types are technical longform, methodology essays, humanities commentary, lifestyle writing, and book reviews.
 
-`goldens/wending-style.html` is rendered from `fixtures/wending-style-system.md` so the Wending reference stays aligned with the attached mobile component specification: 28px H1, 22px H2, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, fine-line tables, 8px image radius, and shallow gray quote surfaces.
+`goldens/wending-style.html` is rendered from `fixtures/wending-style-system.md` so the Wending Theme reference stays aligned with its warm white-paper component specification: 28px H1, 22px H2, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, fine-line tables, 8px image radius, and shallow gray quote surfaces. Its suitable article types are self-growth, psychological order, lifestyle writing, light methodology, and slow-reading essays.
 
-`goldens/techspec-style.html` is rendered from `fixtures/techspec-style-system.md` so the Tech Spec Blue reference stays aligned with the attached blue technology component specification: 28px H1, 32px blue section numbers, 22px H2 titles, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, light-blue information panels, fine-line tables, and 8px image radius.
+`goldens/techspec-style.html` is rendered from `fixtures/techspec-style-system.md` so the Technology Theme reference stays aligned with the blue technology component specification: 28px H1, 32px blue section numbers, 22px H2 titles, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, light-blue information panels, fine-line tables, and 8px image radius. Its suitable article types are AI technology articles, engineering practice, product solutions, R&D specifications, and tool tutorials.
 
 Run the visual audit after every polish pass:
 

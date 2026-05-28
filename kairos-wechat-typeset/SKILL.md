@@ -121,9 +121,9 @@ python3 scripts/render.py --list-themes
 
 v2 内置：
 
-- `song`：宋式美学。适合技术长文、方法论、人文评论、生活方式、书评。
-- `wending`：稳境白纸。适合个人成长、心理秩序、生活方式、轻方法论、公众号规范。
-- `techspec`：蓝图科技规范。适合 AI 技术文章、工程实践、产品方案、研发规范、工具教程。
+- `song`：宋式美学主题。适用文章类型：技术长文、方法论、人文评论、生活方式、书评。
+- `wending`：稳境白纸主题。适用文章类型：个人成长、心理秩序、生活方式、轻方法论、慢阅读文章。
+- `techspec`：科技主题。适用文章类型：AI 技术文章、工程实践、产品方案、研发规范、工具教程。
 
 主题不是颜色包，而是完整视觉哲学。用户不能传自定义主题、颜色、CSS 或外部模板。开发者扩展主题时，必须先遵守 `themes/METHODOLOGY.md`，再新增或更新 `themes/<theme-id>.json`、`themes/<theme-id>/DESIGN.md`，并登记到 `themes/registry.json`。
 
@@ -293,10 +293,11 @@ python3 scripts/verify_markdown.py \
 
 - `goldens/song-style.html`
 - `goldens/wending-style.html`
+- `goldens/techspec-style.html`
 
 这些文件是主题气质的参照，不是运行时模板。渲染器只能执行 layout decision，不得自由设计或动态创造样式。
 
-`fixtures/song-style-system.md` 是 `song` 的设计规范与文章样例来源。`fixtures/wending-style-system.md` 是 `wending` 的附件移动端组件规范与文章样例来源。新增或重打磨主题时，使用对应真实文章 fixture 覆盖标题、段落、引用、代码、表格、分割符、图片、链接和安全转义，再把通过人工审核的结果提升为 golden。
+`fixtures/song-style-system.md` 是 `song` 的设计规范与文章样例来源。`fixtures/wending-style-system.md` 是 `wending` 的移动端白纸主题组件规范与文章样例来源。`fixtures/techspec-style-system.md` 是 `techspec` 的科技主题组件规范与文章样例来源。新增或重打磨主题时，使用对应真实文章 fixture 覆盖标题、段落、引用、代码、表格、分割符、图片、链接和安全转义，再把通过人工审核的结果提升为 golden。
 
 ## Developer Theme Extension / 开发者扩展
 
@@ -309,7 +310,8 @@ python3 scripts/verify_markdown.py \
 - `themes/<theme-id>.json`：给脚本读取的确定性 visual philosophy、token、rhythm、constraints。
 - `themes/registry.json`：唯一对用户暴露的主题索引。
 - `fixtures/song-style-system.md`：`song` 设计规范与文章样例 golden 来源。
-- `fixtures/wending-style-system.md`：`wending` 附件移动端组件规范与文章样例 golden 来源。
+- `fixtures/wending-style-system.md`：`wending` 白纸主题组件规范与文章样例 golden 来源。
+- `fixtures/techspec-style-system.md`：`techspec` 科技主题组件规范与文章样例 golden 来源。
 - `scripts/audit_visual.py`：渲染后视觉库存审计，用于发现字号漂移、间距过大、边框过密和背景色过多。
 
 新增主题必须先完成设计确认，再使用对应真实文章 fixture 渲染、验证、对照 `goldens/` 的视觉标准并完成 390px / 430px 移动端预览。对齐敏感组件必须量测表格、列表 marker 和任务清单 checkbox 的视觉中心。用户运行时不能新增主题。

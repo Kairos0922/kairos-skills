@@ -64,7 +64,7 @@ python3 scripts/render.py \
 
 - `song`：宋式美学主题。适用文章类型：技术长文、方法论、人文评论、生活方式、书评。
 - `wending`：稳境白纸主题。适用文章类型：个人成长、心理秩序、生活方式、轻方法论、慢阅读文章。
-- `techspec`：科技主题。适用文章类型：AI 技术文章、工程实践、产品方案、研发规范、工具教程。
+- `tech`：科技主题。适用文章类型：AI 技术文章、工程实践、产品方案、研发实践、工具教程。
 
 主题只能从 registry 中选择。用户不能传自定义 CSS、颜色、HTML 模板或运行时主题文件。
 
@@ -99,15 +99,15 @@ kairos-wechat-typeset/
 ├── goldens/
 │   ├── song-style.html
 │   ├── wending-style.html
-│   └── techspec-style.html
+│   └── tech-style.html
 ├── themes/
 │   ├── registry.json
 │   ├── song.json
 │   ├── song/DESIGN.md
 │   ├── wending.json
 │   ├── wending/DESIGN.md
-│   ├── techspec.json
-│   └── techspec/DESIGN.md
+│   ├── tech.json
+│   └── tech/DESIGN.md
 ├── semantic/
 │   └── analyze.py
 ├── art_direction/
@@ -269,4 +269,4 @@ python3 scripts/audit_visual.py \
 
 `wending` 使用 `fixtures/wending-style-system.md` 生成 `goldens/wending-style.html`，验收重点是 28px H1、22px H2、18px H3、16px 正文、14px 辅助/代码文字、暗色代码块、细线表格、8px 图片圆角和浅灰引用面。
 
-`techspec` 使用 `fixtures/techspec-style-system.md` 生成 `goldens/techspec-style.html`，验收重点是 28px H1、32px 蓝色章节编号、22px H2、18px H3、16px 正文、14px 辅助/代码文字、暗色代码块、浅蓝信息块、细线表格和 8px 图片圆角。
+`tech` 使用 `fixtures/tech-style-system.md` 生成 `goldens/tech-style.html`，验收重点是 28px H1、32px 蓝色章节编号、22px H2、18px H3、16px 正文、14px 辅助/代码文字、暗色代码块、浅蓝信息块、细线表格和 8px 图片圆角。

@@ -60,7 +60,7 @@ Use a realistic article fixture to judge component completeness: H1, numeric H2,
 
 `goldens/wending-style.html` is rendered from `fixtures/wending-style-system.md` so the Wending Theme reference stays aligned with its warm white-paper component specification: 28px H1, 22px H2, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, fine-line tables, 8px image radius, and shallow gray quote surfaces. Its suitable article types are self-growth, psychological order, lifestyle writing, light methodology, and slow-reading essays.
 
-`goldens/techspec-style.html` is rendered from `fixtures/techspec-style-system.md` so the Technology Theme reference stays aligned with the blue technology component specification: 28px H1, 32px blue section numbers, 22px H2 titles, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, light-blue information panels, fine-line tables, and 8px image radius. Its suitable article types are AI technology articles, engineering practice, product solutions, R&D specifications, and tool tutorials.
+`goldens/tech-style.html` is rendered from `fixtures/tech-style-system.md` so the Technology Theme reference stays aligned with the blue technology component system: 28px H1, 32px blue section numbers, 22px H2 titles, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, light-blue information panels, fine-line tables, and 8px image radius. Its suitable article types are AI technology articles, engineering practice, product solutions, R&D practice, and tool tutorials.
 
 Run the visual audit after every polish pass:
 

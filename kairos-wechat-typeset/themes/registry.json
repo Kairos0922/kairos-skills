@@ -18,12 +18,12 @@
       "suitable_for": ["个人成长", "心理秩序", "生活方式", "轻方法论", "慢阅读文章"]
     },
     {
-      "id": "techspec",
+      "id": "tech",
       "name": "Technology Theme",
       "name_zh": "科技主题",
-      "path": "techspec.json",
-      "design": "techspec/DESIGN.md",
-      "suitable_for": ["AI 技术文章", "工程实践", "产品方案", "研发规范", "工具教程"]
+      "path": "tech.json",
+      "design": "tech/DESIGN.md",
+      "suitable_for": ["AI 技术文章", "工程实践", "产品方案", "研发实践", "工具教程"]
     }
   ]
 }

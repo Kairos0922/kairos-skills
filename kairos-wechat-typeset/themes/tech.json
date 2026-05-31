@@ -1,9 +1,9 @@
 {
-  "id": "techspec",
+  "id": "tech",
   "name": "Technology Theme",
   "name_zh": "科技主题",
-  "description": "Mobile-first WeChat article theme for AI technology articles, engineering practice, product solutions, R&D specifications, and tool tutorials, translated from the blue technology magazine reference with strong black headings, precise blue section numbers, clean sans typography, dark code blocks, light-blue info panels, fine-rule tables, and compact editorial rhythm.",
-  "suitable_for": ["AI 技术文章", "工程实践", "产品方案", "研发规范", "工具教程"],
+  "description": "Mobile-first WeChat article theme for AI technology articles, engineering practice, product solutions, R&D practice, and tool tutorials, translated from the blue technology magazine reference with strong black headings, precise blue section numbers, clean sans typography, dark code blocks, light-blue info panels, fine-rule tables, and compact editorial rhythm.",
+  "suitable_for": ["AI 技术文章", "工程实践", "产品方案", "研发实践", "工具教程"],
   "content_width": 640,
   "philosophy": {
     "mood": "technical",
@@ -18,11 +18,11 @@
     "forbidden": ["gradient", "strong shadow", "multi-accent palette", "decorative bokeh", "rounded pill-heavy layout", "marketing CTA", "dark full-page background"]
   },
   "art_direction": {
-    "article_type": "technology-specification-editorial",
+    "article_type": "technology-editorial",
     "spacing_scale": 0.9,
     "emphasis_mode": "precise",
     "visual_density": "medium",
-    "section_rhythm": "mobile-spec"
+    "section_rhythm": "mobile-tech"
   },
   "body": {
     "background": "#ffffff",

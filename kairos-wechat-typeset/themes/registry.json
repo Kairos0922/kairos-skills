@@ -24,6 +24,14 @@
       "path": "tech.json",
       "design": "tech/DESIGN.md",
       "suitable_for": ["AI 技术文章", "工程实践", "产品方案", "研发实践", "工具教程"]
+    },
+    {
+      "id": "wisme",
+      "name": "WISME Theme",
+      "name_zh": "WISME 规范主题",
+      "path": "wisme.json",
+      "design": "wisme/DESIGN.md",
+      "suitable_for": ["知识科普", "研究报告", "组件规范", "方法论", "专业说明"]
     }
   ]
 }

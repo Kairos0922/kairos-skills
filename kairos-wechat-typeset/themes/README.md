@@ -62,6 +62,8 @@ Use a realistic article fixture to judge component completeness: H1, numeric H2,
 
 `goldens/tech-style.html` is rendered from `fixtures/tech-style-system.md` so the Technology Theme reference stays aligned with the blue technology component system: 28px H1, 32px blue section numbers, 22px H2 titles, 18px H3, 16px body text, 14px auxiliary/code text, dark code blocks, light-blue information panels, fine-line tables, and 8px image radius. Its suitable article types are AI technology articles, engineering practice, product solutions, R&D practice, and tool tutorials.
 
+`goldens/wisme-style.html` is rendered from `fixtures/wisme-style-system.md` so the WISME Theme reference stays aligned with the attached component-specification design: 32px H1, black numbered section headings with gray rules, 18px H2 titles, 16px H3, 15px body text, 13px auxiliary/code text, red single-accent emphasis, dark code blocks, gray fine-line tables, red insight panels, and 4px image radius. Its suitable article types are knowledge explainers, research reports, component specifications, methodology essays, and professional documentation.
+
 Run the visual audit after every polish pass:
 
 ```bash

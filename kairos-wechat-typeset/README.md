@@ -71,6 +71,17 @@ python3 scripts/render.py \
 
 完整工作流会让用户选择内置主题，非交互模式必须显式传入 `--theme`。
 
+### 主题矩阵
+
+| Theme | 视觉方向 | 核心抓手 | 避免的问题 |
+|-------|----------|----------|------------|
+| `song` | 文学纸面、墨色、宋体秩序 | 暖纸、宋体层级、克制细线 | 变成古风装饰或山水海报 |
+| `wending` | 安静白纸、灰度规格 | 重宋标题、暖白底、浅灰引用面 | 变成普通卡片式成长文 |
+| `tech` | 蓝色科技移动文章 | 蓝色编号、暗色代码、浅蓝信息块 | 变成 SaaS 落地页配色 |
+| `wisme` | 黑白灰红组件规范 | 黑字标题、红色短线、灰色表格 | 变成静态设计稿而不是正文主题 |
+
+四套主题共享同一套 Markdown 与 Kairos 语义组件矩阵。主题差异来自确定性 token、组件规则和少量 renderer 分支，而不是为单篇文章临场写样式。
+
 ## 输出目录与版本
 
 用户产物不写入 skill 目录。默认输出到跨平台用户目录：
@@ -262,14 +273,46 @@ python3 scripts/audit_visual.py \
 
 ## 开发者新增主题
 
-见 [`themes/METHODOLOGY.md`](themes/METHODOLOGY.md) 与 [`themes/README.md`](themes/README.md)。新增主题需要：
+见 [`themes/METHODOLOGY.md`](themes/METHODOLOGY.md) 与 [`themes/README.md`](themes/README.md)。当前四套主题沉淀出的快速方法是：先把参考图转成正文边界内的组件规则，再落 token、fixture、renderer 和 golden。
+
+新增主题需要：
 
 1. 先写主题 thesis、适用文章类型、禁用视觉手法和组件规则。
 2. 新建 `themes/<theme-id>/DESIGN.md`。
 3. 新建 `themes/<theme-id>.json`。
 4. 注册到 `themes/registry.json`。
 5. 使用对应的真实文章 fixture 渲染 `goldens/<theme-id>-style.html`，例如 `song` 使用 `fixtures/song-style-system.md`。
+6. 更新 `README.md`、`SKILL.md`、`themes/README.md` 和仓库根目录 `skills.json`。
 7. 通过 `--verify`、`scripts/audit_visual.py`、检查 `goldens/` 对齐度，并进行 390px / 430px 移动端预览。
+
+快速新增高质量主题时，优先选择最接近的原型：
+
+- `paper-literary`：从 `song` 开始，适合纸面、宋体、文学气质。
+- `quiet-spec`：从 `wending` 开始，适合白纸、心理秩序、灰度规范。
+- `technical-explicit`：从 `tech` 开始，适合代码、工程、蓝色技术层级。
+- `component-spec`：从 `wisme` 开始，适合黑白灰、红色强调、组件规范类文章。
+
+新增主题的正常变更清单：
+
+```text
+themes/<theme-id>.json
+themes/<theme-id>/DESIGN.md
+fixtures/<theme-id>-style-system.md
+goldens/<theme-id>-style.html
+themes/registry.json
+scripts/render.py
+README.md
+SKILL.md
+themes/README.md
+../skills.json
+```
+
+质量门槛：
+
+- Identity：看 H1、H2、引用、代码、表格、重点句就能识别主题。
+- Matrix：所有共享 Markdown / Kairos 组件都有明确处理。
+- Restraint：只有一个强调色，背景、边框和图标不抢内容。
+- Reproducibility：fixture、golden、文档、registry、验证命令和 renderer 行为一致。
 
 `wending` 使用 `fixtures/wending-style-system.md` 生成 `goldens/wending-style.html`，验收重点是 28px H1、22px H2、18px H3、16px 正文、14px 辅助/代码文字、暗色代码块、细线表格、8px 图片圆角和浅灰引用面。
 

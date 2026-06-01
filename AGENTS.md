@@ -82,7 +82,6 @@ find . -type d -name __pycache__ -prune -exec rm -rf {} +
 
 ## Current Skills
 
-- `skill-autoresearch`: automated edit/eval/keep-revert loop for optimizing skills.
 - `kairos-wechat-typeset`: deterministic Markdown-to-WeChat editorial HTML design system.
 
 Keep `skills.json` updated when adding, removing, renaming, or materially changing a skill.

@@ -49,6 +49,12 @@
 - Humanities: allow more lead, pullquote, divider, and closing-note usage. Keep the same token system so the article still belongs to Song.
 - Lifestyle: allow stronger figure and soft-list rhythm, but use source images and semantic components rather than built-in decorative icons.
 
+## Image Direction
+
+Song image planning should be sparse and editorial. Prefer 16:9 images that explain a concept, reveal a method structure, establish a quiet opening atmosphere, or support a real comparison. The visual language is warm off-white paper, restrained ink, low saturation, fine line order, and quiet stillness.
+
+Do not use images as section decoration. Avoid ancient seals, landscape posters, decorative icon lists, strong shadows, gradients, busy collages, and high-contrast color surfaces. Technical articles should usually prefer concept diagrams over scenic or lifestyle imagery.
+
 ## Editable Body Boundary
 
 WeChat only lets this skill control the article body. Do not treat platform title, cover image, account header, menus, or external page chrome as theme surface. If a reference image shows a magazine opening, translate only the body-safe parts into components: lead paragraph, figure, pullquote, soft list, divider, and closing note. Do not add seals or free-positioned decorations.

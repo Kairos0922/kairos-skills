@@ -24,6 +24,14 @@
     "visual_density": "medium",
     "section_rhythm": "mobile-spec"
   },
+  "image_direction": {
+    "default_aspect_ratio": "16:9",
+    "preferred_visual_types": ["atmosphere_still", "concept_diagram", "comparison_diagram"],
+    "style": "quiet warm-white editorial imagery with soft natural light, grayscale order, restrained life details, and calm psychological structure",
+    "use_for": ["开篇情绪定调", "心理秩序概念", "生活方式方法", "轻量对比关系"],
+    "avoid_for": ["鸡汤海报", "抽象观点的重复装饰", "无信息量生活摆拍"],
+    "forbidden": ["gradient", "strong shadow", "multi-accent palette", "decorative icons", "rounded pill-heavy layout", "large tinted backgrounds", "stock motivational poster", "busy collage"]
+  },
   "body": {
     "background": "#fbfaf7",
     "padding": "22px 20px 42px 20px"

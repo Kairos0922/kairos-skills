@@ -91,6 +91,9 @@ python3 scripts/render.py \
   article-slug/
     v001/
       layout.md
+      image-plan.json
+      image-prompts.md
+      images/
       output.html
       meta.json
     v002/
@@ -101,6 +104,9 @@ python3 scripts/render.py \
 - `layout.md`：可选，仅在用户选择优化布局时生成。
 - `output.html`：必选，排版后的 HTML。
 - `meta.json`：必选，记录版本、主题、输入来源、是否优化布局、layout mode、内容 hash 和产物路径。
+- `image-plan.json`：可选，仅在用户要求配图时由宿主 agent 生成并校验。
+- `image-prompts.md`：可选，宿主 agent 没有生图能力时输出。
+- `images/`：可选，宿主 agent 生成或用户提供的正文配图资产。
 
 ## 架构
 
@@ -181,6 +187,7 @@ Markdown path / Markdown text / non-Markdown text
 - LLM 只优化 Markdown 与白名单 Kairos 组件语法：标题层级、段落节奏、重点句、引用、列表、步骤、分隔线、导语、洞察、摘引、图文、收束。
 - LLM 不生成 HTML、不写 CSS、不新增任意自定义标签，不决定 typography、spacing、layout。
 - 脚本负责确定性执行：输入归一化、保存/验证 `layout.md`、解析 Markdown、加载主题、分析语义、解析节奏、输出全内联 HTML、执行验证。
+- 配图由宿主 agent 介入：agent 根据文章和主题生成 `image-plan.json`，有生图能力时调用宿主工具生成图片，没有生图能力时输出 prompts。skill 不配置模型、不保存 API key、不绑定 provider。
 - 语义组件不是装饰模块，而是内容在微信公众号正文中的最佳表达方式。
 
 如果用户不选择优化布局，脚本不输出 `layout.md`，直接使用当前 Markdown 渲染，并只做 safety verify。如果输入不是 Markdown，脚本会先做最小 Markdown 标准化。
@@ -229,6 +236,30 @@ Markdown path / Markdown text / non-Markdown text
 :::
 ```
 
+## 文章配图
+
+配图不是 renderer 的自由设计，也不是脚本内置生图模型。它是 agent-mediated workflow：skill 定义规则，agent 做编辑判断和生成动作，脚本负责验证，renderer 只渲染已有的 `:::figure`。
+
+配图原则：
+
+- 图片必须降低理解成本、提供证据、解释结构或建立必要的开场气质。
+- 默认允许 `0` 张图；没有必要配图时，应在 `image-plan.json` 里说明原因。
+- 默认比例为 `16:9`。
+- 每张图必须包含 `purpose`、`why_needed`、`theme_fit`、`alt`、`caption`、`prompt` 和 `avoid`。
+- 低必要性图片不进入计划；`necessity` 只能是 `high` 或 `medium`。
+- `evidence_figure` 必须有 `source_note`。
+- 生成图不得伪造截图、数据、图表、品牌、引用或事实证据。
+
+允许的图像角色：
+
+| Visual Type | 用途 |
+| --- | --- |
+| `concept_diagram` | 概念、框架、心智模型和抽象关系 |
+| `process_diagram` | 流程、链路、管线和实现步骤 |
+| `comparison_diagram` | 取舍、前后对比、能力矩阵和差异说明 |
+| `evidence_figure` | 有来源的截图、研究图、产品状态或数据视觉 |
+| `atmosphere_still` | 极少量开场定调图，主要适合文学、生活方式和慢阅读文章 |
+
 微信公众号正文不能控制平台标题、封面图、账号信息、菜单和外部页面背景。`song` 的正文组件只追求单列阅读里的宋式杂志气质，不做印章、自由定位或封面式大标题。
 
 ## 质量目标
@@ -256,6 +287,14 @@ python3 scripts/verify.py \
 ```bash
 python3 scripts/verify_markdown.py \
   --input layout.md
+```
+
+验证配图计划：
+
+```bash
+python3 scripts/verify_image_plan.py \
+  --input image-plan.json \
+  --theme tech
 ```
 
 审计渲染后的视觉库存：

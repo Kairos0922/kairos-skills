@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "article_title": "AI 产品发布复盘",
+  "theme": "tech",
+  "default_aspect_ratio": "16:9",
+  "reason": "文章包含入口、反馈和信任三层产品机制，适合用一张概念结构图降低理解成本。",
+  "images": [
+    {
+      "id": "fig-01-product-trust-loop",
+      "insert_after": "## 01 入口：让复杂能力变得可接近",
+      "necessity": "high",
+      "purpose": "把入口、反馈和信任三层体验压缩成可扫描的产品结构图。",
+      "why_needed": "这一段包含抽象产品机制，纯文字会让读者在三个层级之间来回跳转。",
+      "visual_type": "concept_diagram",
+      "theme": "tech",
+      "theme_fit": "白底、细线、单一蓝色强调、抽象界面块，贴合科技主题的移动端正文气质。",
+      "aspect_ratio": "16:9",
+      "alt": "AI 产品入口、反馈与信任机制的三层结构图",
+      "caption": "入口、反馈与信任并不是三个孤立功能，而是一条连续的体验链路。",
+      "prompt": "Create a minimalist 16:9 editorial concept diagram for a WeChat technology article about AI product onboarding. Show three abstract layers: first action, feedback loop, and trust signal. Use a white background, precise thin lines, restrained abstract interface blocks, and one blue accent. Keep the composition clean and mobile-readable. Avoid gradient, strong shadow, multi-accent palette, decorative bokeh, rounded pill-heavy layout, marketing CTA, and dark full-page background. No readable text in the image.",
+      "avoid": [
+        "gradient",
+        "strong shadow",
+        "multi-accent palette",
+        "decorative bokeh"
+      ],
+      "status": "prompt_only",
+      "asset_path": null
+    }
+  ]
+}

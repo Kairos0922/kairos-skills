@@ -18,7 +18,7 @@ Read [`METHODOLOGY.md`](METHODOLOGY.md) before adding or substantially polishing
 ## Required Files
 
 - `DESIGN.md`: human-readable theme philosophy, fit, semantic component rules, mobile rules, and quality gates.
-- `<theme-id>.json`: deterministic visual philosophy, constraints, rhythm, components, and tokens consumed by `scripts/render.py`.
+- `<theme-id>.json`: deterministic visual philosophy, constraints, rhythm, image direction, components, and tokens consumed by `scripts/render.py`.
 - `registry.json`: the only source of themes visible to users.
 
 The high-level workflow reads this registry when asking the user which theme to use. Runtime art-direction overrides are not part of the public user workflow because each registered theme must remain stable and reproducible.
@@ -39,7 +39,7 @@ Theme quality comes from a repeatable design pass, not one-off CSS edits.
 
 1. Define the theme thesis in `DESIGN.md`: audience, mood, typography, color limits, forbidden moves, component language, article type strategy, mobile rules, and quality gates.
 2. Decide whether the visual target is a normal Markdown block or a Kairos semantic component. Markdown owns technical article structure; semantic components own body-safe magazine expression such as lead, insight, pullquote, figure, soft-list, and closing-note.
-3. Tune the deterministic tokens in `themes/<theme-id>.json`: fonts, ink, paper, one accent color, rhythm, shape, and component variants.
+3. Tune the deterministic tokens in `themes/<theme-id>.json`: fonts, ink, paper, one accent color, rhythm, image direction, shape, and component variants.
 4. Render the theme's real article fixture:
 
 ```bash
@@ -55,6 +55,26 @@ python3 scripts/render.py \
 7. Re-run HTML verification and inspect 390px and 430px mobile previews.
 
 Use a realistic article fixture to judge component completeness: H1, numeric H2, fallback headings, paragraph rhythm, inline emphasis, links, lists, steps, quote, NOTE/TIP/WARNING, Kairos lead, insight, pullquote, figure, soft-list, closing-note, image caption, code block, faux table layout, divider, and escaped raw HTML.
+
+## Image Direction
+
+Image generation is mediated by the host agent, not by the theme or renderer. A theme defines `image_direction` so the agent can decide whether an article needs images, generate useful prompts, and keep assets visually consistent with the theme.
+
+Each theme should define:
+
+- `default_aspect_ratio`: normally `16:9`.
+- `preferred_visual_types`: a subset of `concept_diagram`, `process_diagram`, `comparison_diagram`, `evidence_figure`, and `atmosphere_still`.
+- `style`: the compact visual thesis for prompts.
+- `use_for` and `avoid_for`: editorial judgment rules.
+- `forbidden`: concrete visual moves the agent must avoid in prompts.
+
+The renderer still only receives `:::figure` Markdown. Validate agent-authored plans with:
+
+```bash
+python3 scripts/verify_image_plan.py \
+  --input fixtures/image-plan.sample.json \
+  --theme tech
+```
 
 `goldens/song-style.html` is rendered from `fixtures/song-style-system.md` so the Song Theme reference stays close to its design-system master and article sample. Its suitable article types are technical longform, methodology essays, humanities commentary, lifestyle writing, and book reviews.
 

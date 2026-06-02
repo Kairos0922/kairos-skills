@@ -24,6 +24,14 @@
     "visual_density": "medium-low",
     "section_rhythm": "technical-editorial"
   },
+  "image_direction": {
+    "default_aspect_ratio": "16:9",
+    "preferred_visual_types": ["concept_diagram", "atmosphere_still", "comparison_diagram"],
+    "style": "minimal paper editorial imagery with warm off-white ground, ink restraint, fine line structure, low saturation, and quiet object or abstract order",
+    "use_for": ["核心概念解释", "方法论结构", "人文或生活方式开场定调", "克制对比关系"],
+    "avoid_for": ["短段落装饰", "技术文章里的风景化转场", "重复章节配图"],
+    "forbidden": ["gradient", "strong shadow", "multi-accent palette", "decorative icon list", "ancient seal", "landscape poster", "large tinted backgrounds", "busy collage"]
+  },
   "body": {
     "background": "#f7f5f0",
     "padding": "24px 24px 48px 24px"

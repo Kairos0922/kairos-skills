@@ -25,6 +25,7 @@ This contract serves three goals:
 - Technical writing safe: headings, paragraphs, tables, code, inline code, emphasis, links, images, quotes, and steps must remain clear before they are beautiful.
 - Restrained magazine feel: whitespace, rhythm, typography, captions, pullquotes, and section breathing create the magazine quality.
 - Theme parity: each registered theme should implement the same core component contract, even when the visual treatment differs.
+- Image planning is agent-mediated: the skill defines the visual contract, the host agent decides and generates or prompts, and the renderer only receives normal `Figure` components.
 
 ## Core Components
 
@@ -91,6 +92,35 @@ Caption that explains why this image matters.
 
 Use for images that support explanation, evidence, product state, or atmosphere. The caption is part of the component, not optional decoration.
 
+## Image Direction Contract
+
+Image direction happens before rendering. The host agent reads the article, chosen theme, and theme `image_direction` rules, then decides whether the article needs any images at all. Zero images is valid when the article does not benefit from visual explanation.
+
+The skill itself does not configure or call an image model. If the host agent has image-generation capability, it may generate assets from the plan and write them into the article output. If the host agent has no such capability, it outputs prompts for the user.
+
+Allowed image roles:
+
+| Visual Type | Best For | Avoid For |
+| --- | --- | --- |
+| `concept_diagram` | Abstract ideas, frameworks, mental models, and high-level relationships. | Decorative illustrations or claims that need real evidence. |
+| `process_diagram` | Workflows, pipelines, implementation steps, and cause-effect chains. | Loose non-sequential ideas. |
+| `comparison_diagram` | Tradeoffs, before/after states, capability matrices, and contrastive arguments. | Subjective mood setting. |
+| `evidence_figure` | Source-backed screenshots, research visuals, product states, or data-derived visuals. | Any generated image that could be mistaken for factual evidence. |
+| `atmosphere_still` | Sparse opening mood for literary, lifestyle, or reflective articles. | Technical explanation, specifications, or filler between sections. |
+
+Every planned image must include:
+
+- `necessity`: `high` or `medium`; low-value images should be omitted.
+- `purpose`: what reader problem the image solves.
+- `why_needed`: why text alone is weaker here.
+- `theme_fit`: how the image follows the selected theme.
+- `aspect_ratio`: defaults to `16:9`.
+- `alt`, `caption`, and `prompt`.
+- `avoid`: concrete visual moves to avoid, including theme-specific forbidden moves.
+- `source_note` for every `evidence_figure`.
+
+Prompts must forbid readable text inside the image unless the source image is supplied and the text is part of the evidence. Generated images must not invent product screenshots, metrics, charts, logos, citations, UI states, or factual evidence.
+
 ### `soft-list`
 
 ```markdown
@@ -150,6 +180,7 @@ Theme implementations may differ in typography, spacing, line language, accent u
 - Avoid more than two consecutive emphasis-heavy blocks.
 - Split very long paragraphs before rendering.
 - Use captions for meaningful images.
+- Use image plans only when images reduce understanding cost, add evidence, clarify a structure, or establish article tone.
 - Use ordered lists for steps and unordered lists for parallel points.
 - Let code and tables stay clear and stable before adding magazine styling.
 
@@ -162,4 +193,3 @@ Theme implementations may differ in typography, spacing, line language, accent u
 - Code blocks must not depend on horizontal scrolling.
 - Component spacing must come from the rhythm engine, not ad hoc Markdown tricks.
 - The output must remain paste-friendly for the WeChat editor.
-

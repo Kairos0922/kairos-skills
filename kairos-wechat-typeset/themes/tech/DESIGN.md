@@ -43,6 +43,12 @@
 - Table: faux table，14px 字号，细线网格，表头浅蓝底，移动端不横向溢出。
 - Divider: 支持细线、虚线和蓝色短线语义，但渲染器默认使用细线。
 
+## Image Direction
+
+Tech image planning should prefer useful diagrams over generic technology atmosphere. Use 16:9 concept diagrams, process diagrams, and comparison diagrams for system structure, product flows, engineering tradeoffs, and abstract technical concepts.
+
+The visual language is white background, precise thin rules, abstract interface blocks, and one blue accent. Avoid cyberpunk, glowing networks, decorative bokeh, marketing CTAs, dark full-page visuals, gradients, strong shadows, and busy dashboard collages.
+
 ## Mobile Rules
 
 - 内容最大宽度 640px，默认左右内边距 20px。

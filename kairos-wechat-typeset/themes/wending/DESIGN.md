@@ -44,6 +44,12 @@
 - Divider: 一条浅灰水平线，不使用装饰符号。
 - Closing note: 灰色居中收束，不模拟平台底部工具栏。
 
+## Image Direction
+
+Wending image planning should preserve quiet psychological order. Prefer 16:9 warm-white atmosphere stills, restrained concept diagrams, or simple comparison diagrams that help explain self-growth, lifestyle, and light-methodology ideas.
+
+Images should feel like they belong to a calm paper article, not a motivational poster. Avoid stock inspirational scenes, decorative icons, gradients, strong shadows, multi-accent palettes, pill-heavy layouts, busy collages, and lifestyle images that add no information.
+
 ## Mobile Rules
 
 - 内容最大宽度 640px，默认内边距 20px，优先服务 390px 与 430px 手机宽度。

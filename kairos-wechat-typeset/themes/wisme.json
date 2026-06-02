@@ -24,6 +24,14 @@
     "visual_density": "medium",
     "section_rhythm": "mobile-spec"
   },
+  "image_direction": {
+    "default_aspect_ratio": "16:9",
+    "preferred_visual_types": ["concept_diagram", "process_diagram", "comparison_diagram", "evidence_figure"],
+    "style": "specification-grade black white gray diagrams with strict alignment, thin rules, sparse red accent, and report-like clarity",
+    "use_for": ["组件规范", "研究结构", "方法框架", "专业说明", "有来源的证据图"],
+    "avoid_for": ["装饰插画", "没有来源的证据画面", "过度拟物化图标"],
+    "forbidden": ["gradient", "multi-accent palette", "decorative illustration", "strong shadow", "pill-heavy layout", "large hero card", "dark full-page background", "busy collage"]
+  },
   "body": {
     "background": "#ffffff",
     "padding": "28px 20px 44px 20px"

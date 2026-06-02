@@ -84,9 +84,14 @@ Versioned output under ~/.wechat-typeset
 5. 如果用户选择“否”，不生成 `layout.md`，直接使用当前 Markdown 进入渲染，只执行安全验证。
 6. 询问用户选择哪个内置主题。主题只能来自 `themes/registry.json`，不得让用户提供 CSS、颜色、模板或主题文件。
 7. 执行 semantic analysis、art direction、rhythm strategy 和 layout resolver。
-8. 用脚本渲染 HTML，并运行 Markdown / HTML / editorial verify。
-9. 输出版本化产物到 `~/.wechat-typeset/<article-slug>/vNNN/`。
-10. 如验证或移动端预览有问题，调整 Markdown 布局、主题 token、节奏规则或渲染器，不让 LLM 临场写样式。
+8. 如用户要求配图，由 host agent 根据文章、主题和 `image_direction` 规则生成 `image-plan.json`：
+   - `kairos-wechat-typeset` 不配置生图模型、不保存 API key、不绑定 provider。
+   - 如果宿主 agent 有生图能力，agent 调用自己的生图工具并把图片写入输出目录。
+   - 如果宿主 agent 没有生图能力，agent 输出 `image-prompts.md`。
+   - 图片计划必须通过 `scripts/verify_image_plan.py`，再转换为 `:::figure`。
+9. 用脚本渲染 HTML，并运行 Markdown / HTML / editorial verify。
+10. 输出版本化产物到 `~/.wechat-typeset/<article-slug>/vNNN/`。
+11. 如验证或移动端预览有问题，调整 Markdown 布局、主题 token、节奏规则或渲染器，不让 LLM 临场写样式。
 
 ## Output / 输出资产
 
@@ -94,6 +99,9 @@ Versioned output under ~/.wechat-typeset
 
 - 可选：`layout.md`，仅在用户选择优化布局时输出。
 - 必选：`output.html`，主题化排版后的 HTML 文件。
+- 可选：`image-plan.json`，仅在用户要求配图时输出，由 agent 编写并由脚本验证。
+- 可选：`image-prompts.md`，宿主 agent 无生图能力时输出。
+- 可选：`images/`，宿主 agent 生成或用户提供的正文配图资产。
 
 每次运行还会输出 `meta.json`，用于记录版本、主题、输入来源、是否优化布局、layout mode、内容 hash 和产物路径。用户产物必须写入跨平台用户目录：
 
@@ -102,6 +110,9 @@ Versioned output under ~/.wechat-typeset
   article-slug/
     v001/
       layout.md
+      image-plan.json
+      image-prompts.md
+      images/
       output.html
       meta.json
     v002/
@@ -201,6 +212,28 @@ article.md
 :::
 ```
 
+## Image Direction / 文章配图
+
+配图是 agent-mediated workflow，不是 renderer 的自由设计，也不是脚本内置模型调用。Skill 只定义配图标准、主题方向、`image-plan.json` 契约和验证门槛；宿主 agent 负责判断是否生成图片、调用自己的生图能力，或在没有生图能力时输出 prompt。
+
+配图必须符合以下原则：
+
+- 图片必须降低理解成本、提供证据、解释结构或建立必要的开场气质。
+- 默认允许 `0` 张图；不需要图片的文章应说明原因，而不是硬插图。
+- 默认比例为 `16:9`。
+- 每张图必须有 `purpose`、`why_needed`、`theme_fit`、`alt`、`caption`、`prompt` 和 `avoid`。
+- 低必要性图片不进入计划；`necessity` 只能是 `high` 或 `medium`。
+- `evidence_figure` 必须有 `source_note`，生成图片不得伪造截图、数据、图表、品牌、引用或事实证据。
+- prompt 必须禁止图片内生成可读文字，除非用户提供的证据图片本身包含文字。
+
+允许的图像角色：
+
+- `concept_diagram`：概念、框架、心智模型和抽象关系。
+- `process_diagram`：流程、链路、管线和实现步骤。
+- `comparison_diagram`：取舍、前后对比、能力矩阵和差异说明。
+- `evidence_figure`：有来源的截图、研究图、产品状态或数据视觉。
+- `atmosphere_still`：极少量开场定调图，主要适合文学、生活方式和慢阅读文章。
+
 平台边界：微信公众号只能控制正文，不能把文章标题、封面图、账号信息、菜单、外部页面背景当作主题表面。`song` 不使用印章、自由定位或封面式大标题组件。
 
 ## Commands / 命令
@@ -269,6 +302,14 @@ python3 scripts/verify_markdown.py \
   --input layout.md
 ```
 
+单独验证配图计划：
+
+```bash
+python3 scripts/verify_image_plan.py \
+  --input image-plan.json \
+  --theme tech
+```
+
 ## Quality Gates / 验收规则
 
 生成后必须检查：
@@ -279,6 +320,9 @@ python3 scripts/verify_markdown.py \
 - 无 `<script>`
 - 无原生 `<table>`、`<ul>`、`<ol>`
 - 图片必须 `max-width: 100%`
+- 配图计划必须通过 `scripts/verify_image_plan.py`
+- 配图默认 16:9，低必要性图片不得进入计划
+- 生成图不得伪造截图、数据、图表、品牌、引用或事实证据
 - 原始 HTML 必须被转义，不能透传
 - 所有输入都必须通过 Markdown safety verify：禁止 raw HTML、`style=`、`class=`、`<script>`
 - `layout.md` 还必须通过 layout contract verify：heading 不跳级、重点不过量、段落不过长

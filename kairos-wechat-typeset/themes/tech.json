@@ -24,6 +24,14 @@
     "visual_density": "medium",
     "section_rhythm": "mobile-tech"
   },
+  "image_direction": {
+    "default_aspect_ratio": "16:9",
+    "preferred_visual_types": ["concept_diagram", "process_diagram", "comparison_diagram"],
+    "style": "minimal technology editorial diagrams with white background, precise thin rules, abstract interface blocks, and a single blue accent",
+    "use_for": ["系统结构", "流程机制", "产品链路", "工程对比", "抽象技术概念"],
+    "avoid_for": ["泛科技氛围图", "纯装饰插画", "没有结构信息的界面拼贴"],
+    "forbidden": ["gradient", "strong shadow", "multi-accent palette", "decorative bokeh", "rounded pill-heavy layout", "marketing CTA", "dark full-page background", "cyberpunk"]
+  },
   "body": {
     "background": "#ffffff",
     "padding": "28px 20px 46px 20px"

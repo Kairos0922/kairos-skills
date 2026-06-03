@@ -10,6 +10,7 @@
       "summary": "Deterministic Markdown-to-WeChat semantic editorial component system.",
       "entrypoints": [
         "SKILL.md",
+        "scripts/check_all.py",
         "scripts/typeset.py",
         "scripts/render.py",
         "scripts/verify.py",
@@ -18,18 +19,8 @@
         "scripts/audit_visual.py"
       ],
       "validation": [
-        "python3 scripts/render.py --list-themes",
-        "python3 scripts/typeset.py --check",
-        "python3 scripts/verify_image_plan.py --input fixtures/image-plan.sample.json --theme tech",
-        "python3 scripts/verify.py --input goldens/song-style.html",
-        "python3 scripts/audit_visual.py --input goldens/song-style.html --allowed-font-size 12px --allowed-font-size 14px --allowed-font-size 16px --allowed-font-size 25px --allowed-font-size 28px --max-margin-px 48",
-        "python3 scripts/verify.py --input goldens/wending-style.html --source fixtures/wending-style-system.md --theme wending",
-        "python3 scripts/audit_visual.py --input goldens/wending-style.html --allowed-font-size 14px --allowed-font-size 16px --allowed-font-size 18px --allowed-font-size 22px --allowed-font-size 28px --allowed-font-size 32px --allowed-font-size 42px --max-margin-px 48",
-                "python3 scripts/verify.py --input goldens/tech-style.html --source fixtures/tech-style-system.md --theme tech",
-                "python3 scripts/audit_visual.py --input goldens/tech-style.html --allowed-font-size 12px --allowed-font-size 13px --allowed-font-size 14px --allowed-font-size 16px --allowed-font-size 18px --allowed-font-size 22px --allowed-font-size 28px --allowed-font-size 32px --max-margin-px 48",
-                "python3 scripts/verify.py --input goldens/wisme-style.html --source fixtures/wisme-style-system.md --theme wisme",
-                "python3 scripts/audit_visual.py --input goldens/wisme-style.html --allowed-font-size 10px --allowed-font-size 11px --allowed-font-size 12px --allowed-font-size 13px --allowed-font-size 15px --allowed-font-size 16px --allowed-font-size 18px --allowed-font-size 24px --allowed-font-size 32px --max-margin-px 48"
-            ]
-        }
+        "python3 scripts/check_all.py"
+      ]
+    }
   ]
 }

@@ -1,8 +1,19 @@
 # Kairos Skills
 
-Personal skill collection for AI coding agents.
+Reusable workflow skills for AI coding agents.
 
-This repository is where I collect reusable skills from daily work. I plan and design the skills; AI agents help implement, verify, document, and maintain them. The goal is to keep each skill useful for my own workflow while making the repository clear enough for future AI agents and open-source users to understand quickly.
+This repository collects practical skills that turn repeatable AI-assisted work into deterministic scripts, contracts, fixtures, and validation commands. The current focus is content-production workflows: use AI for editorial judgment, then rely on code for rendering, verification, and repeatable output.
+
+## Product Direction
+
+Kairos Skills is designed for people who want agent help without losing control of taste, structure, or delivery quality.
+
+| User Need | Repository Answer |
+|-----------|-------------------|
+| Turn a repeatable workflow into something agents can run reliably | Each skill has `SKILL.md`, docs, scripts, fixtures, and validation commands |
+| Keep AI output from drifting between runs | Stable contracts, registered options, deterministic scripts, and goldens |
+| Share personal workflows without private machine context | Relative paths, open-source hygiene checks, and self-contained skill directories |
+| Maintain taste and product intent over time | Human design notes plus agent-facing operating rules |
 
 ---
 ## Skills
@@ -36,9 +47,21 @@ Use [`skills.json`](./skills.json) as the fast inventory before opening individu
 git clone https://github.com/Kairos0922/kairos-skills.git
 cd kairos-skills
 
-# Example: kairos-wechat-typeset renders Markdown to HTML suitable for WeChat editor
+# Check the current skill surface
 cd kairos-wechat-typeset
+python3 scripts/check_all.py --smoke
+```
+
+Render a Markdown article into HTML suitable for the WeChat editor:
+
+```bash
 python3 scripts/render.py --theme song --input article.md --output article.html --verify
+```
+
+For a versioned user workflow that writes outputs under `~/.wechat-typeset/`, use:
+
+```bash
+python3 scripts/typeset.py --input article.md --theme song --optimize-layout no --non-interactive
 ```
 
 ### Current WeChat Themes
@@ -59,11 +82,15 @@ cd kairos-wechat-typeset
 python3 scripts/render.py --list-themes
 ```
 
+### When To Use This Repository
+
+Use this repository when a workflow is valuable enough to preserve as a reusable skill: it has clear inputs, repeatable outputs, quality rules, and validation commands. Do not add one-off prompts, local scratch files, or workflows that depend on private paths or secrets.
+
 ---
 
 ## Adding New Skills
 
-Each skill is self-contained with its own directory. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the full workflow.
+Each skill is self-contained with its own directory. New skills should fit the content-production and agent-workflow direction unless the repository strategy changes. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the full workflow.
 
 Current repository includes:
 

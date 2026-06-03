@@ -2,12 +2,29 @@
 
 `kairos-wechat-typeset` 把标准 Markdown 文章转换成微信公众号编辑器友好的多主题 HTML。它不是普通 Markdown Renderer，而是确定性的 WeChat Editorial Design Skill：先用人工视觉母版定义高级感，再用主题哲学、节奏引擎和校验规则稳定复现。
 
+## 适用场景
+
+用它处理已经写好或接近写好的公众号长文，尤其是需要稳定品牌感、移动端阅读节奏和可重复主题效果的文章。
+
+| 输入 | 输出 | 适合用户 |
+| --- | --- | --- |
+| Markdown 文件、Markdown 文本或普通文本 | 可粘贴到微信公众号编辑器的内联 HTML | 写作者、产品经理、技术作者、内容运营、AI agent |
+| agent 优化后的 `layout.md` | 版本化 `output.html`、`meta.json` 和可选配图计划 | 需要一套可复用内容生产流程的人 |
+
+它不替代微信公众号平台标题、封面图、账号信息或发布流程，也不允许用户传自定义 CSS。产品重点是正文排版质量、主题一致性和 agent 可维护性。
+
 ## 60 秒上手
 
 查看内置主题：
 
 ```bash
 python3 scripts/render.py --list-themes
+```
+
+快速健康检查：
+
+```bash
+python3 scripts/check_all.py --smoke
 ```
 
 推荐完整工作流。系统会创建版本化输出目录，并根据参数决定是否输出 `layout.md`：
@@ -60,6 +77,46 @@ python3 scripts/render.py \
   --verify
 ```
 
+完成后打开终端输出里的 `output.html` 路径。发布到微信公众号时，优先使用 `--fragment-only` 生成正文片段；如果需要离线预览，再使用完整 HTML。
+
+### 端到端例子
+
+输入 `article.md`：
+
+```markdown
+# AI 产品发布复盘
+
+过去一年，AI 产品的竞争从模型能力转向可被普通用户感知的体验。
+
+==真正影响留存的，往往不是一次惊艳演示，而是用户第二天还愿不愿意打开。==
+
+## 01 入口：让复杂能力变得可接近
+
+> [!NOTE] 入口设计要服务于心智建模
+> 用户第一次使用时，最需要的是一个能立刻成功的动作。
+```
+
+运行：
+
+```bash
+python3 scripts/typeset.py \
+  --input article.md \
+  --theme tech \
+  --optimize-layout no \
+  --fragment-only \
+  --non-interactive
+```
+
+结果会写入：
+
+```text
+~/.wechat-typeset/<article-slug>/vNNN/
+  output.html
+  meta.json
+```
+
+把 `output.html` 里的正文片段复制到微信公众号编辑器正文区域，再用微信编辑器自己的预览确认最终平台表现。
+
 ## 内置主题
 
 - `song`：宋式美学主题。适用文章类型：技术长文、方法论、人文评论、生活方式、书评。
@@ -70,6 +127,15 @@ python3 scripts/render.py \
 主题只能从 registry 中选择。用户不能传自定义 CSS、颜色、HTML 模板或运行时主题文件。
 
 完整工作流会让用户选择内置主题，非交互模式必须显式传入 `--theme`。
+
+### 主题选择指南
+
+| 文章类型 | 推荐主题 | 原因 |
+| --- | --- | --- |
+| 技术教程、AI 工程实践、工具教程 | `tech` | 强化结构、代码、步骤和技术信息块 |
+| 方法论长文、人文评论、书评 | `song` | 保留长文气息，用宋体秩序和留白承载观点 |
+| 个人成长、心理秩序、慢阅读 | `wending` | 白纸感更安静，适合轻方法论和内省内容 |
+| 知识科普、研究报告、组件规范 | `wisme` | 黑白灰红的规范感更适合说明、表格和专业材料 |
 
 ### 主题矩阵
 
@@ -271,12 +337,32 @@ Markdown path / Markdown text / non-Markdown text
 
 ## 验证
 
-渲染时加 `--verify`，或单独运行：
+产品级健康检查：
+
+```bash
+python3 scripts/check_all.py --smoke
+```
+
+完整回归检查：
+
+```bash
+python3 scripts/check_all.py
+```
+
+渲染单篇文章时加 `--verify`，或单独运行：
 
 ```bash
 python3 scripts/verify.py \
   --input article.html
 ```
+
+### 常见限制
+
+- 不生成或配置图片模型；配图由宿主 agent 负责，skill 只验证 `image-plan.json`。
+- 不接受任意 HTML、CSS、`style`、`class` 或运行时主题文件。
+- 不控制微信公众号封面、平台标题、账号信息和发布后台。
+- 宽表格会被转成移动端安全结构，不追求桌面表格原貌。
+- 微信编辑器可能在粘贴后调整部分细节，发布前仍需要平台预览确认。
 
 验证项包括：无 `<style>`、无 `class=`、无外部 CSS、无脚本、无原生宽表格、图片移动端安全，以及 heading 不跳级、连续长段不超过 3、连续强强调不超过 2、高密度区块必须有 breathing。
 

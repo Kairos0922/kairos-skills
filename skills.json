@@ -7,7 +7,7 @@
       "id": "kairos-consulting-visual-generator",
       "path": "kairos-consulting-visual-generator",
       "status": "runnable",
-      "summary": "Generate consulting-style business covers and infographics from user topics.",
+      "summary": "Generate refined consulting-style business visual cards from user topics.",
       "entrypoints": [
         "SKILL.md",
         "references/consulting_visual_methodology.md",

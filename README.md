@@ -20,7 +20,7 @@ Kairos Skills is designed for people who want agent help without losing control 
 
 | Skill                   | Description                                                                 |
 |-------------------------|-----------------------------------------------------------------------------|
-| [kairos-consulting-visual-generator](./kairos-consulting-visual-generator/) | Generate consulting-style business covers and infographics from user topics |
+| [kairos-consulting-visual-generator](./kairos-consulting-visual-generator/) | Generate refined consulting-style business visual cards from user topics |
 | [kairos-wechat-typeset](./kairos-wechat-typeset/) | Deterministic Markdown-to-WeChat semantic editorial design system with four built-in themes |
 
 The machine-readable inventory lives in [`skills.json`](./skills.json).

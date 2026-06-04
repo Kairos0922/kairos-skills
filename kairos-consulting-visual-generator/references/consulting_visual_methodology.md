@@ -1,8 +1,10 @@
 # Consulting Visual Methodology
 
-This reference turns the skill from a prompt into a repeatable visual direction workflow. Load it when the task is ambiguous, high-stakes, or needs a stable consulting-grade result.
+This reference turns the skill from a prompt into a repeatable visual direction workflow. Load it when the task is ambiguous, high-stakes, or needs a stable consulting-grade card result.
 
 The methodology is the primary operating system. Scripts may help with intake checks or first-pass metaphor suggestions, but they must not override user intent, context, or visual director judgment.
+
+The target artifact is a refined visual card. It may contain analysis, but it must not look like a dense dashboard, an ordinary PPT slide, or a hand-built SVG chart with ugly typography.
 
 ## 1. Demand Clarity Before Output
 
@@ -42,6 +44,9 @@ Before generating, form a visual brief internally:
     "short_judgment": ""
   },
   "main_metaphor": "",
+  "visual_system": "Editorial Magazine | Swiss Consulting",
+  "palette": "",
+  "layout_skeleton": "",
   "composition_model": "",
   "anchor_words": [],
   "avoid": [],
@@ -51,7 +56,100 @@ Before generating, form a visual brief internally:
 
 The brief is not user-facing unless the user asks to see it.
 
-## 3. Scenario Playbooks
+## 3. Card Design Operating Rules
+
+Use these rules before any metaphor or module decision:
+
+- One card, one soul: every card needs one memorable judgment sentence.
+- Layout first: choose a skeleton before placing text.
+- Locked palette: use one curated palette; never invent color mixes in the moment.
+- Big type is not loud type: as font size increases, weight must decrease.
+- Typography must breathe: title line-height >= 1.08, body line-height >= 1.35.
+- No hidden text: captions, bottom bars, metaphors, and overlays must never cover type.
+- No card soup: do not put cards inside cards unless the card is a repeated item inside a controlled grid.
+- White space is content: leave large quiet fields, especially around the hero word.
+- If the page feels merely correct, it is not done; add a point of view, tension, or editorial rhythm.
+
+## 4. Visual Systems
+
+### Editorial Magazine
+
+Best for narrative, culture, organization, trend, and point-of-view content.
+
+- Use one dominant quote or thesis.
+- Use asymmetry, generous margins, small editorial metadata, and paper texture.
+- Chinese can use a refined serif/sans mix when available; otherwise use lighter modern sans.
+- Keep modules minimal; let the headline and negative space carry the mood.
+- Failure mode: lifestyle poster with no business structure.
+
+### Swiss Consulting
+
+Best for analysis, product, technology, frameworks, methods, and systems.
+
+- Use grid, hairline rules, strong type contrast, and one anchor color.
+- Use sharp rectangles and precise alignment, but avoid looking like a dashboard.
+- Large labels must be lighter weight; small labels can be medium weight.
+- Failure mode: generic consulting PPT with boxes and arrows.
+
+## 5. Layout Skeletons
+
+Choose one skeleton; do not improvise from scratch.
+
+### Hero Thesis Card
+
+- Top metadata line.
+- Huge core phrase.
+- One short thesis sentence.
+- One quiet metaphor mark.
+- Bottom source/action line.
+
+Use for covers and article idea cards.
+
+### Magazine Feature Card
+
+- Editorial masthead.
+- Large title occupying 45-60% of the canvas.
+- One side rail with 2-3 anchors.
+- One strong closing line.
+
+Use for reflective, cultural, or organizational topics.
+
+### Swiss Mechanism Card
+
+- Top title.
+- Central mechanism graphic.
+- Three supporting modules max.
+- Bottom implication.
+
+Use for systems, workflows, and business mechanisms.
+
+### Split Tension Card
+
+- Left: old logic.
+- Right: new logic.
+- Center: fracture, threshold, or data-flow mark.
+- Bottom: what changes.
+
+Use for transitions and paradigm shifts.
+
+### Matrix Spotlight Card
+
+- Two axes.
+- One highlighted zone.
+- Three labels max outside the zone.
+- One conclusion line.
+
+Use only when comparison or positioning is the main story.
+
+### Flow Ribbon Card
+
+- One flowing band across the card.
+- 3-5 stations max.
+- Labels sit above or below the band, not inside crowded boxes.
+
+Use for process, pipeline, data flow, and operating model.
+
+## 6. Scenario Playbooks
 
 ### Quick Social Cover
 
@@ -72,8 +170,9 @@ The brief is not user-facing unless the user asks to see it.
 
 - Do not start from decoration.
 - Define the analytical path first: problem to answer, variables, mechanism, result.
-- Use 3-6 major modules.
+- Compress to 2-4 major information groups when the output is a social card.
 - Let the chosen metaphor organize modules, not compete with them.
+- If it becomes a dense dashboard, switch to a card skeleton and remove detail.
 
 ### Flowchart Or Methodology Diagram
 
@@ -87,7 +186,7 @@ The brief is not user-facing unless the user asks to see it.
 - The main metaphor can be matrix; do not switch to coordinates unless the axes are strategic positioning.
 - Define two dimensions and one recommendation zone.
 
-## 4. Metaphor Design Grammar
+## 7. Metaphor Design Grammar
 
 Use one main metaphor only.
 
@@ -181,7 +280,7 @@ Use one main metaphor only.
 - Infographic: foundation, pillars, governance layer, roof outcome.
 - Failure mode: real estate or architecture poster mood.
 
-## 5. Composition Models
+## 8. Composition Models
 
 ### Cover
 
@@ -196,17 +295,31 @@ The cover is successful if it remains strong after removing 70% of secondary mar
 
 ### Infographic
 
-Use this structure when the output is analytical:
+Use this structure when the output is analytical, but still keep it card-like:
 
 - Top title and subtitle.
 - Central analytical structure.
-- Left or right supporting modules.
-- Bottom conclusions or actions.
+- Two to four supporting information groups.
+- One bottom conclusion or action.
 - Tiny legend, numbering, and guide lines.
 
 The infographic is successful if the reading path is obvious in five seconds.
 
-## 6. Prompt Assembly
+## 9. Rendering Discipline
+
+For text-heavy Chinese cards, prefer a single HTML file rendered to PNG with a browser. HTML/CSS gives better control over line height, font fallback, safe areas, and responsive text than hand-positioned SVG.
+
+Use SVG only for simple vector marks or when every text box has been manually checked. Do not build complex Chinese layouts by absolute SVG coordinates unless there is a strong reason.
+
+Before delivery:
+
+- Render the final image.
+- Inspect the actual PNG.
+- Check dimensions.
+- Check text clipping, overlap, and bottom-bar coverage.
+- Revise once if typography or spacing feels crude.
+
+## 10. Prompt Assembly
 
 When calling a host image-generation tool, assemble the prompt from the visual brief:
 
@@ -217,10 +330,11 @@ When calling a host image-generation tool, assemble the prompt from the visual b
 - Specify palette, typography, line system, texture, and density.
 - List strict negatives.
 - Require clean, readable, non-garbled text.
+- Require a refined card, not a dense infographic panel.
 
 Do not ask the image model to invent the title, business concept, or module labels.
 
-## 7. QA And Revision
+## 11. QA And Revision
 
 Reject or revise if:
 
@@ -232,5 +346,8 @@ Reject or revise if:
 - Infographic has more than six major modules.
 - The metaphor is only beside the title, not integrated with it.
 - Color becomes neon, purple-blue sci-fi, or saturated advertising style.
+- Font looks crude, heavy, or browser-default.
+- Text touches edges, overlaps, or is covered by bars/graphics.
+- The result lacks a memorable thesis or emotional point of view.
 
 When text accuracy is poor, reduce text volume and regenerate with fewer labels.

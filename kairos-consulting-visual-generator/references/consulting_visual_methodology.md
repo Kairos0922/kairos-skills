@@ -44,6 +44,7 @@ Before generating, form a visual brief internally:
     "short_judgment": ""
   },
   "main_metaphor": "",
+  "type_reconstruction": "",
   "visual_system": "Editorial Magazine | Swiss Consulting",
   "palette": "",
   "layout_skeleton": "",
@@ -189,6 +190,64 @@ Use for process, pipeline, data flow, and operating model.
 ## 7. Metaphor Design Grammar
 
 Use one main metaphor only.
+
+## 7A. Typography Reconstruction
+
+The original prompt's strongest execution rule is that typography must become part of the business structure. Do not reduce this to "make the title bigger".
+
+Available reconstruction moves:
+
+- Stretch
+- Compress
+- Cut
+- Hollow out
+- Offset
+- Layer
+- Modularize
+- Frame
+- Path-shape
+- Converge
+- Stair-step
+- Matrix-shape
+- Architect
+- Data-shape
+- Chart-shape
+- Spatialize
+
+Choose one or two moves only. Too many reconstruction moves make the card look noisy.
+
+Semantic mapping:
+
+- Growth: expansion, rising, flywheel, compounding.
+- Conversion: convergence, filtering, funnel, path.
+- Strategy: path, coordinate, fork, decision.
+- System: modules, links, nodes, architecture.
+- Risk: threshold, defense line, fault line, grading.
+- Market: coordinate, window, zones, competitive landscape.
+- Value: ladder, scale, container, exchange.
+- Efficiency: compression, acceleration, flow, automation.
+- Opportunity: opening, window, breakthrough point, growth channel.
+- Organization: hierarchy, reorganization, collaboration network, governance.
+
+Typography-metaphor fusion patterns:
+
+- Business graphic passes through letterforms.
+- Path line enters the title's internal space.
+- Funnel sits in the negative space of the hero word.
+- Matrix grid becomes the skeleton of the title.
+- Staircase becomes the base of the title.
+- Data flow exits from the word.
+- Fault line cuts the word.
+- Node network connects strokes.
+- Coordinate system is embedded into the title.
+- The word becomes the business structure itself.
+
+Failure modes:
+
+- Ordinary title with an icon beside it.
+- Ordinary title with a separate chart below it.
+- Abstract background decoration unrelated to the title.
+- Text and metaphor do not affect each other.
 
 ### 漏斗
 

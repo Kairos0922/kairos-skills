@@ -1,6 +1,6 @@
 # kairos-consulting-visual-generator
 
-`kairos-consulting-visual-generator` 把用户输入的商业、学术或策略主题直接转化为精致的高级商业视觉卡片。它用于封面和结构卡片两类出图任务：封面强调留白、核心词、标题重构和单一主隐喻；结构卡片强调阅读路径、层级关系和结论表达，但仍然必须有杂志感、高级感和情绪记忆点。
+`kairos-consulting-visual-generator` 把用户输入的商业、学术或策略主题直接转化为精致的高级商业视觉卡片。它用于封面和结构卡片两类出图任务：封面强调留白、核心词、标题重构和单一主隐喻；结构卡片先做内容架构，再强调阅读路径、层级关系和结论表达，同时保持杂志感、高级感和情绪记忆点。
 
 这个 skill 的重点不是盲目默认，而是先确认需求是否足够清楚。主题、用途、画幅等关键信息不足时，agent 应先追问；信息足够后，再形成内部视觉简报并生成最终画面。
 
@@ -19,14 +19,18 @@
 2. 判断信息是否足够；缺少会改变结果的字段时，先追问 1-3 个关键问题。
 3. 判断是封面卡片还是结构卡片。
 4. 形成内部 `Visual Brief`：核心词、完整标题、标签、短结论、锚点、视觉系统、固定色板、版式骨架、禁用项。
-5. 根据场景和语境选择一个主商业隐喻；脚本只能作为辅助建议。
-6. 先选版式骨架，再将文字和隐喻融合成精致卡片。
-7. 对文字密集卡片优先用单文件 HTML/CSS 渲染 PNG；需要插画或背景资产时再调用宿主 agent 生图。
-8. 检查截图，确认字体、遮挡、布局、情绪和信息层级都达标。
+5. 结构卡片先提炼 `content_atoms`，判断 `content_density`，再把内容分组为模块。
+6. 根据场景和语境选择一个主商业隐喻；脚本只能作为辅助建议。
+7. 先选版式骨架，再将文字、内容结构和隐喻融合成精致卡片。
+8. 对文字密集卡片优先用单文件 HTML/CSS 渲染 PNG；需要插画或背景资产时再调用宿主 agent 生图。
+9. 检查截图，确认字体、遮挡、布局、信息密度、情绪和层级都达标。
 
 该 skill 不保存图片、不配置模型、不绑定 provider，也不管理 API key。图像生成由宿主 agent 环境负责。
 
-详细方法论见 `references/consulting_visual_methodology.md`。
+详细方法论见：
+
+- `references/design_system.md`：字体、颜色、网格、版式骨架和 HTML/CSS 渲染纪律。
+- `references/consulting_visual_methodology.md`：视觉工作流、隐喻语法、文字重构和 QA。
 
 ## 可选辅助脚本
 
@@ -69,6 +73,8 @@ JSON 输出包含：
 
 ```bash
 PYTHONPYCACHEPREFIX=.pycache python3 -m py_compile scripts/select_metaphor.py
+PYTHONPYCACHEPREFIX=.pycache python3 -m py_compile scripts/verify_design_system.py
+python3 scripts/verify_design_system.py
 python3 scripts/select_metaphor.py --check-intake --title "增长" --usage "封面"
 python3 scripts/select_metaphor.py --title "风险治理体系" --usage "商业报告封面"
 python3 scripts/select_metaphor.py --title "用户转化漏斗优化" --usage "信息图"
@@ -83,7 +89,9 @@ python3 -m json.tool skills.json >/dev/null
 ## 维护说明
 
 - `SKILL.md` 是 agent 面向的主工作流和视觉规则。
+- `references/design_system.md` 是字体、颜色、网格和布局骨架的来源。
 - `references/consulting_visual_methodology.md` 是视觉总监方法论、隐喻语法和 QA 清单。
 - `scripts/select_metaphor.py` 保存可重复的 intake 检查和初始隐喻建议，不是最终设计裁判。
+- `scripts/verify_design_system.py` 检查主题、比例、字号 token、版式骨架和渲染 QA 是否完整。
 - 新增隐喻时，同步更新 `SKILL.md`、`references/consulting_visual_methodology.md`、脚本中的 `METAPHORS` 和本文档。
 - 不要加入本机路径、生成缓存、外部 provider 配置或密钥。

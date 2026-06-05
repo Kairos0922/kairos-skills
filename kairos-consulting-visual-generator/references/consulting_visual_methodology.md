@@ -44,6 +44,13 @@ Before generating, form a visual brief internally:
     "short_judgment": ""
   },
   "main_metaphor": "",
+  "content_architecture": {
+    "density": "Cover | Light Card | Standard Infographic | Deep Analysis Card",
+    "content_atoms": [],
+    "module_groups": [],
+    "reading_path": "",
+    "conclusion": ""
+  },
   "type_reconstruction": "",
   "visual_system": "Editorial Magazine | Swiss Consulting",
   "palette": "",
@@ -62,6 +69,7 @@ The brief is not user-facing unless the user asks to see it.
 Use these rules before any metaphor or module decision:
 
 - One card, one soul: every card needs one memorable judgment sentence.
+- Content before layout: information cards must extract concrete content atoms before choosing a skeleton.
 - Layout first: choose a skeleton before placing text.
 - Locked palette: use one curated palette; never invent color mixes in the moment.
 - Big type is not loud type: as font size increases, weight must decrease.
@@ -69,7 +77,31 @@ Use these rules before any metaphor or module decision:
 - No hidden text: captions, bottom bars, metaphors, and overlays must never cover type.
 - No card soup: do not put cards inside cards unless the card is a repeated item inside a controlled grid.
 - White space is content: leave large quiet fields, especially around the hero word.
+- White space is not an excuse for empty analysis: if the output is an infographic, it needs enough specific content to justify the format.
 - If the page feels merely correct, it is not done; add a point of view, tension, or editorial rhythm.
+
+## 3.1 Content Architecture
+
+For information graphics, consulting analysis pages, method diagrams, flowcharts, and matrices, build content architecture before composition.
+
+Process:
+
+1. Extract 6-10 content atoms from the source, URL, user text, or provided context.
+2. Classify each atom as thesis, mechanism, evidence, variable, risk, constraint, action, or result.
+3. Group atoms into 3-6 modules with a clear reading path.
+4. Choose density:
+   - `Cover`: 1 thesis, 2-3 anchors, 1 short conclusion.
+   - `Light Card`: 1 thesis, 3-4 information points.
+   - `Standard Infographic`: one central structure, 4-6 concrete content atoms, 1-2 conclusions.
+   - `Deep Analysis Card`: one central structure, 6-10 atoms, 5-7 modules or annotated bands.
+5. Compress wording before reducing spacing.
+
+Failure modes:
+
+- The card has only three generic modules.
+- Module titles could apply to any topic.
+- Source-specific details are missing even though a source was provided.
+- More text is added without hierarchy, causing rules or modules to crowd the copy.
 
 ## 4. Visual Systems
 
@@ -91,6 +123,8 @@ Best for analysis, product, technology, frameworks, methods, and systems.
 - Use sharp rectangles and precise alignment, but avoid looking like a dashboard.
 - Large labels must be lighter weight; small labels can be medium weight.
 - Failure mode: generic consulting PPT with boxes and arrows.
+
+For concrete fonts, colors, spacing, grids, and layout skeletons, load `references/design_system.md`. Do not duplicate or improvise those values here.
 
 ## 5. Layout Skeletons
 
@@ -119,7 +153,7 @@ Use for reflective, cultural, or organizational topics.
 
 - Top title.
 - Central mechanism graphic.
-- Three supporting modules max.
+- Three to five supporting modules depending on content density.
 - Bottom implication.
 
 Use for systems, workflows, and business mechanisms.
@@ -358,8 +392,8 @@ Use this structure when the output is analytical, but still keep it card-like:
 
 - Top title and subtitle.
 - Central analytical structure.
-- Two to four supporting information groups.
-- One bottom conclusion or action.
+- Four to six concrete content atoms grouped into readable modules.
+- One to two bottom conclusions or actions.
 - Tiny legend, numbering, and guide lines.
 
 The infographic is successful if the reading path is obvious in five seconds.
@@ -370,12 +404,23 @@ For text-heavy Chinese cards, prefer a single HTML file rendered to PNG with a b
 
 Use SVG only for simple vector marks or when every text box has been manually checked. Do not build complex Chinese layouts by absolute SVG coordinates unless there is a strong reason.
 
+Use the token system in `references/design_system.md` for:
+
+- theme preset
+- font stack
+- type scale
+- safe area
+- layout skeleton
+- component rules
+
 Before delivery:
 
 - Render the final image.
 - Inspect the actual PNG.
 - Check dimensions.
 - Check text clipping, overlap, and bottom-bar coverage.
+- Check that rules, axes, nodes, arrows, and borders do not touch or visually cut through text.
+- Check that a standard infographic has at least four concrete content atoms and no generic filler modules.
 - Revise once if typography or spacing feels crude.
 
 ## 10. Prompt Assembly
@@ -389,7 +434,7 @@ When calling a host image-generation tool, assemble the prompt from the visual b
 - Specify palette, typography, line system, texture, and density.
 - List strict negatives.
 - Require clean, readable, non-garbled text.
-- Require a refined card, not a dense infographic panel.
+- Require a refined card with the content density appropriate to the usage.
 
 Do not ask the image model to invent the title, business concept, or module labels.
 
@@ -402,11 +447,13 @@ Reject or revise if:
 - Text is misspelled, garbled, or unreadable.
 - The layout looks like a generic PowerPoint template.
 - Cover density exceeds the limit.
-- Infographic has more than six major modules.
+- Infographic has fewer than four concrete content atoms or more than six major modules.
+- Module content is generic, source-free, or obviously reusable across unrelated topics.
 - The metaphor is only beside the title, not integrated with it.
 - Color becomes neon, purple-blue sci-fi, or saturated advertising style.
 - Font looks crude, heavy, or browser-default.
 - Text touches edges, overlaps, or is covered by bars/graphics.
+- Lines, nodes, axes, or borders crowd the text instead of giving it breathing room.
 - The result lacks a memorable thesis or emotional point of view.
 
 When text accuracy is poor, reduce text volume and regenerate with fewer labels.

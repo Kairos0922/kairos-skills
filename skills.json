@@ -10,11 +10,15 @@
       "summary": "Generate refined consulting-style business visual cards from user topics.",
       "entrypoints": [
         "SKILL.md",
+        "references/design_system.md",
         "references/consulting_visual_methodology.md",
+        "scripts/verify_design_system.py",
         "scripts/select_metaphor.py"
       ],
       "validation": [
         "PYTHONPYCACHEPREFIX=.pycache python3 -m py_compile scripts/select_metaphor.py",
+        "PYTHONPYCACHEPREFIX=.pycache python3 -m py_compile scripts/verify_design_system.py",
+        "python3 scripts/verify_design_system.py",
         "python3 scripts/select_metaphor.py --check-intake --title \"增长\" --usage \"封面\"",
         "python3 scripts/select_metaphor.py --title \"风险治理体系\" --usage \"商业报告封面\"",
         "python3 scripts/select_metaphor.py --title \"用户转化漏斗优化\" --usage \"信息图\""

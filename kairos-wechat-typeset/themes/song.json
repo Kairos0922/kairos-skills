@@ -45,12 +45,12 @@
     "cjk": {
       "family": "Noto Serif SC",
       "weight": "400",
-      "url": "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap"
+      "url": "https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc/index.css"
     },
     "latin": {
       "family": "Playfair Display",
       "weight": "400",
-      "url": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
+      "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display/index.css"
     }
   },
   "colors": {

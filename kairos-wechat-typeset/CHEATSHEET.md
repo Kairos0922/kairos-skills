@@ -82,13 +82,13 @@ python3 scripts/render.py --theme song --input article.md --output article.html 
 python3 scripts/render.py --theme song --input article.md --output article.fragment.html --fragment-only --verify
 ```
 
-### 加载 Web 字体
+### 加载 Web 字体（本地预览用）
 
 ```bash
 python3 scripts/render.py --theme song --input article.md --output article.html --web-fonts --verify
 ```
 
-衬线主题加载 LXGW WenKai，无衬线主题加载 LXGW Neo XiHei + Inter。不开此参数时使用系统字体回退链。
+衬线主题加载思源宋体，无衬线主题加载霞鹜新晰黑。**仅用于本地预览；粘贴到微信公众号时 `<style>` 会被剥离。**
 
 ### 验证
 

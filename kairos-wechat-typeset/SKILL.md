@@ -288,7 +288,7 @@ python3 scripts/render.py \
   --verify
 ```
 
-加载 Web 字体（跨设备一致渲染）：
+加载 Web 字体（本地预览用）：
 
 ```bash
 python3 scripts/render.py \
@@ -299,7 +299,7 @@ python3 scripts/render.py \
   --verify
 ```
 
-`--web-fonts` 会在 `<head>` 中注入 `@font-face` 声明，加载 LXGW WenKai（衬线主题）或 LXGW Neo XiHei（无衬线主题）等免费商用字体。不开此参数时，使用系统字体回退链。
+`--web-fonts` 会在 `<head>` 中注入 `@font-face` 声明，加载思源宋体（衬线主题）或霞鹜新晰黑（无衬线主题）等免费商用字体。**此功能仅用于本地浏览器预览和 PDF 导出；粘贴到微信公众号编辑器时 `<style>` 会被剥离，Web 字体不会加载。**
 
 单独验证已有 HTML：
 

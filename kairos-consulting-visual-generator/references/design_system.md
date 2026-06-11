@@ -36,6 +36,7 @@ Use for narrative, culture, organization, reflective analysis, people, and artic
 | `Midnight Ink` | `#0e0d0c`, `#ece2cf`, `#d4a04a` | Dark cinematic topics, high-contrast covers |
 | `Graphite Red` | `#181818`, `#f3f0ea`, `#b33a2e` | Risk, governance, sharp judgment |
 | `Olive Editorial` | `#23301f`, `#f2ecdf`, `#8d9374` | Culture, institutions, slow strategy |
+| `Kami Paper` | `#191813`, `#f5f4ed`, `#6f6a5f`, `#1947a3` | Print-like Chinese cards, elegant long-form synthesis |
 
 ### Swiss Consulting Themes
 
@@ -57,6 +58,7 @@ Rules:
 - The preset name must be visible in the internal visual brief.
 - Do not add a second accent for charts, badges, arrows, or footers.
 - If a chart needs multiple series, use line style, opacity, labels, or position before adding color.
+- Kami-inspired cards use warm paper and ink-blue sparingly: accent should stay below 5% of the canvas and never become a blue UI theme.
 
 ## 3. Typography System
 
@@ -76,13 +78,16 @@ Font recipes:
 | `Swiss Sans` | `--font-display-zh`, 500-580 | `--font-display-zh`, 540-620 | `--font-text-zh`, 390-460 | AI, product, consulting analysis |
 | `Editorial Serif` | `--font-serif`, 560-680 | `--font-display-zh`, 500-600 | `--font-text-zh`, 380-450 | magazine covers, culture, institutions |
 | `Hybrid Report` | `--font-display-zh`, 520-600 | `--font-serif`, 520-620 | `--font-text-zh`, 390-460 | report covers with a refined literary tone |
+| `Kami Editorial` | `--font-serif`, 500-620 | `--font-serif`, 500-600 | `--font-text-zh`, 380-430 | warm paper cards, Chinese article synthesis, print-like reports |
 
 Selection:
 
 - Swiss Consulting defaults to `Swiss Sans`.
 - Editorial Magazine defaults to `Editorial Serif` unless the topic is highly technical.
+- Long Chinese article synthesis or high-end card reports may use `Kami Editorial`.
 - AI / engineering / product information cards should use `Swiss Sans`; do not use heavy display fonts.
 - If Chinese display text feels clumsy, first reduce weight by 40-80 and increase line-height slightly before changing size.
+- Never use synthetic bold for serif Chinese. If the serif looks weak, increase size or contrast, not weight.
 
 Typography roles:
 
@@ -91,6 +96,13 @@ Typography roles:
 - `section`: short module labels. Use only when the card has real structure.
 - `body`: explanation or insight. Keep it short; never let body text become the visual center.
 - `caption`: metadata, labels, source notes, small coordinates, numbering.
+
+Kami-inspired typography rhythm:
+
+- Use one serif-led hierarchy for the hero and thesis, then keep body text calm and light.
+- Prefer 500-600 serif display weight over thick sans-serif hero type for reflective business writing.
+- Keep English metadata small, widely tracked, and quiet; do not let all-caps labels compete with Chinese headings.
+- Avoid equal-weight Chinese blocks. At least three visible text tones are required: hero, module title, body/caption.
 
 CSS token blueprint:
 
@@ -170,6 +182,8 @@ Typography rules:
 - Do not use `font-weight: 700` or browser `bold` for large Chinese display type in consulting cards.
 - Body text should normally sit at 390-460 weight. If the body looks dark or crowded, reduce weight before reducing information.
 - Mixed Chinese/English titles need separate spans when possible: English can use `--font-en` at 520-650, Chinese should stay lighter.
+- Kami-style body text should usually sit at 380-430 weight with line-height 1.45-1.62.
+- Do not put thick borders around text modules in warm paper cards; use hairline separators, reserved whitespace, and subtle panels instead.
 
 Density typography rule:
 
@@ -204,6 +218,8 @@ Spacing rhythm:
 - Lines, borders, nodes, arrows, and metaphor marks need a text exclusion zone of at least 16px from any Chinese glyph bounding box and 12px from captions.
 - A horizontal rule may align with the top or bottom of a text band, but must not visually cut through the x-height or baseline zone of adjacent text.
 - If a module title wraps to two lines, increase the module height or reduce the number of modules; do not let body copy start too close under it.
+- Text exclusion zones are mandatory for labels inside structures. A layer tag, axis label, or status chip must live in a reserved corner with at least 18px from the nearest title glyph.
+- For serif Chinese titles, increase visual clearance around vertical rules to at least 22px because strokes and punctuation feel optically wider.
 
 Layout rules from social-card practice:
 
@@ -392,6 +408,8 @@ Render QA:
 - Big Chinese title is too heavy.
 - Bottom action bar covers metrics or body text.
 - Hairlines or chart marks cut through text.
+- Layer tags or metadata visually collide with module titles.
+- Thick borders make a warm editorial card feel boxed and heavy.
 - Decorative metaphor competes with the thesis.
 - Color system drifts beyond one preset.
 - Layout starts from boxes instead of a skeleton.

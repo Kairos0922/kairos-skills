@@ -591,20 +591,21 @@ class Renderer:
     def tech_section_heading_p(self, spacing: Dict[str, int]) -> str:
         return (
             f"max-width: {self.width}px; margin: {spacing['top']}px auto {spacing['bottom']}px auto; "
+            f"padding: 0 0 16px 0; border-bottom: 2px solid {self.c('accent')}; "
             f"font-family: {self.f('cjk')}; color: {self.c('ink')}; text-align: left; letter-spacing: 0;"
         )
 
     def tech_section_num_span(self) -> str:
         return (
-            f"display: block; margin: 0 0 4px 0; font-family: {self.f('latin')}; "
-            f"font-size: {self.t('section_num_size')}; line-height: 1; font-weight: 800; "
-            f"color: {self.c('accent')}; letter-spacing: 0;"
+            f"display: block; margin: 0 0 6px 0; font-family: {self.f('latin')}; "
+            f"font-size: {self.t('section_num_size')}; line-height: 1; font-weight: 700; "
+            f"color: {self.c('accent')}; letter-spacing: -0.02em;"
         )
 
     def tech_section_title_span(self) -> str:
         return (
-            f"display: block; margin: 0 0 10px 0; font-family: {self.f('cjk')}; "
-            f"font-size: {self.t('section_title_size')}; line-height: 1.45; font-weight: 800; "
+            f"display: block; margin: 0; font-family: {self.f('cjk')}; "
+            f"font-size: {self.t('section_title_size')}; line-height: 1.4; font-weight: 700; "
             f"color: {self.c('ink')};"
         )
 
@@ -709,9 +710,9 @@ class Renderer:
             )
         if self.is_theme("tech"):
             return (
-                f"display: block; padding: 14px 18px 14px 18px; font-family: {self.f('cjk')}; "
-                f"font-size: {self.t('body_size')}; line-height: 1.75; text-align: left; "
-                f"background-color: {background or self.c('surface')}; border-left: 2px solid {border}; "
+                f"display: block; padding: 16px 20px 16px 20px; font-family: {self.f('cjk')}; "
+                f"font-size: {self.t('body_size')}; line-height: 1.8; text-align: left; "
+                f"background-color: {background or self.c('accent_soft')}; border-left: 3px solid {border}; "
                 f"border-radius: 0; color: {text or self.c('text')};"
             )
         if self.is_theme("wisme"):
@@ -1740,7 +1741,8 @@ class Renderer:
             return (
                 f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
                 'text-align: center; line-height: 1;">'
-                f'<span style="display: block; width: 100%; border-top: 1px dashed {self.c("line")};"></span>'
+                f'<span style="display: inline-block; width: 48px; border-top: 2px solid {self.c("accent")}; '
+                'vertical-align: middle;"></span>'
                 "</p>"
             )
         if self.is_theme("wisme"):

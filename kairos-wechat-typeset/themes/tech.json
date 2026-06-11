@@ -33,8 +33,8 @@
     "forbidden": ["gradient", "strong shadow", "multi-accent palette", "decorative bokeh", "rounded pill-heavy layout", "marketing CTA", "dark full-page background", "cyberpunk"]
   },
   "body": {
-    "background": "#ffffff",
-    "padding": "28px 20px 46px 20px"
+    "background": "#f8f9fa",
+    "padding": "32px 24px 52px 24px"
   },
   "fonts": {
     "cjk": "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Helvetica Neue', sans-serif",
@@ -55,32 +55,32 @@
   },
   "colors": {
     "ink": "#111827",
-    "text": "#374151",
-    "text_secondary": "#4b5563",
-    "text_tertiary": "#6b7280",
+    "text": "#1f2937",
+    "text_secondary": "#374151",
+    "text_tertiary": "#4b5563",
     "muted": "#6b7280",
-    "soft": "#93a4bd",
-    "line": "#dbe5f2",
-    "line_soft": "#edf2f8",
+    "soft": "#9ca3af",
+    "line": "#d1d5db",
+    "line_soft": "#e5e7eb",
     "surface": "#ffffff",
-    "surface_alt": "#f6f9ff",
-    "accent": "#0b6dff",
-    "accent_soft": "#eaf2ff",
-    "accent_light": "#c8daff",
-    "warning": "#0b6dff",
-    "warning_bg": "#eef5ff",
-    "code_text": "#dbeafe",
-    "code_bg": "#111a27",
-    "code_muted": "#7f93ad"
+    "surface_alt": "#f0f4ff",
+    "accent": "#1e40af",
+    "accent_soft": "#dbeafe",
+    "accent_light": "#bfdbfe",
+    "warning": "#dc2626",
+    "warning_bg": "#fef2f2",
+    "code_text": "#e2e8f0",
+    "code_bg": "#0f172a",
+    "code_muted": "#94a3b8"
   },
   "typography": {
     "title_size": "28px",
-    "title_line": "1.42",
-    "section_num_size": "32px",
+    "title_line": "1.35",
+    "section_num_size": "36px",
     "section_title_size": "22px",
     "h3_size": "18px",
     "body_size": "16px",
-    "body_line": "1.75",
+    "body_line": "1.8",
     "small_size": "14px",
     "caption_size": "13px",
     "code_size": "14px"

@@ -288,6 +288,19 @@ python3 scripts/render.py \
   --verify
 ```
 
+加载 Web 字体（跨设备一致渲染）：
+
+```bash
+python3 scripts/render.py \
+  --theme song \
+  --input article.md \
+  --output article.html \
+  --web-fonts \
+  --verify
+```
+
+`--web-fonts` 会在 `<head>` 中注入 `@font-face` 声明，加载 LXGW WenKai（衬线主题）或 LXGW Neo XiHei（无衬线主题）等免费商用字体。不开此参数时，使用系统字体回退链。
+
 单独验证已有 HTML：
 
 ```bash

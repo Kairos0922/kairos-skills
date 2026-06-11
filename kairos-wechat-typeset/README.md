@@ -376,7 +376,7 @@ python3 scripts/verify.py \
 - 宽表格会被转成移动端安全结构，不追求桌面表格原貌。
 - 微信编辑器可能在粘贴后调整部分细节，发布前仍需要平台预览确认。
 
-验证项包括：无 `<style>`、无 `class=`、无外部 CSS、无脚本、无原生宽表格、图片移动端安全，以及 heading 不跳级、连续长段不超过 3、连续强强调不超过 2、高密度区块必须有 breathing。
+验证项包括：无 `<style>`、无 `class=`、无外部 CSS、无脚本、无原生宽表格、图片移动端安全，以及 heading 不跳级、连续长段不超过 3、连续强强调不超过 2、高密度区块必须有 breathing。使用 `--web-fonts` 时，`<style>` 中的 `@font-face` 声明被允许。
 
 完整工作流 `scripts/typeset.py` 会在渲染后自动执行 HTML 和 editorial verify。
 

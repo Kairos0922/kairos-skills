@@ -97,7 +97,18 @@ skill 不配置生图模型、不保存 API key、不绑定 provider。原因：
 
 写入 `~/.wechat-typeset/<slug>/vNNN/` 解决了这三个问题。
 
-### 决策 6：v2 重构为语义组件系统
+### 决策 6：Web 字体作为可选增强
+
+系统字体在不同设备上渲染效果差异很大。SimSun 在移动端非常难看，Microsoft YaHei 在 macOS 上不存在。
+
+解法：在主题 JSON 中配置 `webfonts`，通过 `--web-fonts` 参数 opt-in 加载。默认行为不变（纯内联样式，无 `<style>`），加 `--web-fonts` 时在 `<head>` 中注入 `@font-face` 的 `<style>` 块。
+
+衬线主题加载 LXGW WenKai（霞鹜文楷），无衬线主题加载 LXGW Neo XiHei（霞鹜新晰黑）。都是免费商用字体，通过 jsDelivr CDN 加载。
+
+**代价**：首次加载有 200-500ms 延迟；微信可能在未来版本调整 `@font-face` 支持。
+**收益**：所有读者看到一致的高质量字体，不受设备影响。
+
+### 决策 7：v2 重构为语义组件系统
 
 v1 是"Markdown → HTML"的直接映射，每个主题单独实现渲染逻辑。问题是：新增主题需要重写整个 renderer，成本高且容易不一致。
 

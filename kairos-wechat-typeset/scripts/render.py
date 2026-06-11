@@ -1723,25 +1723,43 @@ class Renderer:
 
     def render_divider(self, layout: Optional[Dict[str, Any]] = None) -> str:
         spacing = spacing_from_layout(layout, self.rhythm("section_break", 42))
-        if self.is_theme("wending") or self.is_theme("tech") or self.is_theme("wisme"):
-            border_style = "dashed" if self.is_theme("tech") else "solid"
-            border_color = self.c("line") if self.is_theme("tech") or self.is_theme("wisme") else self.c("line_soft")
+        if self.is_theme("wending"):
             return (
                 f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
                 'text-align: center; line-height: 1;">'
-                f'<span style="display: block; width: 100%; border-top: 1px {border_style} {border_color};"></span>'
+                f'<span style="display: inline-block; width: 40px; border-top: 1px solid {self.c("line_soft")}; '
+                'vertical-align: middle;"></span>'
+                f'<span style="display: inline-block; margin: 0 14px; font-family: {self.f("cjk")}; '
+                f'font-size: 14px; line-height: 1; color: {self.c("soft")}; '
+                'vertical-align: middle;">·</span>'
+                f'<span style="display: inline-block; width: 40px; border-top: 1px solid {self.c("line_soft")}; '
+                'vertical-align: middle;"></span>'
+                "</p>"
+            )
+        if self.is_theme("tech"):
+            return (
+                f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
+                'text-align: center; line-height: 1;">'
+                f'<span style="display: block; width: 100%; border-top: 1px dashed {self.c("line")};"></span>'
+                "</p>"
+            )
+        if self.is_theme("wisme"):
+            return (
+                f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
+                'text-align: center; line-height: 1;">'
+                f'<span style="display: block; width: 100%; border-top: 1px solid {self.c("line")};"></span>'
                 "</p>"
             )
         if self.is_theme("song"):
             return (
                 f'<p style="max-width: {self.width}px; margin: {self.margin(spacing["top"], spacing["bottom"])}; '
                 'text-align: center; line-height: 1;">'
-                f'<span style="display: inline-block; width: 30%; border-top: 1px solid {self.c("line_soft")}; '
+                f'<span style="display: inline-block; width: 28%; border-top: 1px solid {self.c("line_soft")}; '
                 'vertical-align: middle;"></span>'
-                f'<span style="display: inline-block; margin: 0 12px; font-family: {self.f("cjk")}; '
-                f'font-size: {self.t("body_size")}; line-height: 1; color: {self.c("soft")}; '
-                'vertical-align: middle;">※</span>'
-                f'<span style="display: inline-block; width: 30%; border-top: 1px solid {self.c("line_soft")}; '
+                f'<span style="display: inline-block; margin: 0 14px; font-family: {self.f("latin")}; '
+                f'font-size: 11px; line-height: 1; color: {self.c("soft")}; letter-spacing: 0.3em; '
+                'vertical-align: middle;">*</span>'
+                f'<span style="display: inline-block; width: 28%; border-top: 1px solid {self.c("line_soft")}; '
                 'vertical-align: middle;"></span>'
                 "</p>"
             )

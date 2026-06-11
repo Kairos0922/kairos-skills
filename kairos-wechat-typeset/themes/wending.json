@@ -53,15 +53,11 @@
       "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display/index.css"
     }
   },
-    "latin": {
-      "family": "Playfair Display",
-      "weight": "400",
-      "url": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
-    }
-  },
   "colors": {
     "ink": "#111111",
     "text": "#333333",
+    "text_secondary": "#555555",
+    "text_tertiary": "#777777",
     "muted": "#888888",
     "soft": "#b7b0a4",
     "line": "#dedbd3",
@@ -69,6 +65,7 @@
     "surface": "#fbfaf7",
     "surface_alt": "#f4f3f1",
     "accent": "#a89f90",
+    "accent_light": "#d4cec3",
     "warning": "#111111",
     "warning_bg": "#f4f3f1",
     "code_text": "#e8e4dc",

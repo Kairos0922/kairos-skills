@@ -56,6 +56,8 @@
   "colors": {
     "ink": "#0a0a0a",
     "text": "#333333",
+    "text_secondary": "#4a4a4a",
+    "text_tertiary": "#5c5c5c",
     "muted": "#666666",
     "soft": "#999999",
     "line": "#d9d9d9",
@@ -65,6 +67,7 @@
     "surface_warm": "#fff2f2",
     "accent": "#e63946",
     "accent_soft": "#fff2f2",
+    "accent_light": "#ffccd5",
     "warning": "#e63946",
     "warning_bg": "#fff2f2",
     "code_text": "#e5e5e5",

@@ -65,10 +65,10 @@ Rules:
 Use these font stacks. Do not use one generic Chinese stack for every text layer.
 
 ```css
---font-display-zh: "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
---font-text-zh: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
---font-en: "Helvetica Neue", Helvetica, Arial, sans-serif;
---font-serif: "Songti SC", "Noto Serif CJK SC", "STSong", Georgia, serif;
+--font-display-zh: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Source Han Sans SC", sans-serif;
+--font-text-zh: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Source Han Sans SC", sans-serif;
+--font-en: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+--font-serif: "Noto Serif SC", "Songti SC", "Source Han Serif SC", Georgia, serif;
 ```
 
 Font recipes:
@@ -113,12 +113,30 @@ CSS token blueprint:
   --muted: #6f767d;
   --accent: #002FA7;
   --line: color-mix(in srgb, var(--ink) 16%, transparent);
-  --font-display-zh: "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
-  --font-text-zh: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
-  --font-en: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-serif: "Songti SC", "Noto Serif CJK SC", "STSong", Georgia, serif;
+  --font-display-zh: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Source Han Sans SC", sans-serif;
+  --font-text-zh: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Source Han Sans SC", sans-serif;
+  --font-en: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: "Noto Serif SC", "Songti SC", "Source Han Serif SC", Georgia, serif;
 }
 ```
+
+### Font Loading
+
+咨询卡片通过浏览器渲染后截图，Web 字体会正常加载。在生成的 HTML `<head>` 中加入字体加载声明：
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter/index.css" />
+```
+
+如果生成 Editorial 风格卡片（衬线为主），额外加载：
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display/index.css" />
+```
+
+加载字体后再截图，确保所有设备上渲染一致。如果字体加载失败，回退到系统字体（PingFang SC / Songti SC）。
 
 ### 4:5 Card Scale, 1080 x 1350
 

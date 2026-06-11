@@ -43,14 +43,14 @@
   },
   "webfonts": {
     "cjk": {
-      "family": "LXGW Neo XiHei",
+      "family": "Noto Sans SC",
       "weight": "400",
-      "url": "https://cdn.jsdelivr.net/npm/lxgw-neo-xihei@1.0.0/style.css"
+      "url": "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/index.css"
     },
     "latin": {
       "family": "Inter",
       "weight": "400",
-      "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      "url": "https://cdn.jsdelivr.net/npm/@fontsource/inter/index.css"
     }
   },
   "colors": {

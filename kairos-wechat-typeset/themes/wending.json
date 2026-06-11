@@ -43,11 +43,9 @@
   },
   "webfonts": {
     "cjk": {
-      "family": "LXGW WenKai",
+      "family": "Noto Serif SC",
       "weight": "400",
-      "url": "https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css",
-      "fallback_weight": "700",
-      "fallback_url": "https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css"
+      "url": "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap"
     },
     "latin": {
       "family": "Playfair Display",

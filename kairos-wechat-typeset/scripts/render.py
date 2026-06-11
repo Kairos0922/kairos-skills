@@ -1790,13 +1790,9 @@ class Renderer:
             if not wf:
                 continue
             url = wf.get("url", "")
-            if url.endswith(".css"):
-                imports.append('@import url("' + url + '");')
-            else:
-                family = wf["family"].replace(" ", "+")
-                weight = wf.get("weight", "400")
-                import_url = url + "?family=" + family + "&display=swap&weight=" + weight
-                imports.append('@import url("' + import_url + '");')
+            if not url:
+                continue
+            imports.append('@import url("' + url + '");')
         if not imports:
             return ""
         return "<style>\n" + "\n".join(imports) + "\n</style>\n"

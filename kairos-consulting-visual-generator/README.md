@@ -1,97 +1,145 @@
-# kairos-consulting-visual-generator
+<div align="center">
+  <h1>kairos-consulting-visual-generator</h1>
+  <p><b>让 AI 帮你做咨询公司级别的商业卡片</b></p>
+</div>
 
-`kairos-consulting-visual-generator` 把用户输入的商业、学术或策略主题直接转化为精致的高级商业视觉卡片。它用于封面和结构卡片两类出图任务：封面强调留白、核心词、标题重构和单一主隐喻；结构卡片先做内容架构，再强调阅读路径、层级关系和结论表达，同时保持杂志感、高级感和情绪记忆点。
+---
 
-这个 skill 的重点不是盲目默认，而是先确认需求是否足够清楚。主题、用途、画幅等关键信息不足时，agent 应先追问；信息足够后，再形成内部视觉简报并生成最终画面。
+## 什么是 Agent Harness Engineering？
 
-## 适用场景
+你让 AI 帮你做一张封面图，它给你一个"标题放中间 + 渐变背景 + emoji"——这就是没有约束的 AI。
 
-| 输入 | 输出 | 适合用户 |
-| --- | --- | --- |
-| 主题、用途、画幅、语言、语境 | 咨询风封面或结构卡片生成指令 | 内容创作者、咨询顾问、产品经理、研究员、AI agent |
-| 长标题或复杂商业主题 | 核心词、完整标题、标签和主隐喻 | 需要快速生成高级商业视觉的人 |
+**Agent Harness Engineering（AI 约束工程）**是给 AI 套上缰绳：
 
-可用于 X 封面、微信公众号文章封面、小红书/小绿书封面、海报封面、PPT 封面、商业报告封面、作品集封面、信息图、咨询分析页、方法论图、流程图和矩阵图。
+| 没有约束的 AI | 有约束的 AI（Harness） |
+|--------------|----------------------|
+| 每次风格都不一样 | 只有 2 套视觉系统、12 套预设 |
+| 颜色乱配 | 只能从预设里选，不允许自定义 |
+| 模块堆满画面 | 有密度上限和留白规则 |
+| 像 PPT 模板 | 像麦肯锡报告封面 |
 
-## 工作流
+kairos-consulting-visual-generator 就是一个 Harness——它告诉 AI："你只能用 Editorial 或 Swiss 两套风格，12 套颜色预设，11 种版式骨架。不允许自由发挥。"
 
-1. 读取用户主题、用途、画幅、语言和补充语境。
-2. 判断信息是否足够；缺少会改变结果的字段时，先追问 1-3 个关键问题。
-3. 判断是封面卡片还是结构卡片。
-4. 形成内部 `Visual Brief`：核心词、完整标题、标签、短结论、锚点、视觉系统、固定色板、版式骨架、禁用项。
-5. 结构卡片先提炼 `content_atoms`，判断 `content_density`，再把内容分组为模块。
-6. 根据场景和语境选择一个主商业隐喻；脚本只能作为辅助建议。
-7. 先选版式骨架，再将文字、内容结构和隐喻融合成精致卡片。
-8. 对文字密集卡片优先用单文件 HTML/CSS 渲染 PNG；需要插画或背景资产时再调用宿主 agent 生图。
-9. 检查截图，确认字体、遮挡、布局、信息密度、情绪和层级都达标。
+---
 
-该 skill 不保存图片、不配置模型、不绑定 provider，也不管理 API key。图像生成由宿主 agent 环境负责。
+## 效果展示
 
-详细方法论见：
+### 4 种风格对比
 
-- `references/design_system.md`：字体、颜色、网格、版式骨架和 HTML/CSS 渲染纪律。
-- `references/consulting_visual_methodology.md`：视觉工作流、隐喻语法、文字重构和 QA。
+![咨询卡片预览](./assets/showcase/cards-preview.png)
 
-## 可选辅助脚本
+| 卡片 | 风格 | 特点 |
+|------|------|------|
+| 增长的底层逻辑 | Editorial · Ink Classic | 衬线大字 + 暖纸 + 墨蓝点缀 |
+| 用户留存率 87% | Swiss · IKB | 无衬线 + 克莱因蓝 + 数据大字报 |
+| 好的产品让用户忘记技术 | Kami Paper | 温纸 + 墨蓝 + 书卷气 |
+| 竞争风险倍增 3× | Swiss · Safety Orange | 安全橙 + 数据 + 风险感 |
 
-稳定效果的核心是 `SKILL.md` 和 `references/consulting_visual_methodology.md` 中的方法论。脚本只是辅助检查，不是主要创作方式。
+---
 
-先检查输入是否足够：
+## 它能做什么
 
-```bash
-python3 scripts/select_metaphor.py \
-  --check-intake \
-  --title "增长" \
-  --usage "封面"
-```
+把一个商业主题，变成一张精致的视觉卡片。
 
-如果 `ready` 为 `false`，先向用户追问 `questions`，不要生成最终画面。
-
-查看初始隐喻建议：
+**输入**：一个主题词（如"增长策略"）
+**输出**：一张可以直接发到社交媒体的卡片图
 
 ```bash
-python3 scripts/select_metaphor.py \
-  --title "AI Agent 商业化增长路径" \
-  --usage "咨询分析页" \
-  --ratio "16:9" \
-  --context "B2B SaaS, 产品战略"
-```
-
-JSON 输出包含：
-
-- `metaphor`：选中的单一主隐喻。
-- `reason`：选择理由。
-- `matched_keywords`：命中的关键词。
-- `mode`：`cover` 或 `infographic`。
-- `composition_hint`：构图提示。
-
-如果脚本建议和用户语境冲突，以视觉简报、用途和专业判断为准。
-
-## 验证
-
-从 skill 目录运行：
-
-```bash
-PYTHONPYCACHEPREFIX=.pycache python3 -m py_compile scripts/select_metaphor.py
-PYTHONPYCACHEPREFIX=.pycache python3 -m py_compile scripts/verify_design_system.py
-python3 scripts/verify_design_system.py
+# 检查输入是否足够
 python3 scripts/select_metaphor.py --check-intake --title "增长" --usage "封面"
-python3 scripts/select_metaphor.py --title "风险治理体系" --usage "商业报告封面"
+
+# 查看隐喻建议
 python3 scripts/select_metaphor.py --title "用户转化漏斗优化" --usage "信息图"
 ```
 
-从仓库根目录运行：
+---
+
+## 两套视觉系统
+
+| 系统 | 风格 | 适合 |
+|------|------|------|
+| **Editorial Magazine** | 衬线 + 墨水 + 杂志结构 | 观点、文化、人物、叙事 |
+| **Swiss Consulting** | Inter + 一种 accent + 网格 | 流程、方法、矩阵、数据 |
+
+**核心原则**：不允许自定义颜色。12 套预设是经过验证的上限。
+
+---
+
+## 12 套主题预设
+
+### Editorial（8 套）
+
+| 预设 | 适合 |
+|------|------|
+| Ink Classic | 通用默认、商业发布 |
+| Indigo Porcelain | 科技、AI、研究 |
+| Forest Ink | 自然、可持续 |
+| Kraft Paper | 怀旧、人文 |
+| Dune | 艺术、设计 |
+| Midnight Ink | 游戏、夜景、影调 |
+| Graphite Red | 风险、治理 |
+| Olive Editorial | 组织、长期主义 |
+| Kami Paper | 印刷感中文卡片 |
+
+### Swiss（4 套）
+
+| 预设 | 适合 |
+|------|------|
+| IKB 克莱因蓝 | 通用 Swiss 默认 |
+| Lemon 柠檬黄 | 年轻、零售 |
+| Lemon Green 柠檬绿 | 生态、健康 |
+| Safety Orange 安全橙 | 警示、新闻 |
+
+---
+
+## 快速开始
+
+### 前置条件
+
+- Python 3.8+
+- 一个商业主题
+
+### 3 步上手
 
 ```bash
-python3 -m json.tool skills.json >/dev/null
+# 1. 进入 skill 目录
+cd kairos-consulting-visual-generator
+
+# 2. 检查输入是否足够
+python3 scripts/select_metaphor.py --check-intake --title "增长策略" --usage "封面"
+
+# 3. 根据 AI agent 的指引生成卡片
 ```
 
-## 维护说明
+### 健康检查
 
-- `SKILL.md` 是 agent 面向的主工作流和视觉规则。
-- `references/design_system.md` 是字体、颜色、网格和布局骨架的来源。
-- `references/consulting_visual_methodology.md` 是视觉总监方法论、隐喻语法和 QA 清单。
-- `scripts/select_metaphor.py` 保存可重复的 intake 检查和初始隐喻建议，不是最终设计裁判。
-- `scripts/verify_design_system.py` 检查主题、比例、字号 token、版式骨架和渲染 QA 是否完整。
-- 新增隐喻时，同步更新 `SKILL.md`、`references/consulting_visual_methodology.md`、脚本中的 `METAPHORS` 和本文档。
-- 不要加入本机路径、生成缓存、外部 provider 配置或密钥。
+```bash
+python3 scripts/verify_design_system.py
+```
+
+---
+
+## 它不是什么
+
+- ❌ 不是 Canva（不能拖拽编辑，只能通过 AI agent 生成）
+- ❌ 不是数据可视化工具（不做图表，只做卡片）
+- ❌ 不允许自定义颜色（保护美学一致性）
+- ❌ 不做卡通/少女/Y2K 风格（和两套视觉系统冲突）
+
+---
+
+## 文档导航
+
+| 文件 | 给谁看 | 说明 |
+|------|--------|------|
+| `CHEATSHEET.md` | 所有人 | 一页速查，日常操作看这个 |
+| `SKILL.md` | AI Agent | 完整的工作流和规则 |
+| `PRODUCT.md` | 想了解"为什么"的人 | 设计决策和产品边界 |
+| `references/design_system.md` | 开发者 | 字体、颜色、网格、版式 |
+| `references/consulting_visual_methodology.md` | 开发者 | 工作流、隐喻语法、QA |
+
+---
+
+## 许可证
+
+MIT

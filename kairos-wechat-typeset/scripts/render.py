@@ -115,6 +115,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Verify the generated HTML for WeChat inline-style constraints.",
     )
+    parser.add_argument(
+        "--web-fonts",
+        action="store_true",
+        help="Inject @font-face web fonts into <style> block for consistent rendering across devices.",
+    )
     parser.add_argument("--article-type", help=argparse.SUPPRESS)
     parser.add_argument("--density", choices=["low", "medium", "high"], help=argparse.SUPPRESS)
     parser.add_argument("--tone", help=argparse.SUPPRESS)
@@ -1775,8 +1780,30 @@ class Renderer:
                 rendered.extend(self.render_component(block, layout))
         return "\n".join(rendered).strip() + "\n"
 
-    def wrap_document(self, title: str, fragment: str) -> str:
+    def build_webfont_style(self) -> str:
+        webfonts = self.theme.get("webfonts")
+        if not webfonts:
+            return ""
+        imports = []
+        for role in ("cjk", "latin"):
+            wf = webfonts.get(role)
+            if not wf:
+                continue
+            url = wf.get("url", "")
+            if url.endswith(".css"):
+                imports.append('@import url("' + url + '");')
+            else:
+                family = wf["family"].replace(" ", "+")
+                weight = wf.get("weight", "400")
+                import_url = url + "?family=" + family + "&display=swap&weight=" + weight
+                imports.append('@import url("' + import_url + '");')
+        if not imports:
+            return ""
+        return "<style>\n" + "\n".join(imports) + "\n</style>\n"
+
+    def wrap_document(self, title: str, fragment: str, web_fonts: bool = False) -> str:
         safe_title = html.escape(title)
+        webfont_block = self.build_webfont_style() if web_fonts else ""
         return (
             "<!DOCTYPE html>\n"
             '<html lang="zh-CN">\n'
@@ -1784,6 +1811,7 @@ class Renderer:
             '  <meta charset="UTF-8" />\n'
             '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n'
             f"  <title>{safe_title}</title>\n"
+            f"{webfont_block}"
             "</head>\n"
             f'<body style="{self.body_style()}">\n'
             f"{fragment}"
@@ -1814,6 +1842,7 @@ def render_markdown(
     article_type: Optional[str] = None,
     density: Optional[str] = None,
     tone: Optional[str] = None,
+    web_fonts: bool = False,
 ) -> str:
     theme = load_theme(theme_id)
     frontmatter_title, markdown = strip_frontmatter(input_path.read_text(encoding="utf-8"))
@@ -1827,6 +1856,7 @@ def render_markdown(
         article_type=article_type,
         density=density,
         tone=tone,
+        web_fonts=web_fonts,
     )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(document, encoding="utf-8")
@@ -1844,6 +1874,7 @@ def render_markdown_text(
     article_type: Optional[str] = None,
     density: Optional[str] = None,
     tone: Optional[str] = None,
+    web_fonts: bool = False,
 ) -> str:
     safety_findings = verify_markdown_safety(markdown)
     if safety_findings:
@@ -1865,7 +1896,7 @@ def render_markdown_text(
     renderer = Renderer(theme, [item["layout"] for item in compiled])
     fragment = renderer.render_blocks(blocks)
     chosen_title = choose_title(title, frontmatter_title, blocks, input_path)
-    return fragment if fragment_only else renderer.wrap_document(chosen_title, fragment)
+    return fragment if fragment_only else renderer.wrap_document(chosen_title, fragment, web_fonts=web_fonts)
 
 
 def print_themes() -> None:
@@ -1900,6 +1931,7 @@ def main() -> None:
             article_type=args.article_type,
             density=args.density,
             tone=args.tone,
+            web_fonts=args.web_fonts,
         )
     except (FileNotFoundError, ValueError, json.JSONDecodeError) as exc:
         raise SystemExit(str(exc)) from exc
@@ -1908,7 +1940,7 @@ def main() -> None:
         theme = load_theme(args.theme)
         _, markdown = strip_frontmatter(input_path.read_text(encoding="utf-8"))
         blocks = parse_blocks(markdown)
-        findings = verify_html(document, args.fragment_only)
+        findings = verify_html(document, args.fragment_only, allow_web_fonts=args.web_fonts)
         findings.extend(verify_editorial_blocks(blocks, theme))
         if findings:
             for finding in findings:

@@ -6,12 +6,11 @@ import re
 from typing import List
 
 
-def verify_html(document: str, fragment_only: bool = False) -> List[str]:
+def verify_html(document: str, fragment_only: bool = False, allow_web_fonts: bool = False) -> List[str]:
     findings: List[str] = []
     lowered = document.lower()
 
     forbidden_patterns = {
-        "<style": "Output must not contain <style> blocks.",
         " class=": "Output must not contain class attributes.",
         "<link": "Output must not contain external stylesheet links.",
         "<section": "Output must not contain section tags.",
@@ -21,6 +20,9 @@ def verify_html(document: str, fragment_only: bool = False) -> List[str]:
         "<table": "Output must not contain native table tags.",
         "<script": "Output must not contain scripts.",
     }
+    if not allow_web_fonts:
+        forbidden_patterns["<style"] = "Output must not contain <style> blocks."
+
     for pattern, message in forbidden_patterns.items():
         if pattern in lowered:
             findings.append(message)

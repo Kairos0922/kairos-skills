@@ -37,9 +37,23 @@
     "padding": "24px 24px 48px 24px"
   },
   "fonts": {
-    "cjk": "'Source Han Serif SC', 'Noto Serif CJK SC', 'Songti SC', 'STSong', SimSun, serif",
+    "cjk": "'Source Han Serif SC', 'Noto Serif CJK SC', 'Songti SC', 'STSong', Georgia, serif",
     "latin": "'Baskerville', 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif",
     "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  },
+  "webfonts": {
+    "cjk": {
+      "family": "LXGW WenKai",
+      "weight": "400",
+      "url": "https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css",
+      "fallback_weight": "700",
+      "fallback_url": "https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css"
+    },
+    "latin": {
+      "family": "Playfair Display",
+      "weight": "400",
+      "url": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
+    }
   },
   "colors": {
     "ink": "#2b2b2b",

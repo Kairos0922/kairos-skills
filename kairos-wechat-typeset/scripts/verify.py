@@ -21,6 +21,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--source", help="Optional source Markdown path for editorial verification.")
     parser.add_argument("--theme", help="Registered theme id for editorial verification.")
+    parser.add_argument(
+        "--allow-web-fonts",
+        action="store_true",
+        help="Allow <style> blocks containing @font-face declarations.",
+    )
     return parser.parse_args()
 
 
@@ -28,7 +33,7 @@ def main() -> None:
     args = parse_args()
     input_path = Path(args.input).expanduser().resolve()
     document = input_path.read_text(encoding="utf-8")
-    findings = verify_html(document, args.fragment_only)
+    findings = verify_html(document, args.fragment_only, allow_web_fonts=args.allow_web_fonts)
     if args.source or args.theme:
         if not args.source or not args.theme:
             findings.append("Editorial verification requires both --source and --theme.")

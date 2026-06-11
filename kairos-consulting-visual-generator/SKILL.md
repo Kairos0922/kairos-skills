@@ -83,6 +83,26 @@ metadata:
 - `references/design_system.md`：字体、颜色、网格、版式骨架和渲染纪律。
 - `references/consulting_visual_methodology.md`：工作流、隐喻语法、文字重构和 QA。
 
+## Tiered Spec Loading / 分层规范加载
+
+| Tier | 场景 | 读取 |
+|------|------|------|
+| **Quick check** | 检查输入是否足够 | `CHEATSHEET.md` + `scripts/select_metaphor.py --check-intake` |
+| **Standard card** | 生成一张封面或轻信息卡 | `CHEATSHEET.md` + `references/design_system.md` §2-3 |
+| **Full infographic** | 生成深度信息图/矩阵图 | `references/design_system.md` 全文 + `references/consulting_visual_methodology.md` |
+| **Design system work** | 修改设计规范 | `references/design_system.md` + `scripts/verify_design_system.py` |
+
+## Reference Files / 参考文件
+
+| 文件 | 用途 |
+|------|------|
+| `CHEATSHEET.md` | 一页速查 |
+| `PRODUCT.md` | 设计决策和产品边界 |
+| `references/design_system.md` | 字体、颜色、网格、版式、QA |
+| `references/consulting_visual_methodology.md` | 工作流、隐喻语法、文字重构 |
+| `scripts/select_metaphor.py` | 隐喻选择辅助 |
+| `scripts/verify_design_system.py` | 设计系统验证 |
+
 ## Card First Principle
 
 默认把产物当作“可传播的精致卡片”来设计，而不是普通信息图或 PPT 页面。即使用户说“信息图”，也要先保证它是一张好看的卡片，再承载结构信息。注意：卡片感不是低信息量；信息卡必须有足够内容价值，只是不能失控堆叠。

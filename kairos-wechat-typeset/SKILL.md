@@ -38,6 +38,31 @@ metadata:
 
 LLM 不得直接生成 HTML、CSS、`style`、`class`、任意自定义标签或用户自定义主题。Markdown 无法稳定表达的正文杂志组件，必须使用白名单 Kairos 组件语法，由 renderer 编译成主题组件。
 
+## Tiered Spec Loading / 分层规范加载
+
+按任务复杂度加载不同深度的规范，不需要每次都读完整 SKILL.md。
+
+| Tier | 场景 | 读取 |
+|------|------|------|
+| **Content-only** | 只改文字，不动排版 | `CHEATSHEET.md` |
+| **Layout tweak** | 调整间距/字号，在规范内 | `CHEATSHEET.md` + 主题 JSON |
+| **New article** | 从零排版一篇文章 | `CHEATSHEET.md` + `references/category-routing.md` + `references/layout-recipes.md` |
+| **Theme work** | 新增/修改主题 | `themes/METHODOLOGY.md` + `themes/<theme-id>/DESIGN.md` |
+| **Anti-patterns review** | 审查输出质量 | `references/anti-patterns.md` |
+
+## Reference Files / 参考文件
+
+| 文件 | 用途 | 何时读 |
+|------|------|--------|
+| `CHEATSHEET.md` | 一页速查 | 每次操作 |
+| `COMPONENTS.md` | 语义组件契约 | 使用 Kairos 组件时 |
+| `PRODUCT.md` | 设计决策和产品边界 | 理解"为什么"时 |
+| `references/anti-patterns.md` | 反模式 + Bad/Fix 对照 | 审查输出时 |
+| `references/category-routing.md` | 文章类型 → 推荐策略 | 选主题和组件时 |
+| `references/layout-recipes.md` | 编号版式骨架 | 规划文章结构时 |
+| `themes/METHODOLOGY.md` | 主题扩展方法论 | 新增主题时 |
+| `themes/registry.json` | 主题索引 | 选主题时 |
+
 ## System Architecture / 系统架构
 
 ```text

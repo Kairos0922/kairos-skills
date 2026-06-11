@@ -1,15 +1,17 @@
 {
   "schema_version": 1,
   "repository": "kairos-skills",
-  "purpose": "Personal reusable skill collection for AI coding agents.",
+  "purpose": "确定性的 AI 内容生产工作流集合，为 AI coding agent 提供可复用、可验证、品牌一致的内容产出能力。",
   "skills": [
     {
       "id": "kairos-consulting-visual-generator",
       "path": "kairos-consulting-visual-generator",
       "status": "runnable",
-      "summary": "Generate refined consulting-style business visual cards from user topics.",
+      "summary": "把商业主题转化为有隐喻、有克制、有杂志感的视觉卡片。支持 Editorial 和 Swiss 两套视觉系统，12 套主题预设，11 个版式骨架。",
       "entrypoints": [
         "SKILL.md",
+        "CHEATSHEET.md",
+        "PRODUCT.md",
         "references/design_system.md",
         "references/consulting_visual_methodology.md",
         "scripts/verify_design_system.py",
@@ -28,18 +30,25 @@
       "id": "kairos-wechat-typeset",
       "path": "kairos-wechat-typeset",
       "status": "runnable",
-      "summary": "Deterministic Markdown-to-WeChat semantic editorial component system.",
+      "summary": "确定性的 Markdown 到微信公众号语义排版系统。4 套主题，语义组件矩阵，节奏引擎，验证规则。输出微信编辑器可粘贴的内联 HTML。",
       "entrypoints": [
         "SKILL.md",
+        "CHEATSHEET.md",
+        "PRODUCT.md",
+        "COMPONENTS.md",
         "scripts/check_all.py",
         "scripts/typeset.py",
         "scripts/render.py",
         "scripts/verify.py",
         "scripts/verify_markdown.py",
         "scripts/verify_image_plan.py",
-        "scripts/audit_visual.py"
+        "scripts/audit_visual.py",
+        "references/anti-patterns.md",
+        "references/category-routing.md",
+        "references/layout-recipes.md"
       ],
       "validation": [
+        "python3 scripts/check_all.py --smoke",
         "python3 scripts/check_all.py"
       ]
     }

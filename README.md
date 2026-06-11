@@ -1,132 +1,168 @@
-# Kairos Skills
-
-Reusable workflow skills for AI coding agents.
-
-This repository collects practical skills that turn repeatable AI-assisted work into deterministic scripts, contracts, fixtures, and validation commands. The current focus is content-production workflows: use AI for editorial judgment, then rely on code for rendering, verification, and repeatable output.
-
-## Product Direction
-
-Kairos Skills is designed for people who want agent help without losing control of taste, structure, or delivery quality.
-
-| User Need | Repository Answer |
-|-----------|-------------------|
-| Turn a repeatable workflow into something agents can run reliably | Each skill has `SKILL.md`, docs, scripts, fixtures, and validation commands |
-| Keep AI output from drifting between runs | Stable contracts, registered options, deterministic scripts, and goldens |
-| Share personal workflows without private machine context | Relative paths, open-source hygiene checks, and self-contained skill directories |
-| Maintain taste and product intent over time | Human design notes plus agent-facing operating rules |
-
----
-## Skills
-
-| Skill                   | Description                                                                 |
-|-------------------------|-----------------------------------------------------------------------------|
-| [kairos-consulting-visual-generator](./kairos-consulting-visual-generator/) | Generate refined consulting-style business visual cards from user topics |
-| [kairos-wechat-typeset](./kairos-wechat-typeset/) | Deterministic Markdown-to-WeChat semantic editorial design system with four built-in themes |
-
-The machine-readable inventory lives in [`skills.json`](./skills.json).
+<div align="center">
+  <h1>Kairos Skills</h1>
+  <p><b>确定性的 AI 内容生产工作流</b></p>
+  <p>让 AI agent 输出稳定、高级、可重复的内容产物，不靠运气靠系统。</p>
+</div>
 
 ---
 
-## Usage
+## 为什么需要这个项目
 
-### Prerequisites
+AI agent 的内容输出有两个核心问题：
 
-- Python 3.8+
-- Git
-- An AI coding agent that supports local skills
+1. **漂移**：同一篇文章每次输出都不一样，无法保持品牌感
+2. **失控**：AI 即兴发挥的样式往往不够精致，甚至难看
 
-### For AI Agents
+Kairos Skills 的解法是：**用确定性的脚本、主题契约和验证规则，约束 AI 的输出质量**。AI 只做编辑判断（结构、节奏、语义组件），所有视觉行为由脚本和主题 JSON 决定。
 
-Start with [`AGENTS.md`](./AGENTS.md). It defines repository conventions, tool preferences, validation expectations, and the skill directory contract.
+| 问题 | Kairos 的回答 |
+|------|--------------|
+| AI 输出不稳定 | 确定性脚本 + 主题 JSON + golden 文件 |
+| 样式不够高级 | 人工精修的视觉母版 + 主题哲学 |
+| 不知道什么时候用 | 三档能力圈（端到端 / 文强图弱 / 能力圈外） |
+| 不知道怎么扩展 | 分层规范加载 + 品类路由表 + 反模式清单 |
 
-Use [`skills.json`](./skills.json) as the fast inventory before opening individual skill folders.
+---
 
-### Quick Start
+## 两个 Skill
+
+### [kairos-wechat-typeset](./kairos-wechat-typeset/) — 微信公众号排版
+
+把 Markdown 文章转换成微信公众号编辑器可粘贴的内联 HTML。
+
+- 4 套主题（宋式美学 / 稳境白纸 / 科技 / WISME 规范）
+- 语义组件系统（lead / insight / pullquote / figure / soft-list / closing-note）
+- 确定性渲染：同一输入 × 同一主题 = 相同输出
+- Web 字体可选加载（本地预览用）
+- 版本化输出（`~/.wechat-typeset/<slug>/vNNN/`）
 
 ```bash
-# Clone the repository
-git clone https://github.com/Kairos0922/kairos-skills.git
-cd kairos-skills
-
-# Check the current skill surface
 cd kairos-wechat-typeset
-python3 scripts/check_all.py --smoke
-```
-
-Render a Markdown article into HTML suitable for the WeChat editor:
-
-```bash
 python3 scripts/render.py --theme song --input article.md --output article.html --verify
 ```
 
-For a versioned user workflow that writes outputs under `~/.wechat-typeset/`, use:
+### [kairos-consulting-visual-generator](./kairos-consulting-visual-generator/) — 商业视觉卡片
+
+把商业主题转化为有隐喻、有克制、有杂志感的视觉卡片。
+
+- 12 套主题预设（8 Editorial + 4 Swiss）
+- 11 个版式骨架（E01-E03 + S01-S08）
+- 2 种视觉系统（Editorial Magazine / Swiss Consulting）
+- 5 种画幅比例（4:5 / 3:4 / 1:1 / 5:2 / 16:9）
+- Intake Gate 信息校验
 
 ```bash
-python3 scripts/typeset.py --input article.md --theme song --optimize-layout no --non-interactive
+cd kairos-consulting-visual-generator
+python3 scripts/select_metaphor.py --title "增长" --usage "封面"
 ```
-
-### Current WeChat Themes
-
-`kairos-wechat-typeset` currently includes four registered themes:
-
-| Theme | Chinese Name | Best For |
-|-------|--------------|----------|
-| `song` | 宋式美学主题 | 技术长文、方法论、人文评论、生活方式、书评 |
-| `wending` | 稳境白纸主题 | 个人成长、心理秩序、生活方式、轻方法论、慢阅读文章 |
-| `tech` | 科技主题 | AI 技术文章、工程实践、产品方案、研发实践、工具教程 |
-| `wisme` | WISME 规范主题 | 知识科普、研究报告、组件规范、方法论、专业说明 |
-
-Use the registry command to confirm the current public theme surface:
-
-```bash
-cd kairos-wechat-typeset
-python3 scripts/render.py --list-themes
-```
-
-### When To Use This Repository
-
-Use this repository when a workflow is valuable enough to preserve as a reusable skill: it has clear inputs, repeatable outputs, quality rules, and validation commands. Do not add one-off prompts, local scratch files, or workflows that depend on private paths or secrets.
 
 ---
 
-## Adding New Skills
+## 快速开始
 
-Each skill is self-contained with its own directory. New skills should fit the content-production and agent-workflow direction unless the repository strategy changes. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the full workflow.
+### 前置条件
 
-Current repository includes:
+- Python 3.8+
+- Git
+- 支持本地 skill 的 AI coding agent
+
+### 安装
+
+```bash
+git clone https://github.com/Kairos0922/kairos-skills.git
+cd kairos-skills
+```
+
+### AI Agent 使用
+
+1. 读 [`AGENTS.md`](./AGENTS.md) — 仓库约定和工具偏好
+2. 读 [`skills.json`](./skills.json) — 机器可读的技能清单
+3. 读目标 skill 的 `SKILL.md` 和 `README.md`
+4. 按 `CHEATSHEET.md` 快速操作
+
+### 验证
+
+```bash
+# 微信排版 skill
+cd kairos-wechat-typeset
+python3 scripts/check_all.py --smoke
+
+# 咨询视觉 skill
+cd kairos-consulting-visual-generator
+python3 scripts/verify_design_system.py
+```
+
+---
+
+## 项目结构
 
 ```text
 kairos-skills/
-├── README.md
-├── kairos-consulting-visual-generator/  # Consulting-style visual generator
-├── kairos-wechat-typeset/  # Markdown -> WeChat HTML typesetter
-└── ...
+├── README.md                              # 本文件
+├── AGENTS.md                              # Agent 操作规范
+├── CONTRIBUTING.md                        # 贡献指南
+├── skills.json                            # 机器可读技能清单
+├── LICENSE                                # MIT
+│
+├── kairos-wechat-typeset/                 # 微信公众号排版
+│   ├── SKILL.md                           # 机器指令
+│   ├── README.md                          # 人类文档
+│   ├── CHEATSHEET.md                      # 一页速查
+│   ├── PRODUCT.md                         # 设计决策
+│   ├── COMPONENTS.md                      # 语义组件契约
+│   ├── DESIGN.md                          # 设计架构
+│   ├── references/                        # 参考规范
+│   │   ├── anti-patterns.md               # 反模式 + Bad/Fix 对照
+│   │   ├── category-routing.md            # 文章类型 → 推荐策略
+│   │   └── layout-recipes.md              # 编号版式骨架
+│   ├── themes/                            # 主题系统
+│   │   ├── registry.json                  # 主题索引
+│   │   ├── METHODOLOGY.md                 # 扩展方法论
+│   │   ├── song.json / song/              # 宋式美学
+│   │   ├── wending.json / wending/        # 稳境白纸
+│   │   ├── tech.json / tech/              # 科技
+│   │   └── wisme.json / wisme/            # WISME 规范
+│   ├── scripts/                           # 确定性脚本
+│   ├── renderer/                          # 渲染器
+│   ├── verify/                            # 验证器
+│   ├── fixtures/                          # 测试输入
+│   └── goldens/                           # 视觉母版
+│
+└── kairos-consulting-visual-generator/    # 商业视觉卡片
+    ├── SKILL.md                           # 机器指令
+    ├── README.md                          # 人类文档
+    ├── CHEATSHEET.md                      # 一页速查
+    ├── PRODUCT.md                         # 设计决策
+    ├── references/                        # 设计规范
+    │   ├── design_system.md               # 字体、颜色、网格、版式
+    │   └── consulting_visual_methodology.md # 工作流、隐喻、QA
+    └── scripts/                           # 辅助脚本
 ```
-
-## Repository Maintenance
-
-- Start from [`AGENTS.md`](./AGENTS.md) before changing the repository.
-- Keep [`skills.json`](./skills.json) aligned with runnable entrypoints and validation commands.
-- For `kairos-wechat-typeset` theme work, read [`themes/METHODOLOGY.md`](./kairos-wechat-typeset/themes/METHODOLOGY.md) before implementation.
-- Validate changed areas before committing, and remove generated caches such as `__pycache__`.
 
 ---
 
-## Skill Structure
+## 设计原则
 
-```text
-skill-name/
-├── SKILL.md            # Required: machine-facing skill instructions
-├── README.md           # Required: human-facing documentation
-├── agents/             # Optional: role prompts
-├── scripts/            # Optional: deterministic helpers
-├── fixtures/           # Optional: stable test inputs
-├── goldens/            # Optional: curated expected outputs
-└── evals/              # Optional: automated evaluation cases
-```
+1. **确定性优先**：脚本决定视觉，AI 只做编辑判断
+2. **美学保护优先于用户自由**：不允许自定义颜色、不允许即兴写样式
+3. **反模式驱动**：每条规则都来自真实踩坑，Bad/Fix 对照比正向规范更有效
+4. **分层规范加载**：按任务复杂度读取不同深度的规范，不每次加载全部
+5. **自包含**：每个 skill 目录独立，不依赖私有路径或外部服务
 
 ---
 
-## License
+## 贡献
+
+欢迎贡献。详见 [`CONTRIBUTING.md`](./CONTRIBUTING.md)。
+
+核心要求：
+- 新增 skill 必须有 `SKILL.md` + `README.md`
+- 修改 skill 必须更新 `skills.json` 和验证命令
+- 提交前运行验证，清除 `__pycache__`
+- 不要引入私有路径、密钥或外部依赖
+
+---
+
+## 许可证
 
 MIT. See [LICENSE](./LICENSE).

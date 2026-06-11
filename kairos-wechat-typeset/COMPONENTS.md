@@ -184,6 +184,37 @@ Theme implementations may differ in typography, spacing, line language, accent u
 - Use ordered lists for steps and unordered lists for parallel points.
 - Let code and tables stay clear and stable before adding magazine styling.
 
+## Density Standards
+
+量化密度指标，用于 editorial_verify.py 和 audit_visual.py 自动检查。
+
+| 指标 | 目标值 | 检查方式 | 说明 |
+| --- | --- | --- | --- |
+| Highlight 占比 | <= 8% | audit_visual.py 统计 `==` 标记占全文字符比 | 过多 highlight 破坏克制感 |
+| 连续长段落 | <= 3 段 | editorial_verify.py 检测连续 > 240 字段落 | 移动端阅读节奏 |
+| 连续 emphasis | <= 2 段 | editorial_verify.py 检测连续 `**` / `*` 段落 | 避免全文"喊叫" |
+| 高密度区块 breathing | 必须有 divider / quote / list | editorial_verify.py 检测 | 高密度段后需要呼吸 |
+| Heading 层级 | 禁止跳级 | editorial_verify.py 检测 | H1 → H3 不允许 |
+| 移动端横向滚动 | 0 | html_verify.py 检测 390px / 430px 宽度 | 表格和代码块不能溢出 |
+| Kairos 组件频率 | 每 500 字 <= 2 个 | editorial_verify.py 统计 | 组件是语义选择，不是装饰 |
+
+### Breathing Rule
+
+高密度区块（连续 3 段以上长文字、代码块、表格）之后必须出现以下之一作为呼吸：
+- `Divider`（`---` 或 `***`）
+- `Quote`（`>` 引用块）
+- `List`（有序或无序列表）
+- `Callout`（`> [!NOTE]` 等）
+
+### Highlight Budget
+
+全文 `==` 标记的字符总数 / 全文字符总数 <= 8%。超过此阈值时，editorial_verify.py 应发出警告。
+
+典型分布：
+- 短文（< 1000 字）：最多 2-3 处 highlight
+- 中文（1000-3000 字）：最多 5-8 处 highlight
+- 长文（> 3000 字）：最多 10-15 处 highlight
+
 ## Mobile Rules
 
 - Body text should remain readable around 16px.

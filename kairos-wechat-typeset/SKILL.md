@@ -310,6 +310,21 @@ python3 scripts/verify_image_plan.py \
   --theme tech
 ```
 
+## Feedback Protocol / 反馈处理
+
+当用户给出模糊反馈时，先报告当前值，再提供具体选项。不要猜测用户想要什么，把模糊反馈转化为精确对话。
+
+| 用户说 | 先报告 | 选项 |
+|--------|--------|------|
+| "太挤了" | 当前 spacing_scale | (a) compressed (b) balanced (c) relaxed |
+| "不够高级" | 当前 emphasis_mode | (a) minimal (b) moderate (c) editorial |
+| "颜色不对" | 当前主题 ID | (a) song (b) wending (c) tech (d) wisme |
+| "标题太大了" | 当前 H1 字号 | 降低到下一级 |
+| "段落太长" | 当前段落长度 | 拆分为多段 |
+| "代码块不好看" | 当前主题的代码块样式 | 检查主题 JSON 中的 code_token |
+
+模板回复："当前值是 X。你想改成 (a) 还是 (b)？"。不要说"我调一下间距"而不说明具体改了什么。
+
 ## Quality Gates / 验收规则
 
 生成后必须检查：

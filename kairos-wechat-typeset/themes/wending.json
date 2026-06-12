@@ -79,7 +79,8 @@
     "section_title_size": "22px",
     "h3_size": "17px",
     "body_size": "16px",
-    "body_line": "1.75",
+    "body_line": "1.7",
+    "compact_line": "1.2",
     "small_size": "14px",
     "code_size": "14px"
   },

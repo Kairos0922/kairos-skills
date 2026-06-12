@@ -1,14 +1,7 @@
 ---
 name: kairos-wechat-typeset
 description: |
-  把标准 Markdown 文章转换成适合微信公众号编辑器粘贴的多主题内联 HTML。该 Skill 是确定性的 WeChat Semantic Editorial Design System：用语义组件、人工定义的视觉母版、主题哲学、节奏引擎和校验规则，稳定复现高级、精致、有品牌感的公众号排版。
-
-  触发场景：
-  - “把这篇 md 排成公众号样式”
-  - “把 Markdown 转成可直接贴进微信编辑器的 HTML”
-  - “给公众号文章做兼容微信编辑器的排版”
-  - “把 .md 文件输出成排版好的 html 文件”
-  - “用宋式美学排版公众号文章”
+  当用户需要把 Markdown 文章排版成微信公众号可粘贴的 HTML 时加载。触发词包括："排版公众号"、"Markdown 转公众号"、"微信排版"、"公众号样式"、"排版这篇文章"、"转成微信 HTML"。不适用于 PPT、PDF、封面图或动态页面。
 metadata:
   version: "2.0"
 ---

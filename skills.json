@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "repository": "kairos-skills",
-  "purpose": "确定性的 AI 内容生产工作流集合，为 AI coding agent 提供可复用、可验证、品牌一致的内容产出能力。",
+  "purpose": "开源 AI 内容生产 Skill 集合。确定性脚本 + 主题契约 + 验证规则，让 AI agent 输出稳定、高级、可重复的内容产物。",
   "skills": [
     {
       "id": "kairos-consulting-visual-generator",
       "path": "kairos-consulting-visual-generator",
       "status": "runnable",
-      "summary": "把商业主题转化为有隐喻、有克制、有杂志感的视觉卡片。支持 Editorial 和 Swiss 两套视觉系统，12 套主题预设，11 个版式骨架。",
+      "summary": "商业主题 → 杂志感视觉卡片。支持 Editorial / Swiss 两套视觉系统，12 套预设，5 种画幅。",
       "entrypoints": [
         "SKILL.md",
         "CHEATSHEET.md",
@@ -30,7 +30,7 @@
       "id": "kairos-wechat-typeset",
       "path": "kairos-wechat-typeset",
       "status": "runnable",
-      "summary": "确定性的 Markdown 到微信公众号语义排版系统。4 套主题，语义组件矩阵，节奏引擎，验证规则。输出微信编辑器可粘贴的内联 HTML。",
+      "summary": "Markdown → 微信公众号排版。4 套主题，语义组件，确定性渲染，验证门禁。",
       "entrypoints": [
         "SKILL.md",
         "CHEATSHEET.md",

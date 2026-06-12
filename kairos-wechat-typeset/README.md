@@ -25,17 +25,28 @@
 
 <br>
 
-## 用法
+## 30 秒上手
 
 ```bash
 # 渲染一篇文章
 python3 scripts/render.py --theme song --input article.md --output article.html
 
-# 带 Web 字体（本地预览用）
-python3 scripts/render.py --theme song --input article.md --output article.html --web-fonts
+# 打开 article.html，复制内容粘贴到微信公众号编辑器
 ```
 
 **输入**：Markdown 文件 → **输出**：可粘贴到微信公众号的 HTML
+
+<br>
+
+## 它是什么
+
+一个确定性的微信排版系统。AI 只做编辑判断（结构、节奏、重点句），字号、颜色、字体、间距全部由代码和主题 JSON 决定。
+
+```text
+Markdown → LLM 编辑判断 → render.py 渲染 → verify 验证 → HTML 输出
+```
+
+**核心承诺**：同一输入 × 同一主题 = 相同输出。不漂移，不即兴发挥。
 
 <br>
 
@@ -45,22 +56,8 @@ python3 scripts/render.py --theme song --input article.md --output article.html 
 |------|------|------|
 | `song` | 暖纸 · 宋体 · 克制细线 | 技术长文、方法论、书评 |
 | `wending` | 安静白纸 · 灰度规格 | 个人成长、心理秩序、慢阅读 |
-| `tech` | 沉稳蓝 · 暗色代码 · accent bar | AI 技术、工程实践、工具教程 |
-| `wisme` | 黑字 · 红色短线 · 灰色表格 | 知识科普、研究报告、组件规范 |
-
-<br>
-
-## 核心机制
-
-```text
-Markdown → LLM 编辑判断 → Renderer 渲染 → Verify 验证 → HTML 输出
-              ↑ 语义组件            ↑ 主题 JSON        ↑ 硬规则
-              (不确定)              (确定)             (确定)
-```
-
-- **LLM 做**：结构、标题层级、重点句、引用、列表、步骤
-- **代码做**：字号、颜色、字体、间距、验证、渲染
-- **LLM 不许做**：生成 HTML、CSS、style、class、自定义颜色
+| `tech` | 沉稳蓝 · 暗色代码 | AI 技术、工程实践、工具教程 |
+| `wisme` | 黑字 · 红色短线 | 知识科普、研究报告、组件规范 |
 
 <br>
 
@@ -69,7 +66,6 @@ Markdown → LLM 编辑判断 → Renderer 渲染 → Verify 验证 → HTML 输
 ```bash
 python3 scripts/check_all.py --smoke    # 快速健康检查
 python3 scripts/check_all.py            # 完整回归
-python3 scripts/verify.py --input out.html  # 验证单个文件
 ```
 
 验证项：无 `<style>` · 无 `class=` · heading 不跳级 · 连续 emphasis ≤ 2 · highlight ≤ 8% · 移动端无溢出
@@ -84,7 +80,6 @@ python3 scripts/verify.py --input out.html  # 验证单个文件
 | [`SKILL.md`](./SKILL.md) | AI Agent · 完整工作流 |
 | [`PRODUCT.md`](./PRODUCT.md) | 了解"为什么" |
 | [`references/anti-patterns.md`](./references/anti-patterns.md) | 21 条反模式 Bad/Fix |
-| [`references/category-routing.md`](./references/category-routing.md) | 文章类型 → 推荐策略 |
 
 <br>
 

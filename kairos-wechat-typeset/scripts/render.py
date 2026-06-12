@@ -705,35 +705,35 @@ class Renderer:
             return (
                 f"display: block; padding: 20px 24px 20px 24px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('body_size')}; line-height: 1.75; text-align: left; "
-                f"background-color: {background or self.c('surface_alt')}; border: 0; "
-                f"border-radius: {self.radius()}; color: {text or '#666666'};"
+                f"background-color: transparent; border: 0; "
+                f"border-left: 3px solid {border}; "
+                f"color: {text or '#666666'};"
             )
         if self.is_theme("tech"):
             return (
                 f"display: block; padding: 16px 20px 16px 20px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('body_size')}; line-height: 1.8; text-align: left; "
-                f"background-color: {background or self.c('accent_soft')}; border-left: 3px solid {border}; "
+                f"background-color: transparent; border-left: 3px solid {border}; "
                 f"border-radius: 0; color: {text or self.c('text')};"
             )
         if self.is_theme("wisme"):
             return (
                 f"display: block; padding: 14px 18px 14px 18px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('body_size')}; line-height: 1.8; text-align: left; "
-                f"background-color: {background or self.c('surface')}; border-left: 2px solid {border}; "
+                f"background-color: transparent; border-left: 2px solid {border}; "
                 f"border-radius: 0; color: {text or self.c('text')};"
             )
         if self.is_theme("song"):
             return (
                 f"display: block; padding: 16px 20px 16px 20px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.8; text-align: left; "
-                f"background-color: {background or self.c('surface')}; border: 1px solid {self.c('line')}; "
-                f"border-radius: {self.radius()}; "
+                f"background-color: transparent; border-left: 3px solid {border}; "
                 f"color: {text or self.c('text')};"
             )
         return (
             f"display: block; padding: 18px 20px 18px 20px; font-family: {self.f('cjk')}; "
             f"font-size: {self.t('body_size')}; line-height: 1.92; text-align: left; "
-            f"background-color: {background or self.c('surface')}; border-left: 3px solid {border}; "
+            f"background-color: transparent; border-left: 3px solid {border}; "
             f"border-radius: {self.radius()}; color: {text or self.c('text')};"
         )
 
@@ -851,13 +851,12 @@ class Renderer:
     def song_table_cell_style(self, index: int, total: int, header: bool, last_row: bool) -> str:
         weight = "700" if header else "400"
         color = self.c("ink") if header else self.c("text")
-        background = self.c("surface_alt") if header else "transparent"
         return (
             f"display: table-cell; width: {100 / max(total, 1):.4f}%; box-sizing: border-box; "
             f"padding: 8px 8px; font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; "
             f"line-height: 1.6; color: {color}; font-weight: {weight}; text-align: center; "
             f"vertical-align: middle; overflow-wrap: anywhere; word-break: break-word; "
-            f"background-color: {background}; border: 1px solid {self.c('line_soft')};"
+            f"background-color: transparent; border: 1px solid {self.c('line_soft')};"
         )
 
     def song_table_row(self, cells: Sequence[str], total: int, header: bool, last_row: bool) -> str:
@@ -871,13 +870,12 @@ class Renderer:
     def wending_table_cell_style(self, index: int, total: int, header: bool, last_row: bool) -> str:
         weight = "700" if header else "400"
         color = self.c("ink") if header else self.c("text")
-        background = self.c("surface_alt") if header else "transparent"
         return (
             f"display: table-cell; width: {100 / max(total, 1):.4f}%; box-sizing: border-box; "
             f"padding: 10px 8px; font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; "
             f"line-height: 1.6; color: {color}; font-weight: {weight}; text-align: center; "
             f"vertical-align: middle; overflow-wrap: anywhere; word-break: break-word; "
-            f"background-color: {background}; border: 1px solid {self.c('line_soft')};"
+            f"background-color: transparent; border: 1px solid {self.c('line_soft')};"
         )
 
     def wending_table_row(self, cells: Sequence[str], total: int, header: bool, last_row: bool) -> str:
@@ -891,13 +889,12 @@ class Renderer:
     def tech_table_cell_style(self, index: int, total: int, header: bool, last_row: bool) -> str:
         weight = "700" if header else "400"
         color = self.c("ink") if header else self.c("text")
-        background = self.c("accent_soft") if header else "transparent"
         return (
             f"display: table-cell; width: {100 / max(total, 1):.4f}%; box-sizing: border-box; "
             f"padding: 10px 8px; font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; "
             f"line-height: 1.55; color: {color}; font-weight: {weight}; text-align: center; "
             f"vertical-align: middle; overflow-wrap: anywhere; word-break: break-word; "
-            f"background-color: {background}; border: 1px solid {self.c('line')};"
+            f"background-color: transparent; border: 1px solid {self.c('line')};"
         )
 
     def tech_table_row(self, cells: Sequence[str], total: int, header: bool, last_row: bool) -> str:
@@ -911,13 +908,12 @@ class Renderer:
     def wisme_table_cell_style(self, index: int, total: int, header: bool, last_row: bool) -> str:
         weight = "700" if header else "400"
         color = self.c("ink") if header else self.c("text")
-        background = self.c("surface_alt") if header else "transparent"
         return (
             f"display: table-cell; width: {100 / max(total, 1):.4f}%; box-sizing: border-box; "
             f"padding: 11px 8px; font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; "
             f"line-height: 1.58; color: {color}; font-weight: {weight}; text-align: center; "
             f"vertical-align: middle; overflow-wrap: anywhere; word-break: break-word; "
-            f"background-color: {background}; border: 1px solid {self.c('line_soft')};"
+            f"background-color: transparent; border: 1px solid {self.c('line_soft')};"
         )
 
     def wisme_table_row(self, cells: Sequence[str], total: int, header: bool, last_row: bool) -> str:
@@ -950,28 +946,28 @@ class Renderer:
     def inline_code_style(self) -> str:
         if self.is_theme("wending"):
             return (
-                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: {self.c('surface_alt')}; "
+                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: transparent; "
                 f"color: {self.c('text')}; padding: 1px 6px; border-radius: 3px; "
                 f"border: 1px solid {self.c('line_soft')}; "
                 "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
             )
         if self.is_theme("tech"):
             return (
-                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: {self.c('accent_soft')}; "
+                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: transparent; "
                 f"color: {self.c('ink')}; padding: 1px 6px; border-radius: 3px; "
                 f"border: 1px solid {self.c('line_soft')}; "
                 "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
             )
         if self.is_theme("wisme"):
             return (
-                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: {self.c('surface_alt')}; "
+                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: transparent; "
                 f"color: {self.c('ink')}; padding: 1px 6px; border-radius: 3px; "
                 f"border: 1px solid {self.c('line_soft')}; "
                 "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
             )
         if self.is_theme("song"):
             return (
-                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: {self.c('surface')}; "
+                f"font-family: {self.f('mono')}; font-size: {self.t('small_size')}; background-color: transparent; "
                 f"color: {self.c('code_text')}; padding: 1px 5px; border-radius: 1px; "
                 f"border: 1px solid {self.c('line')}; "
                 "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"

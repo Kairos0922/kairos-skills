@@ -37,7 +37,7 @@
 <tr>
   <td align="center" width="50%">
     <a href="./kairos-wechat-typeset/">
-      <img src="./kairos-wechat-typeset/assets/showcase/tech-preview.png" width="280" alt="微信排版预览" /><br>
+      <img src="./kairos-wechat-typeset/assets/showcase/song-preview.png" width="280" alt="微信排版预览" /><br>
       <b>kairos-wechat-typeset</b>
     </a>
     <br>

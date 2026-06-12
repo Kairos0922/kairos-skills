@@ -16,9 +16,9 @@
     <sub>技术长文、方法论、书评</sub>
   </td>
   <td align="center" width="50%">
-    <img src="./assets/showcase/tech-preview.png" width="260" alt="科技主题" /><br>
-    <b>科技 · tech</b><br>
-    <sub>AI 技术、工程实践、工具教程</sub>
+    <img src="./assets/showcase/wending-preview.png" width="260" alt="稳境白纸" /><br>
+    <b>稳境白纸 · wending</b><br>
+    <sub>个人成长、心理秩序、慢阅读</sub>
   </td>
 </tr>
 </table>

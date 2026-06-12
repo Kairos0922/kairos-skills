@@ -1012,12 +1012,7 @@ class Renderer:
         return f"text-decoration: line-through; color: {self.c('muted')};"
 
     def latin_inline_style(self) -> str:
-        if self.is_theme("song") or self.is_theme("wending"):
-            return (
-                f"font-family: {self.f('latin')}; font-style: italic; letter-spacing: 0; "
-                f"color: {self.c('ink')};"
-            )
-        if self.is_theme("tech") or self.is_theme("wisme"):
+        if self.is_theme("song") or self.is_theme("wending") or self.is_theme("tech") or self.is_theme("wisme"):
             return (
                 f"font-family: {self.f('latin')}; letter-spacing: 0; "
                 f"color: {self.c('ink')};"

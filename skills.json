@@ -7,6 +7,7 @@
       "id": "kairos-consulting-visual-generator",
       "path": "kairos-consulting-visual-generator",
       "status": "runnable",
+      "version": "1.0.0",
       "summary": "商业主题 → 杂志感视觉卡片。支持 Editorial / Swiss 两套视觉系统，12 套预设，5 种画幅。",
       "entrypoints": [
         "SKILL.md",
@@ -30,6 +31,7 @@
       "id": "kairos-wechat-typeset",
       "path": "kairos-wechat-typeset",
       "status": "runnable",
+      "version": "1.0.0",
       "summary": "Markdown → 微信公众号排版。4 套主题，语义组件，确定性渲染，验证门禁。",
       "entrypoints": [
         "SKILL.md",

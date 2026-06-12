@@ -25,6 +25,15 @@ cd kairos-consulting-visual-generator
 python3 scripts/select_metaphor.py --title "增长" --usage "封面"
 ```
 
+### 开发者
+
+```bash
+make install    # 检查环境 + 验证
+make test       # 运行所有测试
+make showcase   # 重新生成 golden 文件
+make clean      # 清除缓存
+```
+
 <br>
 
 ## 什么是 Harness？

@@ -3,7 +3,7 @@ name: kairos-consulting-visual-generator
 description: |
   当用户需要生成商业封面、信息图、小红书卡片或咨询报告视觉时加载。触发词包括："做一张封面"、"生成信息图"、"商业卡片"、"咨询风"、"小红书封面"、"PPT 封面"、"方法论图"。不适用于微信正文排版、PPT 演示文稿或纯图片编辑。
 metadata:
-  version: "1.0"
+  version: "1.0.0"
 ---
 
 # kairos-consulting-visual-generator

@@ -21,6 +21,18 @@
     <sub>个人成长、心理秩序、慢阅读</sub>
   </td>
 </tr>
+<tr>
+  <td align="center" width="50%">
+    <img src="./assets/showcase/tech-preview.png" width="260" alt="科技主题" /><br>
+    <b>科技 · tech</b><br>
+    <sub>AI 技术、工程实践、工具教程</sub>
+  </td>
+  <td align="center" width="50%">
+    <img src="./assets/showcase/wisme-preview.png" width="260" alt="WISME 规范" /><br>
+    <b>WISME 规范 · wisme</b><br>
+    <sub>知识科普、研究报告、组件规范</sub>
+  </td>
+</tr>
 </table>
 
 <br>

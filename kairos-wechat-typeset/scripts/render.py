@@ -1644,22 +1644,8 @@ class Renderer:
                 f'<span style="display: inline-block; width: 28px; border-top: 1px solid {self.c("line")}; '
                 'margin: 0 10px 4px 0;"></span>'
             )
-        if self.is_theme("song") or self.is_theme("wending") or self.is_theme("tech") or self.is_theme("wisme"):
-            numbered = []
-            for line_number, line in enumerate(text.splitlines() or [""], start=1):
-                number_color = self.c("code_muted") if self.is_theme("wending") or self.is_theme("tech") or self.is_theme("wisme") else self.c("muted")
-                numbered.append(
-                    f'<span style="display: block;">'
-                    f'<span style="display: inline-block; width: 24px; margin-right: 14px; '
-                    f'color: {number_color}; text-align: right;">{line_number}</span>'
-                    f'{html.escape(line)}</span>'
-                )
-            return [
-                f'<p style="{self.code_meta_p(spacing["top"])}">{label}</p>',
-                f'<p style="{self.code_wrap_p(spacing["bottom"])}"><span style="{self.code_p()}">{"".join(numbered)}</span></p>',
-            ]
         return [
-            f'<p style="{self.code_meta_p(spacing["top"])}">{rule}{label}</p>',
+            f'<p style="{self.code_meta_p(spacing["top"])}">{label}</p>',
             f'<p style="{self.code_wrap_p(spacing["bottom"])}"><span style="{self.code_p()}">{html.escape(text)}</span></p>',
         ]
 

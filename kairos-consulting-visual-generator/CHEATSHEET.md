@@ -123,3 +123,13 @@ python3 scripts/verify_design_system.py
 python3 scripts/select_metaphor.py --check-intake --title "增长" --usage "封面"
 python3 scripts/select_metaphor.py --title "风险治理体系" --usage "商业报告封面"
 ```
+
+---
+
+## 交付前 5 秒自检
+
+1. 只有一个主隐喻吗？（多个 → 砍掉，只留最强的）
+2. 文字经过重构吗？（只是普通标题 → 加隐喻融合）
+3. 颜色克制吗？（超过 1 个 accent → 砍掉）
+4. 模块有具体内容吗？（空泛套话 → 补充真实信息）
+5. 像杂志卡片，还是像 PPT 模板？（后者 → 检查反模式）

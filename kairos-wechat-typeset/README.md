@@ -8,6 +8,8 @@
 
 <br>
 
+<p align="center"><sub>以下 4 张效果图使用同一篇文章（<code>fixtures/universal-showcase.md</code>）渲染，覆盖标题、正文、加粗、斜体、删除线、高亮、链接、内联代码、有序/无序/任务列表、代码块、表格、引用、提示块、图片、分隔线、引言、洞察、软列表、结尾注等全部组件，便于直观对比同一内容在不同主题下的表现。</sub></p>
+
 <table>
 <tr>
   <td align="center" width="50%">

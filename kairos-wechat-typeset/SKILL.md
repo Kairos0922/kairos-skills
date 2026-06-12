@@ -389,7 +389,7 @@ python3 scripts/verify_image_plan.py \
 
 这些文件是主题气质的参照，不是运行时模板。渲染器只能执行 layout decision，不得自由设计或动态创造样式。
 
-`fixtures/song-style-system.md` 是 `song` 的设计规范与文章样例来源。`fixtures/wending-style-system.md` 是 `wending` 的移动端白纸主题组件体系与文章样例来源。`fixtures/tech-style-system.md` 是 `tech` 的科技主题组件体系来源。`fixtures/wisme-style-system.md` 是 `wisme` 的黑白灰规范组件体系来源。新增或重打磨主题时，使用对应真实文章 fixture 覆盖标题、段落、引用、代码、表格、分割符、图片、链接和安全转义，再把通过人工审核的结果提升为 golden。
+`fixtures/song-style-system.md` 是 `song` 的设计规范与文章样例来源。`fixtures/wending-style-system.md` 是 `wending` 的移动端白纸主题组件体系与文章样例来源。`fixtures/tech-style-system.md` 是 `tech` 的科技主题组件体系来源。`fixtures/wisme-style-system.md` 是 `wisme` 的黑白灰规范组件体系来源。`fixtures/universal-showcase.md` 是全部 4 个主题共享的通用展示文章，覆盖标题、正文、加粗、斜体、删除线、高亮、链接、内联代码、有序/无序/任务列表、代码块、表格、引用、提示块（NOTE/TIP/WARNING）、图片、分隔线、引言（pullquote）、洞察（insight）、软列表（soft-list）、结尾注（closing-note）等全部组件，用于生成对比效果图。新增或重打磨主题时，使用对应真实文章 fixture 覆盖标题、段落、引用、代码、表格、分割符、图片、链接和安全转义，再把通过人工审核的结果提升为 golden。
 
 ## Developer Theme Extension / 开发者扩展
 
@@ -405,6 +405,7 @@ python3 scripts/verify_image_plan.py \
 - `fixtures/wending-style-system.md`：`wending` 白纸主题组件体系与文章样例 golden 来源。
 - `fixtures/tech-style-system.md`：`tech` 科技主题组件体系与文章样例 golden 来源。
 - `fixtures/wisme-style-system.md`：`wisme` 规范主题组件体系与文章样例 golden 来源。
+- `fixtures/universal-showcase.md`：全部 4 个主题共享的通用展示文章，覆盖全部组件类型，用于生成对比效果图。
 - `scripts/audit_visual.py`：渲染后视觉库存审计，用于发现字号漂移、间距过大、边框过密和背景色过多。
 
 新增主题必须先完成设计确认，再使用对应真实文章 fixture 渲染、验证、对照 `goldens/` 的视觉标准并完成 390px / 430px 移动端预览。对齐敏感组件必须量测表格、列表 marker 和任务清单 checkbox 的视觉中心。用户运行时不能新增主题。

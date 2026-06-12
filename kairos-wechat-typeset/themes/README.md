@@ -84,6 +84,8 @@ python3 scripts/verify_image_plan.py \
 
 `goldens/wisme-style.html` is rendered from `fixtures/wisme-style-system.md` so the WISME Theme reference stays aligned with the attached component-specification design: 32px H1, black numbered section headings with gray rules, 18px H2 titles, 16px H3, 15px body text, 13px auxiliary/code text, red single-accent emphasis, dark code blocks, gray fine-line tables, red insight panels, and 4px image radius. Its suitable article types are knowledge explainers, research reports, component specifications, methodology essays, and professional documentation.
 
+All 4 golden HTML files are also re-rendered from `fixtures/universal-showcase.md`, a single article that covers all component types (headings, paragraphs, bold/italic/strike/highlight, links, inline code, ordered/unordered/task lists, code blocks, tables, quotes, callouts, figures, dividers, lead, insight, pullquote, soft-list, closing-note). This shared article is used for the showcase images so readers can compare the same content across all themes.
+
 Run the visual audit after every polish pass:
 
 ```bash

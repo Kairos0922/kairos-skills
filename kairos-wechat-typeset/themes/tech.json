@@ -74,11 +74,11 @@
     "code_muted": "#94a3b8"
   },
   "typography": {
-    "title_size": "28px",
-    "title_line": "1.35",
+    "title_size": "30px",
+    "title_line": "1.3",
     "section_num_size": "36px",
     "section_title_size": "22px",
-    "h3_size": "18px",
+    "h3_size": "17px",
     "body_size": "16px",
     "body_line": "1.8",
     "small_size": "14px",

@@ -810,7 +810,7 @@ class Renderer:
         return (
             f"display: block; padding: 17px 20px 17px 20px; font-family: {self.f('cjk')}; "
             f"font-size: {self.t('body_size')}; line-height: 1.9; color: {self.c('text')}; "
-            f"text-align: left; background-color: {self.c('surface')}; border: 1px solid {self.c('line')}; "
+            f"text-align: left; background-color: transparent; border: 1px solid {self.c('line')}; "
             f"border-radius: {self.radius()};"
         )
 
@@ -973,7 +973,7 @@ class Renderer:
                 "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
             )
         return (
-            f"font-family: {self.f('mono')}; font-size: 0.9em; background-color: {self.c('surface_alt')}; "
+            f"font-family: {self.f('mono')}; font-size: 0.9em; background-color: transparent; "
             f"color: {self.c('code_text')}; padding: 1px 6px; border-radius: 4px;"
         )
 
@@ -992,7 +992,7 @@ class Renderer:
             return f"font-weight: 700; color: {self.c('ink')}; border-bottom: 1px solid {self.c('line')};"
         if self.is_theme("tech"):
             return (
-                f"font-weight: 700; color: {self.c('accent')}; background-color: {self.c('accent_soft')}; "
+                f"font-weight: 700; color: {self.c('accent')}; background-color: transparent; "
                 "padding: 1px 4px; border-radius: 3px;"
             )
         if self.is_theme("wisme"):
@@ -1142,7 +1142,7 @@ class Renderer:
                 f"padding: 18px 22px; font-family: {self.f('cjk')}; font-size: {self.t('body_size')}; "
                 "line-height: 1.75; "
                 f"color: {fg}; text-align: left; letter-spacing: 0; font-weight: {weight}; "
-                f"background-color: {bg}; {border}border-radius: {self.radius()};"
+                f"background-color: transparent; {border}border-radius: {self.radius()};"
             )
             if self.is_theme("wisme"):
                 return f'<p style="{style}">{prefix}{self.render_inline(text)}</p>'
@@ -1166,20 +1166,20 @@ class Renderer:
             quote_style = (
                 f"display: block; padding: 20px 24px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('body_size')}; line-height: 1.75; text-align: left; "
-                f"color: #666666; background-color: {self.c('surface_alt')}; border-radius: {self.radius()};"
+                f"color: #666666; background-color: transparent; border-radius: {self.radius()};"
             )
         elif self.is_theme("tech"):
             quote_style = (
                 f"display: block; padding: 20px 24px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('body_size')}; line-height: 1.75; text-align: left; "
-                f"color: {self.c('text')}; background-color: {self.c('surface')}; "
+                f"color: {self.c('text')}; background-color: transparent; "
                 f"border-left: 2px solid {self.c('accent')}; border-radius: 0;"
             )
         elif self.is_theme("wisme"):
             quote_style = (
                 f"display: block; padding: 18px 24px 18px 24px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('body_size')}; line-height: 1.8; text-align: left; "
-                f"color: {self.c('text')}; background-color: {self.c('surface')}; "
+                f"color: {self.c('text')}; background-color: transparent; "
                 f"border-left: 2px solid {self.c('accent')}; border-radius: 0;"
             )
             text = (
@@ -1192,7 +1192,7 @@ class Renderer:
             quote_style = (
                 f"display: block; padding: 18px 24px 18px 24px; font-family: {self.f('cjk')}; "
                 f"font-size: {self.t('small_size')}; line-height: 1.8; text-align: left; "
-                f"color: {self.c('ink')}; background-color: {self.c('surface')}; "
+                f"color: {self.c('ink')}; background-color: transparent; "
                 f"border-left: 3px solid {self.c('accent')}; border-radius: 0;"
             )
         else:
@@ -1288,7 +1288,7 @@ class Renderer:
                 f"max-width: {self.width}px; margin: {self.margin(spacing['top'], spacing['bottom'])}; "
                 f"padding: 16px 20px; font-family: {self.f('cjk')}; font-size: {self.t('small_size')}; "
                 f"line-height: 1.75; color: {self.c('accent')}; text-align: left; letter-spacing: 0; "
-                f"background-color: {self.c('surface_alt')}; border-radius: {self.radius()};"
+                f"background-color: transparent; border-radius: {self.radius()};"
             )
         elif self.is_theme("wisme"):
             style = (

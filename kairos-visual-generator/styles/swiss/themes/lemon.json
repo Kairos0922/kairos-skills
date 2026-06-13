@@ -1,0 +1,38 @@
+{
+  "id": "lemon",
+  "name": "Lemon",
+  "name_zh": "柠檬黄",
+  "suitable_for": ["年轻", "零售", "体育", "消费"],
+  "color_map": {
+    "ink": "#1a1a1a",
+    "paper": "#fafafa",
+    "muted": "#888888",
+    "accent": "#FFD500",
+    "line": "rgba(26,26,26,0.12)"
+  },
+  "css_mapping": {
+    "--v-bg": "paper",
+    "--v-primary": "ink",
+    "--v-muted": "muted",
+    "--v-accent": "accent",
+    "--v-line": "line"
+  },
+  "typography": {
+    "display_zh": "\"Noto Sans SC\", \"PingFang SC\", sans-serif",
+    "display_en": "\"Inter\", \"Helvetica Neue\", sans-serif",
+    "display_weight": 520,
+    "display_size_scale": [48, 56, 64, 72],
+    "body_weight": 400,
+    "body_size": 19
+  },
+  "grid": {
+    "gutter": "24px",
+    "margin": "80px",
+    "hairline": "1px"
+  },
+  "texture": {
+    "background": "paper",
+    "grain": "none",
+    "shadow": "none"
+  }
+}

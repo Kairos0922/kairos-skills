@@ -1,0 +1,41 @@
+{
+  "id": "classic-primary",
+  "name": "Classic Primary",
+  "name_zh": "经典原色",
+  "suitable_for": ["设计", "艺术", "建筑", "构成"],
+  "color_map": {
+    "red": "#DE3831",
+    "yellow": "#F7D44C",
+    "blue": "#2F5DA6",
+    "black": "#1A1A1A",
+    "white": "#FAFAF5",
+    "gray": "#B0B0B0"
+  },
+  "css_mapping": {
+    "--v-bg": "white",
+    "--v-primary": "red",
+    "--v-secondary": "yellow",
+    "--v-tertiary": "blue",
+    "--v-structure": "black",
+    "--v-gray": "gray"
+  },
+  "typography": {
+    "display_zh": "\"Noto Sans SC\", sans-serif",
+    "display_en": "\"Bauhaus 93\", \"Futura\", sans-serif",
+    "display_weight": 700,
+    "display_size_scale": [56, 64, 72, 80],
+    "body_weight": 400,
+    "body_size": 18
+  },
+  "grid": {
+    "line_width_thick": "6px",
+    "line_width_thin": "2px",
+    "line_color": "black",
+    "block_ratios": ["1:1", "1:2", "2:3", "1:3"]
+  },
+  "texture": {
+    "background": "white",
+    "grain": "none",
+    "shadow": "none"
+  }
+}

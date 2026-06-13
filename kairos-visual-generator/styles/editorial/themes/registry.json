@@ -1,0 +1,13 @@
+{
+  "registry": [
+    { "id": "ink-classic", "name": "Ink Classic", "path": "ink-classic.json" },
+    { "id": "indigo-porcelain", "name": "Indigo Porcelain", "path": "indigo-porcelain.json" },
+    { "id": "forest-ink", "name": "Forest Ink", "path": "forest-ink.json" },
+    { "id": "kraft-paper", "name": "Kraft Paper", "path": "kraft-paper.json" },
+    { "id": "dune", "name": "Dune", "path": "dune.json" },
+    { "id": "midnight-ink", "name": "Midnight Ink", "path": "midnight-ink.json" },
+    { "id": "graphite-red", "name": "Graphite Red", "path": "graphite-red.json" },
+    { "id": "olive-editorial", "name": "Olive Editorial", "path": "olive-editorial.json" },
+    { "id": "kami-paper", "name": "Kami Paper", "path": "kami-paper.json" }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "style_id": "editorial",
+  "usage_routing": {
+    "cover": {
+      "density": "cover",
+      "max_atoms": 3,
+      "max_modules": 1,
+      "description": "低密度：1个主句 + 2-3个锚点 + 1个短结论",
+      "reading_path": "center-radiate"
+    }
+  },
+  "usage_class": {
+    "cover": ["X封面", "海报", "公众号封面", "作品集封面", "PPT封面", "商业封面", "商业报告封面", "小红书封面"]
+  },
+  "layout_skeletons": [
+    {
+      "id": "E01",
+      "name": "Hero Thesis",
+      "description": "顶部 metadata + 巨型核心句 + 论点 + 隐喻标记 + 底部来源",
+      "suitable_for": ["cover"],
+      "structure": "top-metadata → hero-phrase → thesis → metaphor-mark → bottom-source"
+    },
+    {
+      "id": "E02",
+      "name": "Magazine Feature",
+      "description": "editorial masthead + 大标题 + 侧边栏锚点 + 结尾金句",
+      "suitable_for": ["cover"],
+      "structure": "masthead → title-45-60% → side-rail-anchors → closing-line"
+    },
+    {
+      "id": "E03",
+      "name": "Split Tension",
+      "description": "左旧逻辑 + 右新逻辑 + 中心断裂标记 + 底部启示",
+      "suitable_for": ["cover"],
+      "structure": "left-old → center-fracture → right-new → bottom-implication"
+    }
+  ],
+  "text_reconstruction": {
+    "methods": ["衬线权威", "字号对比", "留白张力", "叙事节奏"],
+    "description": "通过排版、字号对比和留白传达叙事力量"
+  },
+  "metaphor_type": "narrative",
+  "metaphors": [
+    { "id": "ink", "name": "墨水", "description": "墨水在纸张上晕开的叙事感" },
+    { "id": "page", "name": "书页", "description": "杂志翻页的 editorial 节奏" },
+    { "id": "silhouette", "name": "剪影", "description": "人物或组织的轮廓叙事" },
+    { "id": "horizon", "name": "地平线", "description": "远见和趋势的线性表达" }
+  ],
+  "qa_checklist": [
+    "标题是否是第一视觉焦点？",
+    "留白是否充足（hero 区域不应拥挤）？",
+    "衬线字体是否正确加载？",
+    "纸张质感是否自然？",
+    "整体是否有杂志感而非 PPT 感？",
+    "是否只有一个主隐喻？",
+    "文字是否清晰可读？"
+  ]
+}

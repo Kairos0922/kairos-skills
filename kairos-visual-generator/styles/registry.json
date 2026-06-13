@@ -1,0 +1,38 @@
+{
+  "default_style": "swiss",
+  "styles": [
+    {
+      "id": "editorial",
+      "name": "Editorial Magazine",
+      "name_zh": "杂志编辑风格",
+      "path": "editorial/",
+      "design": "editorial/DESIGN.md",
+      "composition": "editorial/composition.json",
+      "themes": "editorial/themes/",
+      "suitable_for": ["文化", "机构", "叙事", "评论", "人文", "反思", "深度", "观点", "人物", "组织"],
+      "supports_infographic": false
+    },
+    {
+      "id": "swiss",
+      "name": "Swiss Consulting",
+      "name_zh": "瑞士咨询风格",
+      "path": "swiss/",
+      "design": "swiss/DESIGN.md",
+      "composition": "swiss/composition.json",
+      "themes": "swiss/themes/",
+      "suitable_for": ["增长", "转化", "漏斗", "策略", "方法论", "框架", "指标", "运营", "商业", "AI", "产品", "技术"],
+      "supports_infographic": true
+    },
+    {
+      "id": "mondrian",
+      "name": "Mondrian / De Stijl",
+      "name_zh": "蒙德里安风格",
+      "path": "mondrian/",
+      "design": "mondrian/DESIGN.md",
+      "composition": "mondrian/composition.json",
+      "themes": "mondrian/themes/",
+      "suitable_for": ["设计", "艺术", "建筑", "构成", "创意", "视觉", "品牌", "美学"],
+      "supports_infographic": false
+    }
+  ]
+}

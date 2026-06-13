@@ -1,0 +1,38 @@
+{
+  "id": "ikb",
+  "name": "IKB Klein Blue",
+  "name_zh": "国际克莱因蓝",
+  "suitable_for": ["AI", "产品", "方法论", "咨询分析"],
+  "color_map": {
+    "ink": "#0a0a0b",
+    "paper": "#f1efea",
+    "muted": "#6f767d",
+    "accent": "#002FA7",
+    "line": "rgba(10,10,11,0.16)"
+  },
+  "css_mapping": {
+    "--v-bg": "paper",
+    "--v-primary": "ink",
+    "--v-muted": "muted",
+    "--v-accent": "accent",
+    "--v-line": "line"
+  },
+  "typography": {
+    "display_zh": "\"Noto Sans SC\", \"PingFang SC\", sans-serif",
+    "display_en": "\"Inter\", \"Helvetica Neue\", sans-serif",
+    "display_weight": 540,
+    "display_size_scale": [48, 56, 64, 72],
+    "body_weight": 420,
+    "body_size": 19
+  },
+  "grid": {
+    "gutter": "24px",
+    "margin": "80px",
+    "hairline": "1px"
+  },
+  "texture": {
+    "background": "paper",
+    "grain": "subtle",
+    "shadow": "none"
+  }
+}

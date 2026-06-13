@@ -1,0 +1,62 @@
+{
+  "style_id": "mondrian",
+  "usage_routing": {
+    "cover": {
+      "density": "cover",
+      "max_atoms": 3,
+      "max_modules": 1,
+      "description": "极低密度：1个巨型核心词 + 色块网格 + 极少辅助信息",
+      "reading_path": "center-radiate"
+    }
+  },
+  "usage_class": {
+    "cover": ["X封面", "海报", "公众号封面", "作品集封面", "PPT封面", "商业封面", "小红书封面"]
+  },
+  "layout_skeletons": [
+    {
+      "id": "M01",
+      "name": "Primary Grid",
+      "description": "经典蒙德里安色块网格：大标题居中 + 周围色块分割",
+      "suitable_for": ["cover"],
+      "structure": "hero-title → surrounding-color-blocks → black-lines"
+    },
+    {
+      "id": "M02",
+      "name": "Cross Grid",
+      "description": "标题横跨多个网格单元 + 色块在交叉点",
+      "suitable_for": ["cover"],
+      "structure": "title-spanning-grid → color-blocks-at-intersections"
+    },
+    {
+      "id": "M03",
+      "name": "Asymmetric Balance",
+      "description": "左侧大色块 + 右侧大标题 + 非对称平衡",
+      "suitable_for": ["cover"],
+      "structure": "left-color-block → right-hero-title → asymmetric-balance"
+    }
+  ],
+  "text_reconstruction": {
+    "methods": ["笔画变网格", "色块嵌入", "负形填充", "边界互锁", "网格穿插"],
+    "description": "文字笔画融入色块网格，成为蒙德里安结构的一部分"
+  },
+  "metaphor_type": "composition",
+  "metaphors": [
+    { "id": "division", "name": "分割", "description": "非对称网格中的张力分割" },
+    { "id": "balance", "name": "平衡", "description": "色块面积的动态平衡" },
+    { "id": "rhythm", "name": "节奏", "description": "粗细线条的韵律" },
+    { "id": "tension", "name": "张力", "description": "色块之间的视觉张力" },
+    { "id": "order", "name": "秩序", "description": "几何构成的理性秩序" }
+  ],
+  "qa_checklist": [
+    "主标题是否是第一视觉焦点？",
+    "主标题是否经过文字结构重构？",
+    "主标题内部或边界是否包含主题隐喻？",
+    "红黄蓝白黑色块是否清晰存在？",
+    "黑色结构线是否形成秩序？",
+    "色块是否参与标题，而不只是背景？",
+    "画面是否保持蒙德里安 / De Stijl 风格？",
+    "文字是否清晰可读？",
+    "是否有足够留白？",
+    "是否像高级现代主义海报，而不是模板图？"
+  ]
+}

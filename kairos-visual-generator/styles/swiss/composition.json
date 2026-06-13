@@ -1,0 +1,127 @@
+{
+  "style_id": "swiss",
+  "usage_routing": {
+    "cover": {
+      "density": "cover",
+      "max_atoms": 3,
+      "max_modules": 1,
+      "description": "低密度：1个巨型核心词 + 1个隐喻 + 极少标签",
+      "reading_path": "center-radiate"
+    },
+    "infographic": {
+      "density": "standard",
+      "max_atoms": 6,
+      "max_modules": 6,
+      "description": "中密度：3-6模块 + 1核心结构图 + 1主叙事路径",
+      "reading_path": "top-down"
+    }
+  },
+  "usage_class": {
+    "cover": ["X封面", "PPT封面", "商业报告封面", "作品集封面", "公众号封面", "海报", "商业封面", "小红书封面"],
+    "infographic": ["信息图", "咨询分析页", "方法论图", "流程图", "矩阵图"]
+  },
+  "layout_skeletons": [
+    {
+      "id": "S01",
+      "name": "Swiss Mechanism",
+      "description": "顶部标题 + 中心机制图 + 3-5个支撑模块 + 底部启示",
+      "suitable_for": ["cover", "infographic"],
+      "structure": "top-title → central-mechanism → supporting-modules → bottom-implication"
+    },
+    {
+      "id": "S02",
+      "name": "Flow Ribbon",
+      "description": "流动带/线 + 3-6个站点 + 标签在带上/下 + 结果",
+      "suitable_for": ["infographic"],
+      "structure": "flow-band → stations → labels → outcome"
+    },
+    {
+      "id": "S03",
+      "name": "Matrix Spotlight",
+      "description": "双轴 + 高亮区域 + 标签 + 建议",
+      "suitable_for": ["infographic"],
+      "structure": "two-axes → highlighted-zone → labels → recommendation"
+    },
+    {
+      "id": "S04",
+      "name": "KPI Editorial",
+      "description": "英雄指标 + 2-3个支撑事实 + 编辑注释",
+      "suitable_for": ["cover"],
+      "structure": "hero-metric → supporting-facts → editorial-note"
+    },
+    {
+      "id": "S05",
+      "name": "Executive Ladder",
+      "description": "垂直/对角阶梯 + 3-5层级 + 顶部目标",
+      "suitable_for": ["infographic"],
+      "structure": "ladder → levels → destination"
+    },
+    {
+      "id": "S06",
+      "name": "Architecture Stack",
+      "description": "结构底座/支柱 + 3-5层 + 侧注",
+      "suitable_for": ["infographic"],
+      "structure": "base → layers → side-annotations"
+    },
+    {
+      "id": "S07",
+      "name": "Annotated Field",
+      "description": "开放场/地图 + 4-6标注区域 + 每区域短标签",
+      "suitable_for": ["infographic"],
+      "structure": "field → annotated-regions → labels"
+    },
+    {
+      "id": "S08",
+      "name": "Evidence Ladder",
+      "description": "顶部论点 + 3-5证据带 + 每带事实+启示 + 结论",
+      "suitable_for": ["infographic"],
+      "structure": "thesis → evidence-bands → conclusion"
+    }
+  ],
+  "text_reconstruction": {
+    "methods": ["拉伸", "压缩", "切割", "镂空", "错位", "分层", "模块化", "框架化", "路径化", "收束化"],
+    "description": "文字成为画面主体结构，参与商业图形逻辑"
+  },
+  "semantic_structure_map": {
+    "增长": { "structures": ["扩张", "上升", "飞轮", "复利"], "visual": "向上延伸的线条或阶梯" },
+    "转化": { "structures": ["收敛", "筛选", "漏斗", "路径"], "visual": "向内收束的形态" },
+    "战略": { "structures": ["路径", "坐标", "分叉", "决策"], "visual": "分叉线或坐标系" },
+    "系统": { "structures": ["模块", "链路", "节点", "架构"], "visual": "网络或链路图" },
+    "风险": { "structures": ["阈值", "防线", "断层", "分级"], "visual": "横向分层或断层线" },
+    "市场": { "structures": ["坐标", "窗口", "区块", "竞争格局"], "visual": "矩阵或区块图" },
+    "价值": { "structures": ["阶梯", "刻度", "容器", "交换"], "visual": "阶梯或刻度尺" },
+    "效率": { "structures": ["压缩", "加速", "流动", "自动化"], "visual": "流线或加速箭头" },
+    "机会": { "structures": ["开口", "窗口", "突破点", "增长通道"], "visual": "开口或窗口形态" },
+    "组织": { "structures": ["层级", "重组", "协作网络", "治理"], "visual": "树形或网络图" }
+  },
+  "metaphor_type": "commercial",
+  "metaphors": [
+    { "id": "funnel", "name": "漏斗", "description": "转化路径的收束结构" },
+    { "id": "path", "name": "路径", "description": "战略方向的线性表达" },
+    { "id": "ladder", "name": "阶梯", "description": "价值递进的层级结构" },
+    { "id": "matrix", "name": "矩阵", "description": "定位和比较的二维结构" },
+    { "id": "coordinate", "name": "坐标", "description": "市场定位的空间表达" },
+    { "id": "flywheel", "name": "飞轮", "description": "增长循环的持续运转" },
+    { "id": "node-network", "name": "节点网络", "description": "系统协同的连接结构" },
+    { "id": "data-flow", "name": "数据流", "description": "信息流动的线性表达" },
+    { "id": "threshold", "name": "门槛", "description": "准入和筛选的关口" },
+    { "id": "window", "name": "窗口", "description": "市场机会的时间/空间入口" },
+    { "id": "defense-line", "name": "防线", "description": "风险管控的边界结构" },
+    { "id": "fault-line", "name": "断层", "description": "结构变化的转折点" },
+    { "id": "container", "name": "容器", "description": "价值承载的聚合结构" },
+    { "id": "compass", "name": "罗盘", "description": "方向选择的导航结构" },
+    { "id": "architectural", "name": "建筑结构", "description": "组织架构的层级底座" }
+  ],
+  "qa_checklist": [
+    "主标题是否是第一视觉焦点？",
+    "主标题是否经过设计级重构？",
+    "文字是否承载主题隐喻？",
+    "图文是否融合而非分离？",
+    "信息密度是否匹配用途（封面低密度/信息图中密度）？",
+    "模块是否有清晰层级？",
+    "accent 色占比是否 ≤ 8%？",
+    "网格对齐是否精确？",
+    "是否保持克制专业的咨询气质？",
+    "是否像咨询报告出品而非 PPT 模板？"
+  ]
+}

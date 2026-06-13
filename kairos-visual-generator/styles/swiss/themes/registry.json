@@ -1,0 +1,8 @@
+{
+  "registry": [
+    { "id": "ikb", "name": "IKB Klein Blue", "path": "ikb.json" },
+    { "id": "lemon", "name": "Lemon", "path": "lemon.json" },
+    { "id": "lemon-green", "name": "Lemon Green", "path": "lemon-green.json" },
+    { "id": "safety-orange", "name": "Safety Orange", "path": "safety-orange.json" }
+  ]
+}

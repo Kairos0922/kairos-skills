@@ -1,0 +1,35 @@
+{
+  "id": "indigo-porcelain",
+  "name": "Indigo Porcelain",
+  "name_zh": "靛蓝瓷白",
+  "suitable_for": ["AI", "研究", "科技", "知识卡片"],
+  "color_map": {
+    "ink": "#0a1f3d",
+    "paper": "#f1f3f5",
+    "muted": "#8a96a3",
+    "accent": "#1a3a5c"
+  },
+  "css_mapping": {
+    "--v-bg": "paper",
+    "--v-primary": "ink",
+    "--v-muted": "muted",
+    "--v-accent": "accent"
+  },
+  "typography": {
+    "display_zh": "\"Noto Serif SC\", \"Songti SC\", Georgia, serif",
+    "display_en": "\"Inter\", \"Helvetica Neue\", sans-serif",
+    "display_weight": 560,
+    "display_size_scale": [64, 76, 88, 96],
+    "body_weight": 400,
+    "body_size": 20
+  },
+  "grid": {
+    "gutter": "24px",
+    "margin": "80px"
+  },
+  "texture": {
+    "background": "paper",
+    "grain": "subtle",
+    "shadow": "none"
+  }
+}

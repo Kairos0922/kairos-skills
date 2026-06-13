@@ -1,0 +1,38 @@
+[
+  {
+    "topic": "用户增长飞轮",
+    "usage": "小红书封面",
+    "expected_style": "swiss",
+    "expected_ratio": "3:4"
+  },
+  {
+    "topic": "建筑设计美学",
+    "usage": "海报",
+    "expected_style": "mondrian",
+    "expected_ratio": "3:4"
+  },
+  {
+    "topic": "文化叙事的力量",
+    "usage": "公众号封面",
+    "expected_style": "editorial",
+    "expected_ratio": "2.35:1"
+  },
+  {
+    "topic": "用户转化漏斗优化",
+    "usage": "PPT 封面",
+    "expected_style": "swiss",
+    "expected_ratio": "16:9"
+  },
+  {
+    "topic": "AI 产品方法论",
+    "usage": "信息图",
+    "expected_style": "swiss",
+    "expected_ratio": "4:5"
+  },
+  {
+    "topic": "组织变革与治理",
+    "usage": "商业报告封面",
+    "expected_style": "editorial",
+    "expected_ratio": "16:9"
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "id": "olive-editorial",
+  "name": "Olive Editorial",
+  "name_zh": "橄榄编辑",
+  "suitable_for": ["文化", "机构", "长期主义"],
+  "color_map": {
+    "ink": "#23301f",
+    "paper": "#f2ecdf",
+    "muted": "#8d9374",
+    "accent": "#4a5a3a"
+  },
+  "css_mapping": {
+    "--v-bg": "paper",
+    "--v-primary": "ink",
+    "--v-muted": "muted",
+    "--v-accent": "accent"
+  },
+  "typography": {
+    "display_zh": "\"Noto Serif SC\", \"Songti SC\", Georgia, serif",
+    "display_en": "\"Inter\", \"Helvetica Neue\", sans-serif",
+    "display_weight": 580,
+    "display_size_scale": [64, 76, 88, 96],
+    "body_weight": 420,
+    "body_size": 20
+  },
+  "grid": {
+    "gutter": "24px",
+    "margin": "80px"
+  },
+  "texture": {
+    "background": "paper",
+    "grain": "subtle",
+    "shadow": "none"
+  }
+}

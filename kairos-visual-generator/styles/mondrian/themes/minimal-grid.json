@@ -1,0 +1,41 @@
+{
+  "id": "minimal-grid",
+  "name": "Minimal Grid",
+  "name_zh": "极简网格",
+  "suitable_for": ["现代艺术", "画廊", "策展"],
+  "color_map": {
+    "red": "#C0392B",
+    "yellow": "#F1C40F",
+    "blue": "#2980B9",
+    "black": "#2C3E50",
+    "white": "#ECF0F1",
+    "gray": "#BDC3C7"
+  },
+  "css_mapping": {
+    "--v-bg": "white",
+    "--v-primary": "red",
+    "--v-secondary": "yellow",
+    "--v-tertiary": "blue",
+    "--v-structure": "black",
+    "--v-gray": "gray"
+  },
+  "typography": {
+    "display_zh": "\"Noto Sans SC\", sans-serif",
+    "display_en": "\"Helvetica Neue\", \"Arial\", sans-serif",
+    "display_weight": 600,
+    "display_size_scale": [48, 56, 64, 72],
+    "body_weight": 400,
+    "body_size": 18
+  },
+  "grid": {
+    "line_width_thick": "4px",
+    "line_width_thin": "1px",
+    "line_color": "black",
+    "block_ratios": ["1:1", "1:2", "2:3"]
+  },
+  "texture": {
+    "background": "white",
+    "grain": "none",
+    "shadow": "none"
+  }
+}

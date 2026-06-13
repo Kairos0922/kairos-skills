@@ -1,0 +1,7 @@
+{
+  "registry": [
+    { "id": "classic-primary", "name": "Classic Primary", "path": "classic-primary.json" },
+    { "id": "bauhaus-reduced", "name": "Bauhaus Reduced", "path": "bauhaus-reduced.json" },
+    { "id": "minimal-grid", "name": "Minimal Grid", "path": "minimal-grid.json" }
+  ]
+}

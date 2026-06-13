@@ -1,0 +1,35 @@
+{
+  "id": "midnight-ink",
+  "name": "Midnight Ink",
+  "name_zh": "午夜墨色",
+  "suitable_for": ["游戏", "夜景", "影调", "高对比"],
+  "color_map": {
+    "ink": "#ece2cf",
+    "paper": "#0e0d0c",
+    "muted": "#d4a04a",
+    "accent": "#d4a04a"
+  },
+  "css_mapping": {
+    "--v-bg": "paper",
+    "--v-primary": "ink",
+    "--v-muted": "muted",
+    "--v-accent": "accent"
+  },
+  "typography": {
+    "display_zh": "\"Noto Serif SC\", \"Songti SC\", Georgia, serif",
+    "display_en": "\"Inter\", \"Helvetica Neue\", sans-serif",
+    "display_weight": 560,
+    "display_size_scale": [64, 76, 88, 96],
+    "body_weight": 400,
+    "body_size": 20
+  },
+  "grid": {
+    "gutter": "24px",
+    "margin": "80px"
+  },
+  "texture": {
+    "background": "paper",
+    "grain": "none",
+    "shadow": "none"
+  }
+}

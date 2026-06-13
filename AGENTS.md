@@ -1,13 +1,12 @@
 # AGENTS.md
 
-This repository is a personal skill collection maintained by the owner and executed with help from AI agents. The owner sets direction, product taste, and final intent. AI agents implement, refactor, verify, and document the skills so the repository stays usable by both humans and future agents.
+This repository provides deterministic AI content production skills. AI agents implement, refactor, verify, and document the skills so the repository stays usable by both humans and future agents.
 
 ## Repository Purpose
 
-- Collect reusable skills that the owner uses in daily work.
-- Keep every runnable skill self-contained and understandable without private context.
+- Provide reusable skills that produce stable, high-quality content.
+- Keep every skill self-contained and understandable without private context.
 - Prefer deterministic scripts, tests, fixtures, and verification over one-off prompt magic.
-- Preserve the owner's design intent while making each skill practical for open-source users.
 
 ## First Steps For Agents
 
@@ -38,14 +37,19 @@ Required:
 
 Recommended when useful:
 
+- `CHEATSHEET.md`: one-page quick reference.
+- `PRODUCT.md`: design decisions and product boundaries.
 - `scripts/`: deterministic executable helpers.
+- `references/`: reference specs and methodologies.
 - `agents/`: role prompts or sub-agent instructions.
 - `themes/`, `assets/`, `goldens/`, `fixtures/`, or `evals/`: only when they directly support the skill.
 
 Avoid:
 
 - Local-only paths such as `/Users/...`, `/tmp/...`, or machine-specific URLs.
-- Runtime caches, generated throwaway examples, `.DS_Store`, `__pycache__`, `.env`, or secrets.
+- Secrets, tokens, passwords.
+- Runtime caches, generated throwaway examples, `.DS_Store`, `__pycache__`, `.env`.
+- Hard dependencies on external APIs.
 - Large auxiliary docs that duplicate `SKILL.md` or `README.md`.
 
 ## Design And Implementation Rules
@@ -79,9 +83,5 @@ find . -type d -name __pycache__ -prune -exec rm -rf {} +
 - Do not revert user changes unless explicitly asked.
 - Use clear commit messages that describe the skill or repository workflow being changed.
 - Prefer one coherent commit per user-requested task.
-
-## Current Skills
-
-- `kairos-wechat-typeset`: deterministic Markdown-to-WeChat editorial HTML design system.
 
 Keep `skills.json` updated when adding, removing, renaming, or materially changing a skill.

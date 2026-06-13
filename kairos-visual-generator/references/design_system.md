@@ -1,6 +1,6 @@
 # Consulting Visual Card Design System
 
-This reference is the design system for `kairos-consulting-visual-generator`. It turns "make it refined" into concrete choices: visual system, theme preset, typography, grid, layout skeleton, and render QA.
+This reference is the design system for `kairos-visual-generator`. It turns "make it refined" into concrete choices: visual system, theme preset, typography, grid, layout skeleton, and render QA.
 
 Use it before writing any HTML/CSS or image prompt.
 

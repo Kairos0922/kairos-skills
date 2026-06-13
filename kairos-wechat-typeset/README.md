@@ -92,8 +92,9 @@ python3 scripts/check_all.py            # 完整回归
 |------|--------|
 | [`CHEATSHEET.md`](./CHEATSHEET.md) | 所有人 · 一页速查 |
 | [`SKILL.md`](./SKILL.md) | AI Agent · 完整工作流 |
-| [`PRODUCT.md`](./PRODUCT.md) | 了解"为什么" |
+| [`PRODUCT.md`](./PRODUCT.md) | 设计决策和产品边界 |
 | [`references/anti-patterns.md`](./references/anti-patterns.md) | 25 条反模式 Bad/Fix |
+| [`themes/README.md`](./themes/README.md) | 主题扩展指南 |
 
 <br>
 

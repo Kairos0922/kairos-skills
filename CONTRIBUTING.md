@@ -43,7 +43,7 @@ cd kairos-wechat-typeset
 python3 scripts/check_all.py --smoke
 
 # 咨询视觉 skill
-cd kairos-consulting-visual-generator
+cd kairos-visual-generator
 python3 scripts/verify_design_system.py
 
 # JSON 语法
@@ -54,32 +54,7 @@ python3 -m json.tool skills.json > /dev/null
 
 ## Skill 目录合约
 
-每个 skill 目录必须自包含，不依赖私有路径。
-
-### 必需文件
-
-| 文件 | 用途 |
-|------|------|
-| `SKILL.md` | 机器指令（YAML frontmatter + `name` + `description`） |
-| `README.md` | 人类文档（用途、前置条件、用法、验证、维护） |
-
-### 推荐文件
-
-| 文件 | 用途 |
-|------|------|
-| `CHEATSHEET.md` | 一页速查 |
-| `PRODUCT.md` | 设计决策和产品边界 |
-| `scripts/` | 确定性辅助脚本 |
-| `references/` | 参考规范和方法论 |
-| `fixtures/` | 稳定测试输入 |
-| `goldens/` | 视觉母版 |
-
-### 不允许
-
-- 私有路径（`/Users/...`、`/tmp/...`）
-- 密钥、token、密码
-- 运行时缓存（`__pycache__`、`.DS_Store`）
-- 对外部 API 的硬依赖
+详见 `AGENTS.md` 中的 "Skill Directory Contract"。
 
 ---
 
@@ -111,6 +86,21 @@ python3 -m json.tool skills.json > /dev/null
 - 使用相对路径命令（如 `python3 scripts/render.py`）
 - 不要引入私有路径、本地主机名、密钥或过时的引用
 - 文档要简洁，告诉读者"去哪里看下一步"
+
+---
+
+## 文档地图
+
+| 文件 | 给谁看 | 作用 |
+|------|--------|------|
+| 根 `README.md` | 用户 | 项目总览 |
+| `AGENTS.md` | AI Agent | 仓库级规则（权威来源） |
+| `CONTRIBUTING.md` | 贡献者 | 贡献流程 |
+| Skill `README.md` | 用户 | Skill 介绍和用法 |
+| Skill `SKILL.md` | AI Agent | 完整工作流指令 |
+| Skill `CHEATSHEET.md` | 所有人 | 一页速查 |
+| Skill `PRODUCT.md` | 贡献者 | 设计决策 |
+| Skill `references/` | Agent + 贡献者 | 详细规范 |
 
 ---
 

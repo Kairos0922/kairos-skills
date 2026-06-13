@@ -20,18 +20,9 @@ cd kairos-skills
 cd kairos-wechat-typeset
 python3 scripts/render.py --theme song --input article.md --output article.html
 
-# 咨询卡片：一个主题 → 杂志感视觉卡片
-cd kairos-consulting-visual-generator
+# 视觉卡片：一个主题 → 杂志感视觉卡片
+cd kairos-visual-generator
 python3 scripts/select_metaphor.py --title "增长" --usage "封面"
-```
-
-### 开发者
-
-```bash
-make install    # 检查环境 + 验证
-make test       # 运行所有测试
-make showcase   # 重新生成 golden 文件
-make clean      # 清除缓存
 ```
 
 <br>
@@ -70,12 +61,12 @@ make clean      # 清除缓存
     <sub>微信公众号排版 · 4 套主题 · Markdown → HTML</sub>
   </td>
   <td align="center" width="50%">
-    <a href="./kairos-consulting-visual-generator/">
-      <img src="./kairos-consulting-visual-generator/assets/showcase/cards-preview.png" width="280" alt="咨询卡片预览" /><br>
-      <b>kairos-consulting-visual-generator</b>
+    <a href="./kairos-visual-generator/">
+      <img src="./kairos-visual-generator/assets/showcase/cards-preview.png" width="280" alt="视觉卡片预览" /><br>
+      <b>kairos-visual-generator</b>
     </a>
     <br>
-    <sub>商业视觉卡片 · 12 套预设 · 主题 → 图片</sub>
+    <sub>多风格视觉卡片 · 3 套视觉系统 · 主题 → 图片</sub>
   </td>
 </tr>
 </table>

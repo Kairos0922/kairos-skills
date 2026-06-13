@@ -6,12 +6,12 @@ install:
 	@echo "Running smoke test..."
 	cd kairos-wechat-typeset && python3 scripts/check_all.py --smoke
 	@echo "Running design system verification..."
-	cd kairos-consulting-visual-generator && python3 scripts/verify_design_system.py
+	cd kairos-visual-generator && python3 scripts/verify_design_system.py
 	@echo "Install check passed."
 
 test:
 	cd kairos-wechat-typeset && python3 scripts/check_all.py
-	cd kairos-consulting-visual-generator && python3 scripts/verify_design_system.py
+	cd kairos-visual-generator && python3 scripts/verify_design_system.py
 	python3 -m json.tool skills.json > /dev/null
 	@echo "All tests passed."
 

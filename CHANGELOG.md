@@ -24,7 +24,7 @@ Initial release of Kairos Skills — Agent Harness Engineering for content produ
 - No text backgrounds on any element (transparent only)
 - Feedback protocol for converting vague feedback to precise parameters
 
-### kairos-consulting-visual-generator
+### kairos-visual-generator
 
 - Deterministic consulting-style visual card generator
 - 2 visual systems: Editorial Magazine, Swiss Consulting

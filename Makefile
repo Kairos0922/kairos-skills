@@ -1,4 +1,4 @@
-.PHONY: install test showcase clean
+.PHONY: install test showcase clean verify-fonts verify-assets verify-offline
 
 install:
 	@echo "Checking Python version..."
@@ -21,6 +21,23 @@ showcase:
 	cd kairos-wechat-typeset && python3 scripts/render.py --theme tech --input fixtures/tech-style-system.md --output goldens/tech-style.html
 	cd kairos-wechat-typeset && python3 scripts/render.py --theme wisme --input fixtures/wisme-style-system.md --output goldens/wisme-style.html
 	@echo "Golden files regenerated."
+
+verify-fonts:
+	@echo "Verifying visual-generator fonts..."
+	cd kairos-visual-generator && python3 scripts/verify_fonts.py
+	@echo "Verifying wechat-typeset fonts..."
+	cd kairos-wechat-typeset && python3 scripts/verify_fonts.py
+	@echo "All font files verified."
+
+verify-assets:
+	@echo "Checking visual-generator for CDN references..."
+	cd kairos-visual-generator && python3 scripts/verify_assets.py
+	@echo "Checking wechat-typeset for CDN references..."
+	cd kairos-wechat-typeset && python3 scripts/verify_assets.py
+	@echo "No external CDN references found."
+
+verify-offline: verify-fonts verify-assets
+	@echo "Offline verification passed."
 
 clean:
 	find . -type d -name __pycache__ -prune -exec rm -rf {} +

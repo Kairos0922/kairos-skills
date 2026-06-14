@@ -26,7 +26,7 @@ DESIGN SYSTEM
 
 内联代码 `inline code`
 
-![正文内图片示例](https://placehold.co/1200x520/f4efe6/6f665c.png?text=Inline+Image)
+![正文内图片示例](../assets/placeholders/placeholder-640x360.svg)
 
 ---
 
@@ -107,7 +107,7 @@ life("Song")
 :::
 
 :::figure
-![远山淡影](https://placehold.co/1280x720/f1eee8/7a7a72.png?text=Song+Aesthetic)
+![远山淡影](../assets/placeholders/placeholder-640x360.svg)
 远山与留白共同构成一段安静的开篇。
 :::
 

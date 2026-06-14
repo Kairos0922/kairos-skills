@@ -10,7 +10,7 @@ title: 稳境白纸设计规范
 
 原创　公众号名称　2024.05.20 10:00　上海
 
-![Finding Yourself](https://placehold.co/1200x860/e8e4dc/817a70.png?text=Finding+Yourself)
+![Finding Yourself](../assets/placeholders/placeholder-640x640.svg)
 
 我们生活在一个充满不确定性的时代，信息爆炸、节奏飞快、选择过载，焦虑和迷茫成为了常态。
 
@@ -19,7 +19,7 @@ title: 稳境白纸设计规范
 不确定性并不可怕，抗拒不确定性才是痛苦的根源。
 
 :::figure
-![山间的晨雾](https://placehold.co/1200x520/e4e2dc/888888.png?text=Quiet+Mountain)
+![山间的晨雾](../assets/placeholders/placeholder-640x360.svg)
 图 / 山间的晨雾：不确定中的诗意
 :::
 

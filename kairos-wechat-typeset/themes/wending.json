@@ -44,13 +44,11 @@
   "webfonts": {
     "cjk": {
       "family": "Noto Serif SC",
-      "weight": "400",
-      "url": "https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc/index.css"
+      "weight": "400"
     },
     "latin": {
       "family": "Playfair Display",
-      "weight": "400",
-      "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display/index.css"
+      "weight": "400"
     }
   },
   "colors": {

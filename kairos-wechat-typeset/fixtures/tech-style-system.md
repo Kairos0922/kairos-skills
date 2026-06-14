@@ -8,7 +8,7 @@ title: 科技主题样文
 原创　科技前沿　2024-05-20 10:30　北京　1234 人听过
 :::
 
-![AI portal](https://placehold.co/1200x620/174a8b/eaf2ff.png?text=AI+Future)
+![AI portal](../assets/placeholders/placeholder-640x360.svg)
 
 ## 01 技术的边界，决定未来的边界
 
@@ -112,7 +112,7 @@ console.log(greet("World"));
 ## 07 图片示例
 
 :::figure
-![AI future portal](https://placehold.co/1200x620/174a8b/eaf2ff.png?text=AI+Future)
+![AI future portal](../assets/placeholders/placeholder-640x360.svg)
 图 / AI 技术应用落地的视觉示例
 :::
 

@@ -6,12 +6,23 @@
       "category": "monospace",
       "designer": "Helena Zhang",
       "license": "SIL OFL 1.1",
-      "weights": ["regular"],
-      "features": ["locl", "osf", "lf", "sc"],
+      "weights": [
+        "regular"
+      ],
+      "features": [
+        "locl",
+        "osf",
+        "lf",
+        "sc"
+      ],
       "cjk": false,
       "path": "monospace/departure-mono/DepartureMono-Regular.woff2",
       "format": "woff2",
-      "fallbacks": ["JetBrains Mono", "Fira Code", "monospace"]
+      "fallbacks": [
+        "JetBrains Mono",
+        "Fira Code",
+        "monospace"
+      ]
     },
     {
       "id": "noto-sans-mono",
@@ -19,11 +30,17 @@
       "category": "monospace",
       "designer": "Google",
       "license": "SIL OFL 1.1",
-      "weights": ["regular"],
+      "weights": [
+        "regular"
+      ],
       "cjk": false,
       "path": "monospace/noto-sans-mono/noto-sans-mono-latin-400-normal.woff2",
       "format": "woff2",
-      "fallbacks": ["JetBrains Mono", "Fira Code", "monospace"]
+      "fallbacks": [
+        "JetBrains Mono",
+        "Fira Code",
+        "monospace"
+      ]
     },
     {
       "id": "noto-sans-mono-cjk-sc",
@@ -31,11 +48,102 @@
       "category": "monospace",
       "designer": "Google",
       "license": "SIL OFL 1.1",
-      "weights": ["regular", "bold"],
+      "weights": [
+        "regular",
+        "bold"
+      ],
       "cjk": true,
       "path": "monospace/noto-sans-mono-cjk-sc/NotoSansMonoCJKsc-Regular.otf",
       "format": "opentype",
-      "fallbacks": ["Source Han Sans SC", "PingFang SC", "monospace"]
+      "fallbacks": [
+        "Source Han Sans SC",
+        "PingFang SC",
+        "monospace"
+      ]
+    },
+    {
+      "id": "noto-sans-sc-regular",
+      "name": "Noto Sans SC",
+      "category": "sans-serif",
+      "weight": "400",
+      "style": "normal",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "cjk": true,
+      "path": "sans-serif/noto-sans-sc/NotoSansSC-Regular.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "noto-sans-sc-medium",
+      "name": "Noto Sans SC",
+      "category": "sans-serif",
+      "weight": "500",
+      "style": "normal",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "cjk": true,
+      "path": "sans-serif/noto-sans-sc/NotoSansSC-Medium.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "noto-serif-sc-regular",
+      "name": "Noto Serif SC",
+      "category": "serif",
+      "weight": "400",
+      "style": "normal",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "cjk": true,
+      "path": "serif/noto-serif-sc/NotoSerifSC-Regular.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "noto-serif-sc-semibold",
+      "name": "Noto Serif SC",
+      "category": "serif",
+      "weight": "600",
+      "style": "normal",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "cjk": true,
+      "path": "serif/noto-serif-sc/NotoSerifSC-SemiBold.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "inter-regular",
+      "name": "Inter",
+      "category": "sans-serif",
+      "weight": "400",
+      "style": "normal",
+      "designer": "Rasmus Andersson",
+      "license": "SIL OFL 1.1",
+      "cjk": false,
+      "path": "sans-serif/inter/Inter-Regular.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "inter-medium",
+      "name": "Inter",
+      "category": "sans-serif",
+      "weight": "500",
+      "style": "normal",
+      "designer": "Rasmus Andersson",
+      "license": "SIL OFL 1.1",
+      "cjk": false,
+      "path": "sans-serif/inter/Inter-Medium.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "playfair-display-regular",
+      "name": "Playfair Display",
+      "category": "serif",
+      "weight": "400",
+      "style": "normal",
+      "designer": "Claus Eggers Sørensen",
+      "license": "SIL OFL 1.1",
+      "cjk": false,
+      "path": "serif/playfair-display/PlayfairDisplay-Regular.woff2",
+      "format": "woff2"
     }
   ]
 }

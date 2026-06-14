@@ -1783,6 +1783,11 @@ class Renderer:
         return "\n".join(rendered).strip() + "\n"
 
     def build_webfont_style(self) -> str:
+        local_css_path = SKILL_ROOT / "assets" / "fonts" / "fonts.css"
+        if local_css_path.exists():
+            local_css = local_css_path.read_text(encoding="utf-8")
+            return "<style>\n" + local_css + "\n</style>\n"
+
         webfonts = self.theme.get("webfonts")
         if not webfonts:
             return ""

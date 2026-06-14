@@ -378,6 +378,28 @@ python3 scripts/verify_image_plan.py \
 - 高 density section 必须有 divider、quote 或 list 作为 breathing
 - heading hierarchy 禁止跳级
 
+## Local Assets / 本地资产
+
+所有字体已本地化到 `assets/fonts/` 目录，渲染管线无需外部网络连接。
+
+| 字体 | 用途 | 位置 |
+|------|------|------|
+| Noto Sans SC | 中文显示/正文（tech/wisme 主题） | `assets/fonts/sans-serif/noto-sans-sc/` |
+| Noto Serif SC | 中文衬线（song/wending 主题） | `assets/fonts/serif/noto-serif-sc/` |
+| Inter | 拉丁文显示/正文 | `assets/fonts/sans-serif/inter/` |
+| Playfair Display | 衬线拉丁（song/wending 主题） | `assets/fonts/serif/playfair-display/` |
+
+字体注册表：`assets/fonts/fonts.json`
+字体 CSS 生成：`scripts/build_font_css.py`
+
+渲染管线优先使用本地字体（`assets/fonts/fonts.css`），无需 `--web-fonts` 标志即可获得一致的字体渲染。
+
+验证资产完整性：
+```bash
+python3 scripts/verify_fonts.py      # 验证字体文件存在
+python3 scripts/verify_assets.py     # 验证无外部 CDN 依赖
+```
+
 ## Golden System / 视觉母版
 
 `goldens/` 下保存人工精修的最高视觉标准：

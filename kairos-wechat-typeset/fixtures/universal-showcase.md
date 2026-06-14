@@ -61,7 +61,7 @@ def decide(ctx):
 :::
 
 :::figure
-![决策框架](https://placehold.co/1200x620/e8e4dc/5a5550.png?text=Decision+Framework)
+![决策框架](../assets/placeholders/placeholder-640x360.svg)
 可持续迭代的决策系统比单次决策更有价值。
 :::
 

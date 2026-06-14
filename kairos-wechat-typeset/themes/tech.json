@@ -44,13 +44,11 @@
   "webfonts": {
     "cjk": {
       "family": "Noto Sans SC",
-      "weight": "400",
-      "url": "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/index.css"
+      "weight": "400"
     },
     "latin": {
       "family": "Inter",
-      "weight": "400",
-      "url": "https://cdn.jsdelivr.net/npm/@fontsource/inter/index.css"
+      "weight": "400"
     }
   },
   "colors": {

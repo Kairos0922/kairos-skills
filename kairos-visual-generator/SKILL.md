@@ -193,3 +193,33 @@ AI 生成 Visual Brief，代码消费 Brief 输出 PNG。
 - Brief 有 JSON Schema 强制验证，不通过拒绝渲染。
 - 渲染管线是纯确定性的，AI 不参与。
 - QA 两层检查：全局通用 + 风格专项。
+
+**渲染边界（不可违反）**：
+- AI 只负责生成 Visual Brief JSON，不允许直接编写 HTML/CSS。
+- 所有 HTML/CSS 由 `shared/render.py` 确定性生成。
+- AI 的输出必须通过 `validate_brief()` 验证。
+- 渲染后的图片必须通过 `run_qa()` 验证。
+- 如果 brief 不满足约束，渲染管线应报错而非静默降级。
+
+## Local Assets
+
+所有字体已本地化到 `assets/fonts/` 目录，渲染管线无需外部网络连接。
+
+| 字体 | 用途 | 位置 |
+|------|------|------|
+| Noto Sans SC | 中文显示/正文 | `assets/fonts/sans-serif/noto-sans-sc/` |
+| Noto Serif SC | 中文衬线标题/正文 | `assets/fonts/serif/noto-serif-sc/` |
+| Inter | 拉丁文显示/正文 | `assets/fonts/sans-serif/inter/` |
+| Playfair Display | Editorial 衬线拉丁 | `assets/fonts/serif/playfair-display/` |
+| Departure Mono | 等宽字体 | `assets/fonts/monospace/departure-mono/` |
+| Noto Sans Mono | 等宽字体 | `assets/fonts/monospace/noto-sans-mono/` |
+| Noto Sans Mono CJK SC | 中文等宽 | `assets/fonts/monospace/noto-sans-mono-cjk-sc/` |
+
+字体注册表：`assets/fonts/fonts.json`
+字体 CSS 生成：`scripts/build_font_css.py`
+
+验证资产完整性：
+```bash
+python3 scripts/verify_fonts.py      # 验证字体文件存在
+python3 scripts/verify_assets.py     # 验证无外部 CDN 依赖
+```

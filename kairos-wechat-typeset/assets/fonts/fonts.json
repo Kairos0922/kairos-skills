@@ -1,0 +1,88 @@
+{
+  "fonts": [
+    {
+      "id": "noto-sans-sc-regular",
+      "name": "Noto Sans SC",
+      "category": "sans-serif",
+      "weight": "400",
+      "style": "normal",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "cjk": true,
+      "path": "sans-serif/noto-sans-sc/NotoSansSC-Regular.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "noto-sans-sc-medium",
+      "name": "Noto Sans SC",
+      "category": "sans-serif",
+      "weight": "500",
+      "style": "normal",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "cjk": true,
+      "path": "sans-serif/noto-sans-sc/NotoSansSC-Medium.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "noto-serif-sc-regular",
+      "name": "Noto Serif SC",
+      "category": "serif",
+      "weight": "400",
+      "style": "normal",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "cjk": true,
+      "path": "serif/noto-serif-sc/NotoSerifSC-Regular.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "noto-serif-sc-semibold",
+      "name": "Noto Serif SC",
+      "category": "serif",
+      "weight": "600",
+      "style": "normal",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "cjk": true,
+      "path": "serif/noto-serif-sc/NotoSerifSC-SemiBold.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "inter-regular",
+      "name": "Inter",
+      "category": "sans-serif",
+      "weight": "400",
+      "style": "normal",
+      "designer": "Rasmus Andersson",
+      "license": "SIL OFL 1.1",
+      "cjk": false,
+      "path": "sans-serif/inter/Inter-Regular.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "inter-medium",
+      "name": "Inter",
+      "category": "sans-serif",
+      "weight": "500",
+      "style": "normal",
+      "designer": "Rasmus Andersson",
+      "license": "SIL OFL 1.1",
+      "cjk": false,
+      "path": "sans-serif/inter/Inter-Medium.woff2",
+      "format": "woff2"
+    },
+    {
+      "id": "playfair-display-regular",
+      "name": "Playfair Display",
+      "category": "serif",
+      "weight": "400",
+      "style": "normal",
+      "designer": "Claus Eggers Sørensen",
+      "license": "SIL OFL 1.1",
+      "cjk": false,
+      "path": "serif/playfair-display/PlayfairDisplay-Regular.woff2",
+      "format": "woff2"
+    }
+  ]
+}

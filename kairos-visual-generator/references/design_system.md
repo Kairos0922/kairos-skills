@@ -122,21 +122,22 @@ CSS token blueprint:
 
 ### Font Loading
 
-咨询卡片通过浏览器渲染后截图，Web 字体会正常加载。在生成的 HTML `<head>` 中加入字体加载声明：
+所有字体已本地化到 `assets/fonts/` 目录。渲染管线通过 `scripts/build_font_css.py` 自动生成 `@font-face` 声明，无需外部 CDN。
 
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/index.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc/index.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter/index.css" />
+字体文件位置：
+- `assets/fonts/sans-serif/noto-sans-sc/` — Noto Sans SC (Regular, Medium)
+- `assets/fonts/sans-serif/inter/` — Inter (Regular, Medium)
+- `assets/fonts/serif/noto-serif-sc/` — Noto Serif SC (Regular, SemiBold)
+- `assets/fonts/serif/playfair-display/` — Playfair Display (Regular)
+- `assets/fonts/monospace/` — 已有的等宽字体
+
+生成的 `@font-face` CSS 位于 `assets/fonts/fonts.css`，由 `compose_html()` 自动注入到 HTML `<head>` 中。如需重新生成，运行：
+
+```bash
+python3 scripts/build_font_css.py
 ```
 
-如果生成 Editorial 风格卡片（衬线为主），额外加载：
-
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display/index.css" />
-```
-
-加载字体后再截图，确保所有设备上渲染一致。如果字体加载失败，回退到系统字体（PingFang SC / Songti SC）。
+所有设备上渲染一致，无需网络连接。如果本地字体加载失败，回退到系统字体（PingFang SC / Songti SC）。
 
 ### 4:5 Card Scale, 1080 x 1350
 

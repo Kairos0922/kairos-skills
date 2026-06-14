@@ -44,6 +44,27 @@ Recommended when useful:
 - `agents/`: role prompts or sub-agent instructions.
 - `themes/`, `assets/`, `goldens/`, `fixtures/`, or `evals/`: only when they directly support the skill.
 
+## Asset Policy
+
+Every skill must be fully self-contained. No shared asset directories between skills.
+
+Required local assets:
+
+- `assets/fonts/`: All fonts used by the skill (woff2 format preferred).
+- `assets/fonts/fonts.json`: Font registry with metadata and license info.
+- `assets/fonts/fonts.css`: Auto-generated @font-face declarations (via `scripts/build_font_css.py`).
+- `assets/placeholders/`: Local SVG placeholder images (no external placehold.co).
+
+Forbidden:
+
+- CDN references in rendering code (golden HTMLs, theme JSONs, render scripts).
+- Shared asset directories that break single-skill installation.
+- External API dependencies for fonts, images, or other runtime assets.
+
+Verification:
+- `scripts/verify_fonts.py`: Validates all declared font files exist.
+- `scripts/verify_assets.py`: Scans for external CDN references in runtime code.
+
 Avoid:
 
 - Local-only paths such as `/Users/...`, `/tmp/...`, or machine-specific URLs.
@@ -69,6 +90,8 @@ Before finishing a change, run the checks that match the edited area:
 - Python syntax: `python3 -m py_compile ...`
 - JSON validity: `python3 -m json.tool path/to/file.json >/dev/null`
 - Skill-specific verify scripts, such as `python3 scripts/verify.py ...`
+- Font integrity: `python3 scripts/verify_fonts.py`
+- Asset independence: `python3 scripts/verify_assets.py`
 - Repository hygiene search for personal paths or stale examples when docs are edited.
 
 Always remove caches created by validation before committing:

@@ -102,7 +102,7 @@ $ wisme trace --source paper.pdf --output report.md
 ## 07 图片与多媒体
 
 :::figure
-![星轨图片示例](https://placehold.co/1200x675/0a0a0a/e5e5e5.png?text=Star+Trace)
+![星轨图片示例](../assets/placeholders/placeholder-640x360.svg)
 图片建议：宽度自适应，比例 16:9，配图说明文字使用 13px 灰色字体居中对齐。
 :::
 

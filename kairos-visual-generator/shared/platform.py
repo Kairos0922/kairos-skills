@@ -4,7 +4,21 @@ Platform routing: usage alias normalization + aspect ratio mapping.
 Deterministic code — no AI judgment involved.
 """
 
-# Usage alias → canonical usage mapping
+# ─── Content type → natural ratio (highest priority) ───
+# These ratios reflect real-world artifact proportions.
+# AI should determine content_type first, then code selects the ratio.
+CONTENT_NATURAL_RATIOS: dict[str, str] = {
+    "boarding-pass": "3:1",     # 横向宽幅（登机牌）
+    "receipt": "1:2",           # 窄长竖版（收据/小票）
+    "train-ticket": "2:1",      # 横向（火车票）
+    "invoice": "4:5",           # 竖版（发票）
+    "magazine-cover": "3:4",    # 竖版（杂志封面）
+    "x-header": "5:2",          # 横向宽幅（X/Twitter header）
+    "poster": "1:1",            # 方版（海报）
+    "postcard": "3:2",          # 横版（明信片）
+}
+
+# ─── Usage alias → canonical usage mapping ───
 USAGE_ALIASES: dict[str, list[str]] = {
     "X 封面": ["X 封面", "Twitter 封面", "X header", "X封面", "twitter封面"],
     "公众号封面": ["公众号封面", "微信封面", "微信公众号", "微信公众号封面"],
@@ -27,7 +41,7 @@ USAGE_ALIASES: dict[str, list[str]] = {
     "火车票": ["火车票", "train ticket", "高铁票"],
 }
 
-# Canonical usage → aspect ratio
+# ─── Canonical usage → aspect ratio (fallback when no content_type) ───
 USAGE_RATIO_MAP: dict[str, str] = {
     "X 封面": "5:2",
     "海报": "3:4",
@@ -53,7 +67,7 @@ USAGE_RATIO_MAP: dict[str, str] = {
 
 DEFAULT_RATIO = "4:5"
 
-# Usage → density class (cover vs infographic)
+# ─── Usage → density class ───
 USAGE_DENSITY_CLASS: dict[str, str] = {
     "X 封面": "cover",
     "海报": "cover",
@@ -79,10 +93,7 @@ USAGE_DENSITY_CLASS: dict[str, str] = {
 
 
 def normalize_usage(raw_input: str) -> str:
-    """Normalize user-provided usage string to canonical form.
-
-    Returns canonical usage name, or empty string if no match.
-    """
+    """Normalize user-provided usage string to canonical form."""
     raw_lower = raw_input.strip().lower()
     for canonical, aliases in USAGE_ALIASES.items():
         for alias in aliases:
@@ -91,9 +102,31 @@ def normalize_usage(raw_input: str) -> str:
     return ""
 
 
+def resolve_ratio(content_type: str | None, usage: str) -> str:
+    """Resolve aspect ratio with priority: content_type > usage > default.
+
+    Args:
+        content_type: Real-world artifact type (e.g., "boarding-pass", "receipt")
+        usage: Canonical usage name (e.g., "机票", "行程卡")
+
+    Returns:
+        Aspect ratio string (e.g., "3:1", "4:5")
+    """
+    # Priority 1: content_type → natural ratio
+    if content_type and content_type in CONTENT_NATURAL_RATIOS:
+        return CONTENT_NATURAL_RATIOS[content_type]
+
+    # Priority 2: usage → ratio
+    if usage in USAGE_RATIO_MAP:
+        return USAGE_RATIO_MAP[usage]
+
+    # Priority 3: default
+    return DEFAULT_RATIO
+
+
 def get_ratio(usage: str) -> str:
-    """Get the optimal aspect ratio for a given usage."""
-    return USAGE_RATIO_MAP.get(usage, DEFAULT_RATIO)
+    """Get the optimal aspect ratio for a given usage (convenience wrapper)."""
+    return resolve_ratio(None, usage)
 
 
 def get_density_class(usage: str) -> str:
@@ -102,10 +135,7 @@ def get_density_class(usage: str) -> str:
 
 
 def detect_language(text: str) -> str:
-    """Detect language from text characters.
-
-    Returns 'chinese', 'english', or 'mixed'.
-    """
+    """Detect language from text characters."""
     if not text:
         return "chinese"
 

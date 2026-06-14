@@ -239,6 +239,27 @@ Spacing rhythm:
 - Text exclusion zones are mandatory for labels inside structures. A layer tag, axis label, or status chip must live in a reserved corner with at least 18px from the nearest title glyph.
 - For serif Chinese titles, increase visual clearance around vertical rules to at least 22px because strokes and punctuation feel optically wider.
 
+### Spacing Tokens
+
+All spacing values should align to an 8px base unit. Use these named tokens instead of arbitrary pixel values:
+
+| Token | Value | Use |
+| --- | ---: | --- |
+| `spacing-2xs` | 2px | Micro gaps (between icon and label) |
+| `spacing-xs` | 4px | Tight gaps (between related items) |
+| `spacing-sm` | 8px | Small gaps (between same-level elements) |
+| `spacing-md` | 16px | Medium gaps (between sections) |
+| `spacing-lg` | 24px | Large gaps (between major blocks) |
+| `spacing-xl` | 32px | Extra large gaps (hero to content) |
+| `spacing-2xl` | 48px | Maximum gaps (top/bottom margins) |
+
+Rules:
+- All spacing values must be multiples of 8px (except `spacing-2xs` at 2px and `spacing-xs` at 4px).
+- Same-level elements use the same spacing token.
+- Bottom alignment: use `margin-top: auto` on footer elements in flex containers.
+- Vertical centering: use a fixed-height wrapper with `align-items: center`, not just `align-items: center` on a variable-height container.
+
+
 Layout rules from social-card practice:
 
 - Start by placing the largest text block and safe area, not by drawing modules.

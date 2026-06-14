@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "created_at": "2026-06-14T08:00:00Z",
+  "style_id": "swiss",
+  "theme_id": "ikb",
+  "skeleton_id": "S01",
+  "ratio": "4:5",
+  "description": "Swiss Consulting style - 用户增长飞轮",
+  "golden_for": "swiss-style-validation"
+}

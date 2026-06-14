@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "created_at": "2026-06-14T08:00:00Z",
+  "style_id": "ticket",
+  "theme_id": "thermal-white",
+  "skeleton_id": "T02",
+  "ratio": "3:4",
+  "description": "Ticket style boarding pass - 高中到大学旅程祝福",
+  "golden_for": "ticket-style-validation"
+}

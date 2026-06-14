@@ -1,0 +1,17 @@
+{
+  "style_id": "ticket",
+  "theme_id": "thermal-white",
+  "usage": "海报",
+  "ratio": "3:4",
+  "language": "chinese",
+  "core_word": "旅程",
+  "title_full": "高中到大学：高考结束，新旅程开始",
+  "tags": ["高考", "大学", "新旅程", "祝福"],
+  "main_metaphor": "boarding-pass",
+  "layout_skeleton": "T02",
+  "text_reconstruction": "等宽对齐 + 票据语境",
+  "content_density": "cover",
+  "subtitle": "愿你前程似锦，不负韶华",
+  "context": "2026年高考结束，祝福考生开启大学新旅程",
+  "banned_elements": ["QR码", "假条形码", "渐变", "霓虹色"]
+}

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+    :root {
+      --ink: #0a0a0b;
+      --paper: #ffffff;
+      --muted: #6b7280;
+      --accent: #002FA7;
+      --line: rgba(10,10,11,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #e8e8e8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .swiss {
+      width: 600px;
+      height: 800px;
+      background: var(--paper);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Noto Sans SC', 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 28px 36px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .header-main {
+      font-size: 26px;
+      color: var(--ink);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 36px;
+    }
+
+    .metrics {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .metric {
+      flex: 1;
+      padding: 12px;
+      background: rgba(0,47,167,0.04);
+      text-align: center;
+    }
+
+    .metric-value {
+      font-family: 'Inter', sans-serif;
+      font-size: 28px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .mechanism {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .flywheel {
+      width: 220px;
+      height: 220px;
+      position: relative;
+    }
+
+    .flywheel-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 160px;
+      height: 160px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+    }
+
+    .flywheel-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 64px;
+      height: 64px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .flywheel-center-text {
+      font-size: 12px;
+      color: white;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .flywheel-node {
+      position: absolute;
+      width: 60px;
+      text-align: center;
+    }
+
+    .flywheel-node:nth-child(3) { top: -8px; left: 50%; transform: translateX(-50%); }
+    .flywheel-node:nth-child(4) { top: 50%; right: -32px; transform: translateY(-50%); }
+    .flywheel-node:nth-child(5) { bottom: -8px; left: 50%; transform: translateX(-50%); }
+    .flywheel-node:nth-child(6) { top: 50%; left: -32px; transform: translateY(-50%); }
+
+    .node-label {
+      font-size: 11px;
+      color: var(--ink);
+      font-weight: 500;
+      margin-bottom: 1px;
+    }
+
+    .node-desc {
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .module {
+      padding: 12px;
+      border-top: 2px solid var(--accent);
+    }
+
+    .module-title {
+      font-size: 11px;
+      color: var(--ink);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .module-content {
+      font-size: 9px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .implication {
+      padding: 12px;
+      background: rgba(0,47,167,0.04);
+      border-left: 2px solid var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .implication-text {
+      font-size: 11px;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .bottom-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .bottom-item {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--line);
+    }
+
+    .bottom-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 8px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .bottom-value {
+      font-size: 11px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .footer {
+      padding: 12px 36px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: 'Inter', sans-serif;
+      font-size: 8px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .footer-right {
+      font-family: 'Inter', sans-serif;
+      font-size: 8px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="swiss">
+    <div class="header">
+      <div class="header-label">GROWTH STRATEGY · 2026</div>
+      <h1 class="header-main">用户增长飞轮模型</h1>
+    </div>
+
+    <div class="main">
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-value">3.2x</div>
+          <div class="metric-label">增长率 YoY</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value">45%</div>
+          <div class="metric-label">30日留存</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value">-60%</div>
+          <div class="metric-label">CAC降低</div>
+        </div>
+      </div>
+
+      <div class="mechanism">
+        <div class="flywheel">
+          <div class="flywheel-circle"></div>
+          <div class="flywheel-center">
+            <span class="flywheel-center-text">增长<br>飞轮</span>
+          </div>
+          <div class="flywheel-node">
+            <div class="node-label">获客</div>
+            <div class="node-desc">Acquisition</div>
+          </div>
+          <div class="flywheel-node">
+            <div class="node-label">激活</div>
+            <div class="node-desc">Activation</div>
+          </div>
+          <div class="flywheel-node">
+            <div class="node-label">留存</div>
+            <div class="node-desc">Retention</div>
+          </div>
+          <div class="flywheel-node">
+            <div class="node-label">推荐</div>
+            <div class="node-desc">Referral</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modules">
+        <div class="module">
+          <div class="module-title">获客渠道</div>
+          <div class="module-content">内容营销 + 社交裂变 + 精准投放，降低CAC至行业均值的60%</div>
+        </div>
+        <div class="module">
+          <div class="module-title">激活策略</div>
+          <div class="module-content">新用户引导优化，首次价值体验时间缩短至3分钟内</div>
+        </div>
+        <div class="module">
+          <div class="module-title">留存机制</div>
+          <div class="module-content">习惯养成 + 社交绑定 + 持续价值交付，30日留存提升至45%</div>
+        </div>
+      </div>
+
+      <div class="implication">
+        <div class="implication-text">
+          核心洞察：增长不是线性投入，而是自我强化的循环系统。每个环节的优化都会加速整体飞轮转动。
+        </div>
+      </div>
+
+      <div class="bottom-row">
+        <div class="bottom-item">
+          <div class="bottom-label">NEXT QUARTER</div>
+          <div class="bottom-value">推荐引擎优化 + 社群运营</div>
+        </div>
+        <div class="bottom-item">
+          <div class="bottom-label">KEY RISK</div>
+          <div class="bottom-value">用户获取成本上升</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-left">SWISS CONSULTING</span>
+      <span class="footer-right">CONFIDENTIAL · 2026 Q2</span>
+    </div>
+  </div>
+</body>
+</html>

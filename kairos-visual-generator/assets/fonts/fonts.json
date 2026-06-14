@@ -1,0 +1,41 @@
+{
+  "fonts": [
+    {
+      "id": "departure-mono",
+      "name": "Departure Mono",
+      "category": "monospace",
+      "designer": "Helena Zhang",
+      "license": "SIL OFL 1.1",
+      "weights": ["regular"],
+      "features": ["locl", "osf", "lf", "sc"],
+      "cjk": false,
+      "path": "monospace/departure-mono/DepartureMono-Regular.woff2",
+      "format": "woff2",
+      "fallbacks": ["JetBrains Mono", "Fira Code", "monospace"]
+    },
+    {
+      "id": "noto-sans-mono",
+      "name": "Noto Sans Mono",
+      "category": "monospace",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "weights": ["regular"],
+      "cjk": false,
+      "path": "monospace/noto-sans-mono/noto-sans-mono-latin-400-normal.woff2",
+      "format": "woff2",
+      "fallbacks": ["JetBrains Mono", "Fira Code", "monospace"]
+    },
+    {
+      "id": "noto-sans-mono-cjk-sc",
+      "name": "Noto Sans Mono CJK SC",
+      "category": "monospace",
+      "designer": "Google",
+      "license": "SIL OFL 1.1",
+      "weights": ["regular", "bold"],
+      "cjk": true,
+      "path": "monospace/noto-sans-mono-cjk-sc/NotoSansMonoCJKsc-Regular.otf",
+      "format": "opentype",
+      "fallbacks": ["Source Han Sans SC", "PingFang SC", "monospace"]
+    }
+  ]
+}

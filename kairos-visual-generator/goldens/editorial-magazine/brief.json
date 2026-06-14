@@ -1,0 +1,17 @@
+{
+  "style_id": "editorial",
+  "theme_id": "ink-classic",
+  "usage": "海报",
+  "ratio": "4:5",
+  "language": "chinese",
+  "core_word": "深度",
+  "title_full": "在信息洪流中，找回深度思考的能力",
+  "tags": ["深度阅读", "思考", "信息时代"],
+  "main_metaphor": "page",
+  "layout_skeleton": "E01",
+  "text_reconstruction": "衬线权威 + 留白张力",
+  "content_density": "cover",
+  "subtitle": "当我们习惯了15秒的短视频和碎片化的信息流",
+  "context": "深度阅读和独立思考正在成为一种稀缺能力",
+  "banned_elements": ["网格发丝线", "数据大字报", "霓虹色"]
+}

@@ -1,0 +1,17 @@
+{
+  "style_id": "mondrian",
+  "theme_id": "classic-primary",
+  "usage": "海报",
+  "ratio": "4:5",
+  "language": "chinese",
+  "core_word": "构成",
+  "title_full": "构成与秩序：设计的本质是秩序",
+  "tags": ["设计", "构成", "秩序", "De Stijl"],
+  "main_metaphor": "grid",
+  "layout_skeleton": "M01",
+  "text_reconstruction": "色块重构 + 网格互锁",
+  "content_density": "cover",
+  "subtitle": "THE ESSENCE OF DESIGN",
+  "context": "蒙德里安风格设计展",
+  "banned_elements": ["渐变", "复杂插画", "非原色"]
+}

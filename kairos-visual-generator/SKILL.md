@@ -3,20 +3,20 @@ name: kairos-visual-generator
 description: |
   当用户需要生成视觉卡片、封面、信息图或海报时加载。触发词包括：
   "做一张封面"、"生成信息图"、"视觉卡片"、"海报"、"小红书封面"、
-  "PPT 封面"、"蒙德里安"、"咨询风"、"杂志风"。
+  "PPT 封面"、"蒙德里安"、"咨询风"、"杂志风"、"票据风"、"行程卡"、"清单"。
   不适用于微信正文排版、PPT 演示文稿或纯图片编辑。
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
 ---
 
 # kairos-visual-generator
 
 ## Purpose
 
-把用户给出的主题转化为一张高质量视觉卡片或海报。支持三套独立视觉系统（Editorial Magazine / Swiss Consulting / Mondrian），风格即插件，确定性渲染管线。
+把用户给出的主题转化为一张高质量视觉卡片或海报。支持四套独立视觉系统（Editorial Magazine / Swiss Consulting / Mondrian / Ticket & Receipt），风格即插件，确定性渲染管线。
 
 - 质量第一：质量 > 稳定 > 效率
-- 三套视觉系统，每套有独立设计规则
+- 四套视觉系统，每套有独立设计规则
 - 确定性渲染：AI 生成 Visual Brief，代码消费 Brief 输出 PNG
 - 最小输入：用户只需提供主题和用途，系统自动推断其余字段
 
@@ -132,7 +132,7 @@ QA Verification (shared/verify.py)
 
 **必须追问**：
 - 用途不明确 → "你想做什么？封面 / 信息图 / 海报？"
-- 风格不确定 → "你想要什么风格？商业分析风 / 杂志编辑风 / 现代艺术风？"
+- 风格不确定 → "你想要什么风格？商业分析风 / 杂志编辑风 / 现代艺术风 / 票据风？"
 - 主题过于模糊 → 追问方向
 
 **绝不追问**：
@@ -151,6 +151,7 @@ QA Verification (shared/verify.py)
 | "蒙德里安风格"、"De Stijl"、"Bauhaus 风" | `mondrian` |
 | "麦肯锡风格"、"咨询风"、"Swiss 风" | `swiss` |
 | "杂志风"、"编辑风"、"墨水风" | `editorial` |
+| "票据风"、"收据风"、"机票"、"行程卡"、"清单" | `ticket` |
 
 **第二层：内容语义推断**
 
@@ -159,14 +160,16 @@ QA Verification (shared/verify.py)
 | 增长、转化、漏斗、策略、方法论、框架、指标、运营、商业 | Swiss Consulting |
 | 文化、机构、叙事、评论、人文、反思、深度、观点 | Editorial Magazine |
 | 设计、艺术、建筑、构成、创意、视觉、品牌、美学 | Mondrian |
+| 行程、日程、清单、预算、时间轴、对比、收据、发票 | Ticket / Receipt |
 
 ## Visual Systems
 
-只在三套视觉系统中选择，不要临场发明风格：
+只在四套视觉系统中选择，不要临场发明风格：
 
 - `Editorial Magazine`：杂志感、叙事、观点、人物/组织/文化主题。
 - `Swiss Consulting`：分析、框架、方法论、产品、技术组织主题。
 - `Mondrian / De Stijl`：设计、艺术、建筑、构成、创意主题。
+- `Ticket / Receipt`：行程、清单、预算、时间轴、数据展示主题。
 
 每套风格有独立的 DESIGN.md、composition.json 和主题 token。
 

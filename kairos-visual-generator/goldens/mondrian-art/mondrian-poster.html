@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+    :root {
+      --red: #DE3831;
+      --yellow: #F7D44C;
+      --blue: #2F5DA6;
+      --black: #1A1A1A;
+      --white: #FAFAF5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #e8e8e8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .mondrian {
+      width: 1200px;
+      height: 480px;
+      background: var(--white);
+      position: relative;
+      font-family: 'Noto Sans SC', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Simple grid: 3 columns */
+    .col-left { position: absolute; top: 0; left: 0; width: 20%; height: 100%; background: var(--red); }
+    .col-center { position: absolute; top: 0; left: 20%; width: 50%; height: 100%; background: var(--white); }
+    .col-right { position: absolute; top: 0; left: 70%; width: 30%; height: 100%; background: var(--blue); }
+
+    /* Horizontal split in center column */
+    .center-top { position: absolute; top: 0; left: 20%; width: 50%; height: 55%; background: var(--white); }
+    .center-bottom-left { position: absolute; top: 55%; left: 20%; width: 25%; height: 45%; background: var(--yellow); }
+    .center-bottom-right { position: absolute; top: 55%; left: 45%; width: 25%; height: 45%; background: var(--white); }
+
+    /* Black lines */
+    .line { position: absolute; background: var(--black); z-index: 5; }
+    .h1 { top: 55%; left: 0; right: 0; height: 6px; }
+    .v1 { left: 20%; top: 0; bottom: 0; width: 6px; }
+    .v2 { left: 45%; top: 55%; bottom: 0; width: 6px; }
+    .v3 { left: 70%; top: 0; bottom: 0; width: 6px; }
+
+    /* Text - all in white areas only */
+    .title {
+      position: absolute;
+      top: 22%;
+      left: 45%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      font-size: 64px;
+      font-weight: 900;
+      color: var(--black);
+      white-space: nowrap;
+    }
+
+    .subtitle {
+      position: absolute;
+      top: 78%;
+      left: 57%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      text-align: center;
+    }
+
+    .sub-cn { font-size: 14px; color: var(--black); font-weight: 500; margin-bottom: 2px; }
+    .sub-en { font-size: 9px; color: var(--black); letter-spacing: 0.12em; }
+
+    /* Labels in color blocks */
+    .lbl {
+      position: absolute;
+      z-index: 10;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+    }
+
+    .lbl-red { top: 12%; left: 4%; color: var(--white); }
+    .lbl-blue { top: 50%; left: 80%; transform: translateX(-50%); color: var(--white); text-align: center; line-height: 1.6; font-size: 12px; }
+    .lbl-yellow { top: 65%; left: 24%; color: var(--black); font-size: 10px; }
+    .lbl-bottom { bottom: 6%; left: 4%; color: var(--black); font-size: 8px; }
+    .lbl-year { top: 12%; left: 25%; color: var(--black); font-size: 28px; font-weight: 900; }
+  </style>
+</head>
+<body>
+  <div class="mondrian">
+    <div class="col-left"></div>
+    <div class="center-top"></div>
+    <div class="center-bottom-left"></div>
+    <div class="center-bottom-right"></div>
+    <div class="col-right"></div>
+
+    <div class="line h1"></div>
+    <div class="line v1"></div>
+    <div class="line v2"></div>
+    <div class="line v3"></div>
+
+    <div class="title">构成与秩序</div>
+
+    <div class="subtitle">
+      <div class="sub-cn">设计的本质是秩序</div>
+      <div class="sub-en">THE ESSENCE OF DESIGN · KAIROS</div>
+    </div>
+
+    <div class="lbl lbl-red">DE STIJL</div>
+    <div class="lbl lbl-year">2026</div>
+    <div class="lbl lbl-blue">RED<br>BLUE<br>YELLOW</div>
+    <div class="lbl lbl-yellow">原色</div>
+    <div class="lbl lbl-bottom">KAIROS · MONDRIAN SERIES</div>
+  </div>
+</body>
+</html>

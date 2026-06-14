@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boarding Pass</title>
+  <style>
+    @font-face { font-family: 'Departure Mono'; src: url('../../assets/fonts/monospace/departure-mono/DepartureMono-Regular.woff2') format('woff2'); font-display: swap; }
+    @font-face { font-family: 'Noto Sans Mono CJK SC'; src: url('../../assets/fonts/monospace/noto-sans-mono-cjk-sc/NotoSansMonoCJKsc-Regular.otf') format('opentype'); font-weight: 400; font-display: swap; }
+
+    :root { --paper: #f5f0e6; --ink: #444444; --muted: #8a8580; --line: #c8c0b4; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #d4cfc4; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 40px; -webkit-font-smoothing: antialiased; }
+
+    .bp {
+      width: 1200px;
+      height: 350px;
+      background: var(--paper);
+      position: relative;
+      display: flex;
+      font-family: 'Departure Mono', 'Noto Sans Mono CJK SC', monospace;
+      border: 2px solid var(--ink);
+    }
+
+    .tear { position: absolute; right: 240px; top: 0; bottom: 0; border-left: 1px dashed var(--line); z-index: 5; }
+
+    .main { flex: 1; padding: 20px 28px; display: flex; flex-direction: column; }
+
+    .hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    .airline { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; }
+    .flight { font-size: 28px; color: var(--ink); font-weight: 700; }
+    .hdr-r { text-align: right; }
+    .hdr-lb { font-size: 8px; color: var(--muted); letter-spacing: 0.08em; }
+    .hdr-v { font-size: 24px; color: var(--ink); font-weight: 700; }
+
+    .route {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      margin-bottom: 8px;
+    }
+    .ap { text-align: center; }
+    .cd { font-size: 72px; color: var(--ink); font-weight: 700; line-height: 1; }
+    .ct { font-size: 9px; color: var(--muted); margin-top: 4px; letter-spacing: 0.06em; }
+    .rc { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .rd { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 6px; }
+    .rw { width: 100%; position: relative; height: 16px; display: flex; align-items: center; }
+    .rl { width: 100%; height: 1px; background: var(--ink); }
+    .ra { position: absolute; right: -2px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--ink); line-height: 1; }
+
+    .fld {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .fl { font-size: 7px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    .fv { font-size: 12px; color: var(--ink); font-weight: 700; margin-top: 2px; }
+
+    .msg {
+      font-size: 11px;
+      color: var(--ink);
+      text-align: center;
+      padding: 6px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 6px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .ftr {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: auto;
+    }
+    .fn { font-size: 7px; color: var(--muted); letter-spacing: 0.04em; }
+    .bc { display: flex; gap: 2px; height: 20px; align-items: flex-end; }
+    .bc div { background: var(--ink); }
+
+    .stub {
+      width: 240px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .st { font-size: 8px; color: var(--muted); letter-spacing: 0.12em; }
+    .sf { font-size: 24px; color: var(--ink); font-weight: 700; margin: 12px 0; }
+    .sr { font-size: 30px; color: var(--ink); font-weight: 700; margin: 12px 0; }
+    .sa { font-size: 14px; color: var(--muted); }
+    .sd {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+      font-size: 7px;
+      color: var(--muted);
+      text-align: left;
+      width: 100%;
+    }
+    .sd span:nth-child(odd) { text-align: right; color: var(--ink); font-weight: 700; }
+    .sb { display: flex; gap: 2px; height: 16px; align-items: flex-end; margin-top: auto; }
+    .sb div { background: var(--ink); }
+    .ss { font-size: 6px; color: var(--muted); letter-spacing: 0.1em; }
+  </style>
+</head>
+<body>
+  <div class="bp">
+    <div class="tear"></div>
+    <div class="main">
+      <div class="hdr">
+        <div>
+          <div class="airline">KAIROS AIRWAYS · 理想航空</div>
+          <div class="flight">KA 2026</div>
+        </div>
+        <div class="hdr-r">
+          <div class="hdr-lb">BOARDING</div>
+          <div class="hdr-v">08:00</div>
+        </div>
+      </div>
+
+      <div class="route">
+        <div class="ap">
+          <div class="cd">HS</div>
+          <div class="ct">HIGH SCHOOL</div>
+        </div>
+        <div class="rc">
+          <div class="rd">4 YEARS · NON-STOP</div>
+          <div class="rw">
+            <div class="rl"></div>
+            <span class="ra">▶</span>
+          </div>
+        </div>
+        <div class="ap">
+          <div class="cd">UNI</div>
+          <div class="ct">UNIVERSITY</div>
+        </div>
+      </div>
+
+      <div class="fld">
+        <div><div class="fl">PASSENGER</div><div class="fv">2026届考生</div></div>
+        <div><div class="fl">CLASS</div><div class="fv">未来可期</div></div>
+        <div><div class="fl">SEAT</div><div class="fv">无限可能</div></div>
+        <div><div class="fl">GATE</div><div class="fv">梦想</div></div>
+        <div><div class="fl">GROUP</div><div class="fv">A01</div></div>
+        <div><div class="fl">STATUS</div><div class="fv">CONFIRMED</div></div>
+      </div>
+
+      <div class="msg">高考结束 · 新旅程开始 · 愿你前程似锦</div>
+
+      <div class="ftr">
+        <div class="fn">NON-TRANSFERABLE · KA-2026-0614-001 · KAIROS AIRWAYS</div>
+        <div class="bc">
+          <div style="width:3px;height:16px"></div><div style="width:2px;height:10px"></div><div style="width:3px;height:20px"></div><div style="width:2px;height:6px"></div><div style="width:3px;height:16px"></div><div style="width:2px;height:12px"></div><div style="width:3px;height:20px"></div><div style="width:2px;height:6px"></div><div style="width:3px;height:16px"></div><div style="width:2px;height:10px"></div><div style="width:3px;height:20px"></div><div style="width:2px;height:6px"></div><div style="width:3px;height:16px"></div><div style="width:2px;height:12px"></div><div style="width:3px;height:20px"></div><div style="width:2px;height:6px"></div><div style="width:3px;height:16px"></div><div style="width:2px;height:10px"></div><div style="width:3px;height:20px"></div><div style="width:2px;height:6px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stub">
+      <div class="st">BOARDING PASS</div>
+      <div class="sf">KA 2026</div>
+      <div class="sr">HS <span class="sa">→</span> UNI</div>
+      <div class="sd">
+        <span>DATE</span><span>JUN 14, 2026</span>
+        <span>TIME</span><span>08:00</span>
+        <span>GATE</span><span>梦想</span>
+        <span>SEAT</span><span>无限可能</span>
+        <span>GROUP</span><span>A01</span>
+        <span>STATUS</span><span>CONFIRMED</span>
+      </div>
+      <div class="sb">
+        <div style="width:3px;height:12px"></div><div style="width:2px;height:8px"></div><div style="width:3px;height:16px"></div><div style="width:2px;height:4px"></div><div style="width:3px;height:12px"></div><div style="width:2px;height:10px"></div><div style="width:3px;height:16px"></div><div style="width:2px;height:4px"></div><div style="width:3px;height:12px"></div><div style="width:2px;height:8px"></div><div style="width:3px;height:16px"></div><div style="width:2px;height:4px"></div>
+      </div>
+      <div class="ss">KA-2026-0614</div>
+    </div>
+  </div>
+</body>
+</html>

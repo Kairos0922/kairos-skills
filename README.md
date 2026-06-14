@@ -62,11 +62,11 @@ python3 scripts/select_metaphor.py --title "增长" --usage "封面"
   </td>
   <td align="center" width="50%">
     <a href="./kairos-visual-generator/">
-      <img src="./kairos-visual-generator/assets/showcase/cards-preview.png" width="280" alt="视觉卡片预览" /><br>
+      <img src="./kairos-visual-generator/assets/showcase/editorial-magazine.png" width="280" alt="视觉卡片预览" /><br>
       <b>kairos-visual-generator</b>
     </a>
     <br>
-    <sub>多风格视觉卡片 · 3 套视觉系统 · 主题 → 图片</sub>
+    <sub>多风格视觉卡片 · 4 套视觉系统 · 主题 → 图片</sub>
   </td>
 </tr>
 </table>

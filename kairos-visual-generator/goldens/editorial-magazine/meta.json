@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "created_at": "2026-06-14T08:00:00Z",
+  "style_id": "editorial",
+  "theme_id": "ink-classic",
+  "skeleton_id": "E01",
+  "ratio": "4:5",
+  "description": "Editorial Magazine style - 深度阅读主题",
+  "golden_for": "editorial-style-validation"
+}

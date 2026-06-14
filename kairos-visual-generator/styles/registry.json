@@ -33,6 +33,17 @@
       "themes": "mondrian/themes/",
       "suitable_for": ["设计", "艺术", "建筑", "构成", "创意", "视觉", "品牌", "美学"],
       "supports_infographic": false
+    },
+    {
+      "id": "ticket",
+      "name": "Ticket / Receipt",
+      "name_zh": "票据风格",
+      "path": "ticket/",
+      "design": "ticket/DESIGN.md",
+      "composition": "ticket/composition.json",
+      "themes": "ticket/themes/",
+      "suitable_for": ["行程", "日程", "清单", "预算", "时间轴", "对比", "数据", "收据", "发票"],
+      "supports_infographic": true
     }
   ]
 }

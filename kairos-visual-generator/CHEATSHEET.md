@@ -4,15 +4,16 @@
 
 ---
 
-## 三套视觉系统
+## 四套视觉系统
 
 | 系统 | 特征 | 适合 |
 |------|------|------|
 | **Editorial Magazine** | serif + 墨水 + 杂志结构 + 大留白 | 观点、文化、组织、人物、叙事 |
 | **Swiss Consulting** | Inter + 一种 accent + 网格 + 发丝线 | 流程、方法、矩阵、系统、数据 |
 | **Mondrian / De Stijl** | 五原色 + 色块网格 + 文字即结构 | 设计、艺术、建筑、创意 |
+| **Ticket / Receipt** | 等宽字体 + 虚线 + 票据纸 + 数据对齐 | 行程、清单、预算、时间轴、数据 |
 
-选择规则：强调观点 → Editorial；强调流程/数据 → Swiss；强调设计/构成 → Mondrian。
+选择规则：强调观点 → Editorial；强调流程/数据 → Swiss；强调设计/构成 → Mondrian；强调结构化数据 → Ticket。
 
 ---
 
@@ -33,10 +34,10 @@
 | 用途 | 画幅 |
 |------|------|
 | X 封面 | 5:2 |
-| 小红书封面 / 海报 | 3:4 |
+| 小红书封面 / 海报 / 行程卡 / 日程卡 | 3:4 |
 | 公众号封面 | 2.35:1 |
 | PPT 封面 / 商业封面 / 流程图 | 16:9 |
-| 信息图 / 咨询分析页 / 方法论图 / 作品集封面 | 4:5 |
+| 信息图 / 咨询分析页 / 方法论图 / 作品集封面 / 清单卡 / 预算卡 | 4:5 |
 | 矩阵图 | 1:1 |
 
 ---
@@ -47,11 +48,13 @@
 - "蒙德里安" → Mondrian
 - "麦肯锡"/"咨询风" → Swiss
 - "杂志风"/"编辑风" → Editorial
+- "票据风"/"机票"/"行程卡"/"清单" → Ticket
 
 **语义推断**（用户未指定风格时）：
 - 增长、转化、漏斗、策略 → Swiss
 - 文化、叙事、评论、人文 → Editorial
 - 设计、艺术、构成、创意 → Mondrian
+- 行程、日程、清单、预算、时间轴 → Ticket
 
 ---
 
@@ -61,11 +64,13 @@
 # Python 语法
 python3 -m py_compile shared/*.py scripts/*.py
 
-# 风格路由测试
-python3 scripts/select_style.py '帮我做一张小红书封面，主题是用户增长飞轮'
-
 # JSON 合法性
 python3 -m json.tool styles/registry.json
+python3 -m json.tool assets/fonts/fonts.json
+
+# 风格路由测试
+python3 scripts/select_style.py '帮我做一张小红书封面，主题是用户增长飞轮'
+python3 scripts/select_style.py '做一张行程卡，主题是3天2夜京都之旅'
 ```
 
 ---
@@ -76,4 +81,4 @@ python3 -m json.tool styles/registry.json
 2. 文字经过重构吗？（只是普通标题 → 加隐喻融合）
 3. 颜色克制吗？（超过 1 个 accent → 砍掉）
 4. 模块有具体内容吗？（空泛套话 → 补充真实信息）
-5. 像杂志卡片/咨询报告/艺术海报，还是像 PPT 模板？（后者 → 检查反模式）
+5. 像杂志卡片/咨询报告/艺术海报/票据，还是像 PPT 模板？（后者 → 检查反模式）

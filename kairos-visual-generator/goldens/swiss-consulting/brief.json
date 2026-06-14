@@ -1,0 +1,17 @@
+{
+  "style_id": "swiss",
+  "theme_id": "ikb",
+  "usage": "信息图",
+  "ratio": "4:5",
+  "language": "chinese",
+  "core_word": "飞轮",
+  "title_full": "用户增长飞轮模型",
+  "tags": ["增长", "飞轮", "策略"],
+  "main_metaphor": "flywheel",
+  "layout_skeleton": "S01",
+  "text_reconstruction": "模块化 + 框架化",
+  "content_density": "standard",
+  "subtitle": "增长不是线性投入，而是自我强化的循环系统",
+  "context": "用户增长策略分析",
+  "banned_elements": ["衬线装饰", "水墨效果", "渐变"]
+}

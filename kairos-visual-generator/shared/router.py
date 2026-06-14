@@ -12,6 +12,7 @@ EXPLICIT_STYLE_KEYWORDS: dict[str, list[str]] = {
     "mondrian": ["蒙德里安", "De Stijl", "de stijl", "Bauhaus", "bauhaus", "色块风格", "原色风格", "现代主义海报"],
     "swiss": ["麦肯锡", "咨询风", "Swiss", "swiss", "McKinsey", "mckinsey", "BCG", "Bain"],
     "editorial": ["杂志风", "编辑风", "墨水风", "editorial", "Editorial", "衬线风"],
+    "ticket": ["票据风", "收据风", "机票", "火车票", "行程卡", "清单卡", "预算卡", "日程卡", "ticket", "receipt", "boarding pass"],
 }
 
 # Layer 2: content semantic keywords → style ID
@@ -22,6 +23,8 @@ SEMANTIC_STYLE_KEYWORDS: dict[str, list[str]] = {
                   "人物", "组织", "趋势", "洞察", "思想", "哲学"],
     "mondrian": ["设计", "艺术", "建筑", "构成", "创意", "视觉", "品牌", "美学",
                  "蒙德里安", "色彩", "平面", "海报"],
+    "ticket": ["行程", "日程", "清单", "预算", "时间轴", "对比", "收据", "发票",
+               "清单", "购物", "旅行", "倒计时", "里程碑", "项目计划"],
 }
 
 # Minimum keyword matches for high confidence

@@ -1,0 +1,46 @@
+{
+  "id": "midnight-ticket",
+  "name": "Midnight Ticket",
+  "name_zh": "深色票券",
+  "suitable_for": ["科技", "数据", "现代", "深色主题"],
+  "color_map": {
+    "paper": "#1a1a2e",
+    "ink": "#e8e8e8",
+    "muted": "#6b7280",
+    "accent": "#ffa133",
+    "line": "#374151"
+  },
+  "css_mapping": {
+    "--v-bg": "paper",
+    "--v-primary": "ink",
+    "--v-muted": "muted",
+    "--v-accent": "accent",
+    "--v-line": "line"
+  },
+  "typography": {
+    "display_en": "\"Departure Mono\", monospace",
+    "display_zh": "\"Noto Sans Mono CJK SC\", monospace",
+    "body_zh": "\"Noto Sans Mono CJK SC\", monospace",
+    "body_en": "\"Departure Mono\", monospace",
+    "caption_zh": "\"Noto Sans SC\", sans-serif",
+    "caption_en": "\"Inter\", sans-serif",
+    "display_weight": 400,
+    "display_size_scale": [28, 36, 48],
+    "body_weight": 400,
+    "body_size": 14,
+    "caption_weight": 400,
+    "caption_size": 12
+  },
+  "grid": {
+    "gutter": "16px",
+    "margin": "48px",
+    "columns": 1
+  },
+  "texture": {
+    "background": "paper",
+    "grain": "subtle",
+    "shadow": "none",
+    "punch_hole": true,
+    "dashed_lines": true
+  }
+}

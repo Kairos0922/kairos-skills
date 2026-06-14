@@ -1,0 +1,7 @@
+{
+  "registry": [
+    { "id": "thermal-white", "name": "Thermal White", "path": "thermal-white.json" },
+    { "id": "kraft-receipt", "name": "Kraft Receipt", "path": "kraft-receipt.json" },
+    { "id": "midnight-ticket", "name": "Midnight Ticket", "path": "midnight-ticket.json" }
+  ]
+}

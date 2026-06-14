@@ -1,0 +1,103 @@
+{
+  "style_id": "ticket",
+  "usage_routing": {
+    "cover": {
+      "density": "cover",
+      "max_atoms": 3,
+      "max_modules": 1,
+      "description": "低密度：1个主句 + 2-3个锚点 + 1个短结论",
+      "reading_path": "center-radiate"
+    },
+    "infographic": {
+      "density": "standard",
+      "max_atoms": 8,
+      "max_modules": 3,
+      "description": "中密度：结构化数据 + 字段对齐 + 底部收尾",
+      "reading_path": "top-down"
+    }
+  },
+  "usage_class": {
+    "cover": ["X封面", "海报", "公众号封面", "作品集封面", "PPT封面", "商业封面", "小红书封面"],
+    "infographic": ["行程卡", "清单卡", "预算卡", "日程卡", "信息图", "时间轴"]
+  },
+  "aspect_ratios": {
+    "boarding-pass": { "ratio": "3:1", "description": "机票/登机牌：横向宽幅" },
+    "receipt": { "ratio": "1:2", "description": "收据/小票：窄长竖版" },
+    "train-ticket": { "ratio": "2:1", "description": "火车票：横向" },
+    "invoice": { "ratio": "4:5", "description": "发票：竖版" },
+    "baggage-tag": { "ratio": "1:2", "description": "行李标签：窄长竖版" },
+    "schedule": { "ratio": "3:4", "description": "日程/时间表：竖版" },
+    "checklist": { "ratio": "4:5", "description": "清单/对比：竖版" }
+  },
+  "layout_skeletons": [
+    {
+      "id": "T01",
+      "name": "Receipt",
+      "description": "收据：顶部编号+日期 + 中部字段列表 + 底部汇总+条形码",
+      "suitable_for": ["infographic"],
+      "structure": "top-header → field-list → bottom-summary → barcode",
+      "max_fields": 8,
+      "default_ratio": "1:2"
+    },
+    {
+      "id": "T02",
+      "name": "Boarding Pass",
+      "description": "登机牌：左侧主信息区 + 右侧存根区 + 打孔线分隔",
+      "suitable_for": ["cover", "infographic"],
+      "structure": "main-section → perforation → stub-section",
+      "max_fields": 6,
+      "default_ratio": "3:1"
+    },
+    {
+      "id": "T03",
+      "name": "Ticket",
+      "description": "票券：打孔标记+标题区 + 核心数据 + 附加信息+剪切线",
+      "suitable_for": ["cover", "infographic"],
+      "structure": "punch-hole → title → hero-data → secondary-info → tear-line",
+      "max_fields": 5,
+      "default_ratio": "2:1"
+    },
+    {
+      "id": "T04",
+      "name": "Stub",
+      "description": "存根：左侧存根区 + 打孔线 + 右侧主信息区",
+      "suitable_for": ["infographic"],
+      "structure": "stub-left → perforation → main-right",
+      "max_fields": 6,
+      "default_ratio": "4:5"
+    }
+  ],
+  "text_reconstruction": {
+    "methods": ["等宽对齐", "字段结构化", "数据可视化", "票据语境"],
+    "description": "文字成为数据字段的核心载体，通过等宽字体实现自然对齐"
+  },
+  "semantic_structure_map": {
+    "行程": { "structures": ["时间线", "站点", "路线", "日程"], "visual": "纵向时间线或站点列表" },
+    "清单": { "structures": ["列表", "勾选", "分类", "对比"], "visual": "字段列表或对比表格" },
+    "预算": { "structures": ["明细", "汇总", "分类", "趋势"], "visual": "收据式明细+汇总行" },
+    "日程": { "structures": ["时间轴", "时段", "节点", "倒计时"], "visual": "纵向时间轴或日历片段" },
+    "对比": { "structures": ["双栏", "并列", "存根", "主副"], "visual": "存根式双栏对比" },
+    "清单": { "structures": ["列表", "分组", "优先级", "状态"], "visual": "分组字段列表" }
+  },
+  "metaphor_type": "data-artifact",
+  "metaphors": [
+    { "id": "boarding-pass", "name": "登机牌", "description": "行程/入场/许可的凭证" },
+    { "id": "receipt", "name": "收据", "description": "消费/支出/清单的记录" },
+    { "id": "stub", "name": "存根", "description": "对比/留存/记录的双联" },
+    { "id": "timestamp", "name": "日戳", "description": "时间/进度/节点的标记" },
+    { "id": "bag-tag", "name": "行李标签", "description": "物品/信息的标识载体" }
+  ],
+  "qa_checklist": [
+    "等宽字体是否正确加载？",
+    "虚线分隔是否清晰？",
+    "数据字段是否对齐？",
+    "打孔标记是否自然？",
+    "整体是否有票据感而非 PPT 模板感？",
+    "中英文混排是否协调？",
+    "是否只有一个主隐喻？",
+    "条形码（如存在）是否编码真实数据？",
+    "信息密度是否匹配用途？",
+    "是否避免了假票据反模式？",
+    "画幅比例是否符合真实票据比例？"
+  ]
+}

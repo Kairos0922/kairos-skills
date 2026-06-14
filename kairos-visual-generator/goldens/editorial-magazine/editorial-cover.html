@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500&display=swap');
+
+    :root {
+      --ink: #0a0a0b;
+      --paper: #f1efea;
+      --muted: #6f767d;
+      --accent: #002FA7;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #e8e8e8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .editorial {
+      width: 600px;
+      height: 800px;
+      background: var(--paper);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Noto Sans SC', sans-serif;
+      overflow: hidden;
+    }
+
+    .meta {
+      padding: 24px 36px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(10,10,11,0.1);
+    }
+
+    .meta-left {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .meta-right {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 36px;
+    }
+
+    .hero-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 42px;
+      color: var(--ink);
+      line-height: 1.15;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .thesis {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .anchors {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .anchor {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .anchor-number {
+      font-family: 'Inter', sans-serif;
+      font-size: 24px;
+      color: var(--ink);
+      font-weight: 300;
+      line-height: 1;
+      min-width: 28px;
+    }
+
+    .anchor-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .anchor-title {
+      font-size: 13px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .anchor-desc {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pullquote {
+      padding: 16px;
+      border-left: 3px solid var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .pullquote-text {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .pullquote-author {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 8px;
+      letter-spacing: 0.1em;
+    }
+
+    .source {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: auto;
+    }
+
+    .footer {
+      padding: 16px 36px;
+      border-top: 1px solid rgba(10,10,11,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: 'Inter', sans-serif;
+      font-size: 8px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .footer-right {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="editorial">
+    <div class="meta">
+      <span class="meta-left">KAIROS EDITORIAL · VOL. 01</span>
+      <span class="meta-right">JUN 2026 · ¥28</span>
+    </div>
+
+    <div class="main">
+      <div class="hero-label">深度阅读 · FEATURES</div>
+      <h1 class="hero-title">在信息洪流中<br>找回深度思考的能力</h1>
+      <p class="thesis">
+        当我们习惯了15秒的短视频和碎片化的信息流，深度阅读和独立思考正在成为一种稀缺能力。这不仅关乎知识获取，更关乎思维品质。
+      </p>
+      <div class="divider"></div>
+      <div class="anchors">
+        <div class="anchor">
+          <span class="anchor-number">01</span>
+          <div class="anchor-content">
+            <span class="anchor-title">注意力经济的代价</span>
+            <span class="anchor-desc">我们如何失去了专注力</span>
+          </div>
+        </div>
+        <div class="anchor">
+          <span class="anchor-number">02</span>
+          <div class="anchor-content">
+            <span class="anchor-title">深度工作的回归</span>
+            <span class="anchor-desc">重新定义高效能人士的习惯</span>
+          </div>
+        </div>
+        <div class="anchor">
+          <span class="anchor-number">03</span>
+          <div class="anchor-content">
+            <span class="anchor-title">阅读的复利效应</span>
+            <span class="anchor-desc">长期主义者的知识积累策略</span>
+          </div>
+        </div>
+      </div>
+      <div class="pullquote">
+        <div class="pullquote-text">"阅读是最低成本的自我提升方式，也是最高回报的思维投资。"</div>
+        <div class="pullquote-author">— KAIROS EDITORIAL</div>
+      </div>
+      <span class="source">KAIROS · 深度思考系列 · 2026</span>
+    </div>
+
+    <div class="footer">
+      <span class="footer-left">EDITORIAL MAGAZINE</span>
+      <span class="footer-right">"思考是行动的种子"</span>
+    </div>
+  </div>
+</body>
+</html>

@@ -15,6 +15,10 @@ from typing import Any, Optional
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 FONTS_CSS_PATH = SKILL_ROOT / "assets" / "fonts" / "fonts.css"
 
+# Output format constants
+OUTPUT_FORMAT = "PNG-32"  # 32位无损，24位RGB + 8位alpha
+OUTPUT_FORMAT_WEBP = "WebP"  # 可选，用户系统支持时使用
+
 
 @dataclass
 class RenderConfig:
@@ -35,6 +39,9 @@ RATIO_DIMENSIONS = {
     "16:9": (1600, 900),
     "21:9": (2100, 840),
     "5:2": (1500, 600),
+    "2.35:1": (1920, 817),
+    "9:16": (1080, 1920),
+    "4:3": (1440, 1080),
 }
 
 RATIO_SCALEDOWN = {
@@ -44,6 +51,9 @@ RATIO_SCALEDOWN = {
     "16:9": 0.375,
     "21:9": 0.32,
     "5:2": 0.375,
+    "2.35:1": 0.375,
+    "9:16": 0.3,
+    "4:3": 0.45,
 }
 
 
@@ -144,6 +154,9 @@ def _display_size_for_ratio(brief: dict, tokens: dict) -> int:
         "16:9": [42, 48, 56, 64],
         "21:9": [36, 42, 48, 56],
         "5:2": [36, 42, 48, 56],
+        "2.35:1": [32, 38, 44, 50],
+        "9:16": [38, 44, 50, 58],
+        "4:3": [44, 52, 60, 68],
     }
     sizes = scale_map.get(ratio, [56, 64, 72, 80])
     density = brief.get("content_density", "cover")
@@ -165,6 +178,9 @@ def _subtitle_size_for_ratio(brief: dict) -> int:
         "16:9": [18, 20, 22, 24],
         "21:9": [16, 18, 20, 22],
         "5:2": [16, 18, 20, 22],
+        "2.35:1": [14, 16, 18, 20],
+        "9:16": [16, 18, 20, 22],
+        "4:3": [20, 22, 24, 28],
     }
     sizes = scale_map.get(ratio, [22, 24, 28, 32])
     density = brief.get("content_density", "cover")

@@ -37,8 +37,17 @@ def parse_input(user_input: str) -> tuple[str, str]:
 
     # Common patterns to extract usage (order matters: longer matches first)
     usage_patterns = [
+        r"小红书视频封面",
+        r"小红书方形封面",
+        r"小红书横版封面",
+        r"小红书正文配图",
+        r"小红书主页背景",
         r"小红书封面",
         r"小红书",
+        r"小绿书",
+        r"公众号贴图",
+        r"公众号次条",
+        r"公众号朋友圈",
         r"公众号封面",
         r"公众号",
         r"PPT封面",

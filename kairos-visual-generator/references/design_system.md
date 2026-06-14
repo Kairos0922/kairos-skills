@@ -188,6 +188,43 @@ python3 scripts/build_font_css.py
 | `body` | 17-21 | 380-480 | 1.35-1.5 |
 | `caption` | 12-15 | 450-600 | 1.25-1.4 |
 
+### 2.35:1 Wide Strip Scale, 1920 x 817
+
+| Token | Size | Weight | Line height |
+| --- | ---: | ---: | ---: |
+| `display` | 52-72 | 520-620 | 1.04-1.12 |
+| `headline` | 26-38 | 520-640 | 1.12-1.24 |
+| `body` | 16-20 | 380-480 | 1.38-1.56 |
+| `caption` | 11-14 | 450-600 | 1.25-1.45 |
+
+### 9:16 Tall Vertical Scale, 1080 x 1920
+
+| Token | Size | Weight | Line height |
+| --- | ---: | ---: | ---: |
+| `display` | 72-96 | 500-620 | 1.04-1.12 |
+| `headline` | 38-50 | 520-640 | 1.12-1.24 |
+| `section` | 20-26 | 580-660 | 1.18-1.3 |
+| `body` | 17-22 | 380-480 | 1.4-1.58 |
+| `caption` | 13-16 | 450-600 | 1.25-1.45 |
+
+### 4:3 Landscape Scale, 1440 x 1080
+
+| Token | Size | Weight | Line height |
+| --- | ---: | ---: | ---: |
+| `display` | 56-72 | 520-620 | 1.04-1.12 |
+| `headline` | 28-40 | 520-640 | 1.12-1.24 |
+| `section` | 18-24 | 580-660 | 1.18-1.3 |
+| `body` | 15-20 | 380-480 | 1.38-1.56 |
+| `caption` | 11-14 | 450-600 | 1.25-1.45 |
+
+### Quality And Format Rules
+
+- 所有输出图片宽度不低于 1080px，确保高清画质
+- 输出格式首选：PNG-32（32 位无损，24 位 RGB + 8 位 alpha 通道）
+- 可选格式：WebP（用户系统支持时，体积更小，质量接近无损）
+- 不使用 JPEG 有损压缩，避免文字边缘模糊
+- Playwright screenshot 默认输出 PNG，如需 WebP 可后续转换
+
 Typography rules:
 
 - Big Chinese type must not be too black. If `font-size >= 56px`, keep `font-weight <= 600` for Swiss Sans and `<= 680` for serif display.
@@ -222,6 +259,9 @@ Density typography rule:
 | `1:1` | 1080 x 1080 | 64-84 | 12 columns, 20 gap | 80 |
 | `5:2` | 1500 x 600 or 2100 x 840 | 56-80 | 16 columns, 20 gap | 56 |
 | `16:9` | 1600 x 900 | 64-88 | 12 columns, 24 gap | 72 |
+| `2.35:1` | 1920 x 817 | 64-88 | 16 columns, 20 gap | 64 |
+| `9:16` | 1080 x 1920 | 72-96 | 12 columns, 24 gap | 96 |
+| `4:3` | 1440 x 1080 | 64-88 | 12 columns, 24 gap | 72 |
 
 Spacing rhythm:
 

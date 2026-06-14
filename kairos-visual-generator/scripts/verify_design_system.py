@@ -27,7 +27,7 @@ REQUIRED_THEME_PRESETS = {
     "Safety Orange",
 }
 
-REQUIRED_RATIOS = {"4:5", "3:4", "1:1", "5:2", "16:9"}
+REQUIRED_RATIOS = {"4:5", "3:4", "1:1", "5:2", "16:9", "2.35:1", "9:16", "4:3"}
 
 REQUIRED_LAYOUTS = {
     "E01 Hero Thesis",

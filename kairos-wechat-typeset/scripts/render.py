@@ -757,6 +757,13 @@ class Renderer:
         )
 
     def code_p(self) -> str:
+        if self.is_theme("pi"):
+            return (
+                f"display: block; padding: 16px 18px 16px 18px; font-family: {self.f('mono')}; "
+                f"font-size: {self.t('code_size')}; line-height: 1.75; color: {self.c('code_text')}; "
+                f"text-align: left; white-space: pre-wrap; background-color: {self.c('code_bg')}; "
+                f"border: 0; border-radius: {self.radius()};"
+            )
         if self.is_theme("wending") or self.is_theme("tech") or self.is_theme("wisme"):
             return (
                 f"display: block; padding: 16px 18px 16px 18px; font-family: {self.f('mono')}; "
@@ -972,6 +979,13 @@ class Renderer:
                 f"border: 1px solid {self.c('line')}; "
                 "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
             )
+        if self.is_theme("pi"):
+            return (
+                f"font-family: {self.f('mono')}; font-size: 0.9em; "
+                f"background-color: {self.c('accent_soft')}; color: {self.c('ink')}; "
+                f"padding: 1px 6px; border-radius: {self.radius()};"
+                "vertical-align: middle; overflow-wrap: anywhere; word-break: break-word;"
+            )
         return (
             f"font-family: {self.f('mono')}; font-size: 0.9em; background-color: transparent; "
             f"color: {self.c('code_text')}; padding: 1px 6px; border-radius: 4px;"
@@ -1047,6 +1061,12 @@ class Renderer:
         if self.is_theme("song"):
             color = self.c("accent")
             weight = "400"
+        if self.is_theme("pi"):
+            return (
+                f"display: inline-block; width: 18px; margin-right: 10px; text-align: center; "
+                f"vertical-align: middle; font-family: {self.f('mono')}; font-size: 12px; line-height: 1.6; "
+                f"font-weight: {weight}; color: {color}; letter-spacing: {'0.04em' if ordered else '0'};"
+            )
         return (
             f"display: inline-block; width: 18px; margin-right: 10px; text-align: center; "
             f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size') if self.is_theme('song') else '12px'}; line-height: 1.6; "
@@ -1259,9 +1279,10 @@ class Renderer:
         spacing = spacing_from_layout(layout, 12)
         rendered: List[str] = []
         marker_weight = "700" if self.is_theme("tech") or self.is_theme("wisme") else "400"
+        marker_font = self.f("mono") if self.is_theme("pi") else self.f("latin")
         marker_style = (
             f"display: inline-block; width: 18px; margin-right: 10px; text-align: center; "
-            f"vertical-align: middle; font-family: {self.f('latin')}; font-size: {self.t('small_size')}; "
+            f"vertical-align: middle; font-family: {marker_font}; font-size: {self.t('small_size')}; "
             f"line-height: 1.6; color: {self.c('ink') if self.is_theme('wending') or self.is_theme('wisme') else self.c('accent')}; "
             f"font-weight: {marker_weight};"
         )
@@ -1594,7 +1615,7 @@ class Renderer:
             border = self.c("muted")
 
         text = merge_lines(cleaned)
-        if self.is_theme("wending") or self.is_theme("tech") or self.is_theme("wisme"):
+        if self.is_theme("wending") or self.is_theme("tech") or self.is_theme("wisme") or self.is_theme("pi"):
             if quote_kind != "QUOTE":
                 labels = {
                     "NOTE": "注" if self.is_theme("wending") or self.is_theme("wisme") else "INFO",
@@ -1604,9 +1625,10 @@ class Renderer:
                     "WARNING": "警" if self.is_theme("wending") or self.is_theme("wisme") else "WARN",
                 }
                 label = labels.get(quote_kind, "注")
+                label_font = self.f("mono") if self.is_theme("pi") else self.f("cjk")
                 label_html = (
                     f'<span style="display: inline-block; margin: 0 10px 0 0; '
-                    f'font-family: {self.f("cjk")}; font-size: {self.t("small_size")}; line-height: 1; '
+                    f'font-family: {label_font}; font-size: {self.t("small_size")}; line-height: 1; '
                     f'font-weight: 700; color: {self.c("ink") if self.is_theme("wending") else self.c("accent")}; vertical-align: 0.08em;">'
                     f'{html.escape(label)}</span>'
                 )

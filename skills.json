@@ -31,33 +31,6 @@
         "python3 scripts/select_style.py '帮我做一张小红书封面，主题是用户增长飞轮'",
         "python3 scripts/select_style.py '做一张蒙德里安风格的海报，主题是建筑设计'"
       ]
-    },
-    {
-      "id": "kairos-wechat-typeset",
-      "path": "kairos-wechat-typeset",
-      "status": "runnable",
-      "version": "1.0.0",
-      "summary": "Markdown → 微信公众号排版。4 套主题，语义组件，确定性渲染，验证门禁。",
-      "entrypoints": [
-        "SKILL.md",
-        "CHEATSHEET.md",
-        "PRODUCT.md",
-        "COMPONENTS.md",
-        "scripts/check_all.py",
-        "scripts/typeset.py",
-        "scripts/render.py",
-        "scripts/verify.py",
-        "scripts/verify_markdown.py",
-        "scripts/verify_image_plan.py",
-        "scripts/audit_visual.py",
-        "references/anti-patterns.md",
-        "references/category-routing.md",
-        "references/layout-recipes.md"
-      ],
-      "validation": [
-        "python3 scripts/check_all.py --smoke",
-        "python3 scripts/check_all.py"
-      ]
     }
   ]
 }

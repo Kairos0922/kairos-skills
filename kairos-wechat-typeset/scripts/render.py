@@ -1484,21 +1484,22 @@ class Renderer:
                     "</p>"
                 ]
             if self.is_theme("pi"):
+                label_text = f"SECTION {html.escape(number)}"
                 return [
-                    f'<p style="display: flex; align-items: center; gap: 10px; '
-                    f'margin: {spacing["top"]}px auto {spacing["bottom"]}px auto; '
-                    f'max-width: {self.width}px; padding: 0;">'
-                    f'<span style="display: inline-block; font-family: {self.f("latin")}; '
-                    f'font-size: {self.t("section_num_size")}; line-height: 1; font-weight: 300; '
-                    f'color: {self.c("muted")}; letter-spacing: 0.08em;">{html.escape(number)}</span>'
-                    f'<span style="display: inline-block; width: 3px; height: 22px; '
-                    f'background: {self.c("accent")}; border-radius: 2px; flex-shrink: 0; '
-                    f'align-self: stretch; margin: 0 2px;"></span>'
-                    f'<span style="font-size: {self.t("section_title_size")}; line-height: 1.45; '
-                    f'font-weight: 700; color: {self.c("ink")};">{self.render_heading_inline(title, "section_title_size")}</span>'
-                    f'</p>'
+                    f'<p style="margin: {spacing["top"]}px auto {6}px auto; max-width: {self.width}px; '
+                    f'padding: 0; font-family: {self.f("mono")}; font-size: {self.t("small_size")}; '
+                    f'line-height: 1; font-weight: 400; color: {self.c("muted")}; letter-spacing: 0.13em; '
+                    f'text-transform: uppercase;">{label_text}</p>'
                     f'<p style="margin: 0 auto {spacing["bottom"]}px auto; max-width: {self.width}px; '
-                    f'padding: 0; border-bottom: 1px solid {self.c("line_soft")};"></p>'
+                    f'padding: 0 0 12px 0; border-bottom: 1px solid {self.c("line")}; '
+                    f'display: flex; align-items: baseline; gap: 10px;">'
+                    f'<span style="display: inline-block; width: 3px; height: 18px; '
+                    f'background: {self.c("accent")}; flex-shrink: 0; '
+                    f'vertical-align: middle;"></span>'
+                    f'<span style="font-family: {self.f("cjk")}; font-size: {self.t("section_title_size")}; '
+                    f'line-height: 1.45; font-weight: 700; color: {self.c("ink")};">'
+                    f'{self.render_heading_inline(title, "section_title_size")}</span>'
+                    f'</p>'
                 ]
             if self.is_theme("song"):
                 label = self.chinese_section_label(number)
@@ -1546,16 +1547,15 @@ class Renderer:
 
         if self.is_theme("pi") and level == 2:
             return [
-                f'<p style="display: flex; align-items: center; gap: 10px; '
-                f'margin: {spacing["top"]}px auto {spacing["bottom"]}px auto; '
-                f'max-width: {self.width}px; padding: 0;">'
-                f'<span style="display: inline-block; width: 3px; height: 20px; '
-                f'background: {self.c("accent")}; border-radius: 2px; flex-shrink: 0;"></span>'
-                f'<span style="font-size: {self.t("section_title_size")}; line-height: 1.45; '
-                f'font-weight: 700; color: {self.c("ink")};">{self.render_heading_inline(stripped, "section_title_size")}</span>'
+                f'<p style="margin: {spacing["top"]}px auto {spacing["bottom"]}px auto; max-width: {self.width}px; '
+                f'padding: 0 0 12px 0; border-bottom: 1px solid {self.c("line")}; '
+                f'display: flex; align-items: baseline; gap: 10px;">'
+                f'<span style="display: inline-block; width: 3px; height: 18px; '
+                f'background: {self.c("accent")}; flex-shrink: 0;"></span>'
+                f'<span style="font-family: {self.f("cjk")}; font-size: {self.t("section_title_size")}; '
+                f'line-height: 1.45; font-weight: 700; color: {self.c("ink")};">'
+                f'{self.render_heading_inline(stripped, "section_title_size")}</span>'
                 f'</p>'
-                f'<p style="margin: 0 auto {spacing["bottom"]}px auto; max-width: {self.width}px; '
-                f'padding: 0; border-bottom: 1px solid {self.c("line_soft")};"></p>'
             ]
 
         return [

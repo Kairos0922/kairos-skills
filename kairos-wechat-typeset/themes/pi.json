@@ -2,12 +2,12 @@
   "id": "pi",
   "name": "Pi Theme",
   "name_zh": "Pi 开发者主题",
-  "description": "Minimal developer-focused WeChat article theme inspired by Pi.dev. Clean sans-serif typography, teal accent hierarchy, terminal-like code blocks, generous whitespace, scan-first layout for developer documentation, technical tutorials, API references, and tool guides.",
+  "description": "Warm serif editorial theme inspired by pi.dev's Plantin MT Pro typography, parchment palette, and monospace accents. Serif body text, soft tidal-blue accent, commit-mono labels, zero-radius shapes, and low-contrast warm lines for developer documentation and technical tutorials.",
   "suitable_for": ["开发者文档", "技术教程", "API 参考", "工具指南", "编程实战", "开源项目介绍"],
   "content_width": 640,
   "philosophy": {
-    "mood": "technical",
-    "density": "airy",
+    "mood": "editorial",
+    "density": "balanced",
     "rhythm": "mobile",
     "hierarchy": "explicit"
   },
@@ -15,35 +15,36 @@
     "accent_color_count": 1,
     "highlight_frequency_max": 0.08,
     "component_variants_max": 3,
-    "forbidden": ["gradient", "strong shadow", "multi-accent palette", "decorative icons", "heavy cards", "marketing CTA", "dark full-page background"]
+    "forbidden": ["gradient", "strong shadow", "multi-accent palette", "decorative icons", "heavy cards", "marketing CTA", "dark full-page background", "rounded corners"]
   },
   "art_direction": {
     "article_type": "developer-documentation",
-    "spacing_scale": 1.0,
+    "spacing_scale": 0.95,
     "emphasis_mode": "precise",
-    "visual_density": "low",
+    "visual_density": "balanced",
     "section_rhythm": "mobile-tech"
   },
   "image_direction": {
     "default_aspect_ratio": "16:9",
     "preferred_visual_types": ["concept_diagram", "process_diagram", "comparison_diagram"],
-    "style": "minimal developer documentation diagrams with white background, teal accent, clean lines, terminal-inspired elements",
+    "style": "warm editorial diagrams with parchment background, precise thin rules, serif labels, and a single tidal-blue accent",
     "use_for": ["系统架构", "API 流程", "工具对比", "代码示意图", "安装步骤"],
     "avoid_for": ["装饰插画", "氛围图", "营销素材"],
     "forbidden": ["gradient", "strong shadow", "multi-accent palette", "decorative icons", "heavy cards", "marketing CTA", "dark full-page background"]
   },
   "body": {
-    "background": "#fafafa",
+    "background": "#ebe7e4",
     "padding": "32px 24px 52px 24px"
   },
   "fonts": {
-    "cjk": "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Helvetica Neue', sans-serif",
-    "latin": "Inter, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif",
-    "mono": "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+    "cjk": "'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', Georgia, serif",
+    "latin": "Georgia, 'Times New Roman', 'Plantin MT Pro', 'Plantin', serif",
+    "mono": "'Commit Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+    "label": "'Departure Mono', 'Commit Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace"
   },
   "webfonts": {
     "cjk": {
-      "family": "Noto Sans SC",
+      "family": "Noto Serif SC",
       "weight": "400"
     },
     "latin": {
@@ -52,61 +53,61 @@
     }
   },
   "colors": {
-    "ink": "#0f172a",
-    "text": "#1e293b",
-    "text_secondary": "#334155",
-    "text_tertiary": "#475569",
-    "muted": "#64748b",
-    "soft": "#94a3b8",
-    "line": "#e2e8f0",
-    "line_soft": "#f1f5f9",
-    "surface": "#ffffff",
+    "ink": "#252f3d",
+    "text": "#384251",
+    "text_secondary": "#4a5567",
+    "text_tertiary": "#5c6b7f",
+    "muted": "#8b847d",
+    "soft": "#b3ada7",
+    "line": "#c8c2bb",
+    "line_soft": "#d8d3cc",
+    "surface": "#f4f2f0",
     "surface_alt": "#f0fdfa",
-    "accent": "#0d9488",
-    "accent_soft": "#ccfbf1",
-    "accent_light": "#99f6e4",
-    "warning": "#dc2626",
-    "warning_bg": "#fef2f2",
-    "code_text": "#e2e8f0",
-    "code_bg": "#1e293b",
-    "code_muted": "#94a3b8"
+    "accent": "#4b607c",
+    "accent_soft": "#e8eef4",
+    "accent_light": "#d0dde8",
+    "warning": "#8f3222",
+    "warning_bg": "#fdf2f0",
+    "code_text": "#ebe7e4",
+    "code_bg": "#212730",
+    "code_muted": "#9fa4ab"
   },
   "typography": {
     "title_size": "30px",
-    "title_line": "1.3",
+    "title_line": "1.35",
     "section_num_size": "36px",
     "section_title_size": "22px",
     "h3_size": "17px",
     "body_size": "16px",
-    "body_line": "1.8",
+    "body_line": "1.65",
     "compact_line": "1.2",
     "small_size": "14px",
     "caption_size": "13px",
     "code_size": "14px"
   },
   "rhythm": {
-    "paragraph_gap": 20,
-    "heading_top": 36,
-    "heading_bottom": 20,
-    "quote_breathing": 24,
-    "section_break": 30
+    "paragraph_gap": 18,
+    "heading_top": 32,
+    "heading_bottom": 18,
+    "quote_breathing": 22,
+    "section_break": 26
   },
   "shape": {
-    "radius": "6px",
-    "image_radius": "6px"
+    "radius": "0px",
+    "image_radius": "4px"
   },
   "components": {
     "paragraph": { "variants": ["default", "lead", "highlight"] },
     "lead": { "variants": ["metadata-like"] },
-    "pullquote": { "variants": ["teal-rule"] },
+    "pullquote": { "variants": ["blue-rule"] },
     "figure": { "variants": ["captioned"] },
-    "softlist": { "variants": ["teal-dot"] },
+    "softlist": { "variants": ["blue-dot"] },
     "closingnote": { "variants": ["info-panel"] },
     "insight": { "variants": ["info-panel", "sentence"] },
-    "quote": { "variants": ["teal-rule", "note", "warning"] },
+    "quote": { "variants": ["blue-rule", "note", "warning"] },
     "summary": { "variants": ["numbered"] },
-    "divider": { "variants": ["thin", "dashed", "teal-rule"] },
-    "list": { "variants": ["teal-marker", "ordered", "task"] },
+    "divider": { "variants": ["thin", "dashed", "blue-rule"] },
+    "list": { "variants": ["blue-marker", "ordered", "task"] },
     "cta": { "variants": ["text-only"] }
   }
 }

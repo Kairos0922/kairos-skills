@@ -32,6 +32,14 @@
       "path": "wisme.json",
       "design": "wisme/DESIGN.md",
       "suitable_for": ["知识科普", "研究报告", "组件规范", "方法论", "专业说明"]
+    },
+    {
+      "id": "pi",
+      "name": "Pi Theme",
+      "name_zh": "Pi 开发者主题",
+      "path": "pi.json",
+      "design": "pi/DESIGN.md",
+      "suitable_for": ["开发者文档", "技术教程", "API 参考", "工具指南", "编程实战", "开源项目介绍"]
     }
   ]
 }

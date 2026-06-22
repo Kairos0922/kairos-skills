@@ -85,7 +85,7 @@ Pi 不是一个模式打天下。它有四种模式适应不同场景：
 Pi 的扩展系统是 TypeScript 模块，可以访问工具、命令、快捷键、事件和完整的 TUI。
 
 :::figure
-![Pi 扩展架构图](placeholder)
+![Pi 扩展架构图](../assets/placeholders/placeholder-640x360.svg)
 扩展、技能、提示模板和主题都可以打包为 Pi 包，通过 npm 或 git 分享。
 :::
 

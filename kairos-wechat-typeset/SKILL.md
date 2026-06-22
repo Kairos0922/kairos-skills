@@ -3,7 +3,7 @@ name: kairos-wechat-typeset
 description: |
   当用户需要把 Markdown 文章排版成微信公众号可粘贴的 HTML 时加载。触发词包括："排版公众号"、"Markdown 转公众号"、"微信排版"、"公众号样式"、"排版这篇文章"、"转成微信 HTML"。不适用于 PPT、PDF、封面图或动态页面。
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # kairos-wechat-typeset

@@ -4,17 +4,49 @@
   "purpose": "开源 AI 内容生产 Skill 集合。确定性脚本 + 主题契约 + 验证规则，让 AI agent 输出稳定、高级、可重复的内容产物。",
   "skills": [
     {
+      "id": "kairos-wechat-typeset",
+      "path": "kairos-wechat-typeset",
+      "status": "runnable",
+      "version": "1.1.0",
+      "summary": "Markdown 文章 → 微信公众号可粘贴的 inline HTML。5 套主题（song / wending / tech / wisme / pi），语义组件系统 + 主题视觉哲学，确定性渲染管线。",
+      "entrypoints": [
+        "SKILL.md",
+        "CHEATSHEET.md",
+        "PRODUCT.md",
+        "COMPONENTS.md",
+        "DESIGN.md",
+        "themes/registry.json",
+        "themes/METHODOLOGY.md",
+        "semantic/analyze.py",
+        "renderer/blocks.py",
+        "renderer/compiler.py",
+        "renderer/variants.py",
+        "scripts/render.py",
+        "scripts/typeset.py",
+        "scripts/check_all.py"
+      ],
+      "validation": [
+        "PYTHONPYCACHEPREFIX=.pycache python3 -m py_compile scripts/render.py",
+        "PYTHONPYCACHEPREFIX=.pycache python3 -m py_compile scripts/typeset.py",
+        "python3 -m json.tool themes/registry.json",
+        "python3 scripts/render.py --list-themes",
+        "python3 scripts/typeset.py --check",
+        "python3 scripts/verify_image_plan.py --input fixtures/image-plan.sample.json --theme tech"
+      ]
+    },
+    {
       "id": "kairos-visual-generator",
       "path": "kairos-visual-generator",
       "status": "runnable",
-      "version": "2.0.0",
-      "summary": "主题 → 高质量视觉卡片/海报。3 套视觉系统（Editorial / Swiss / Mondrian），风格即插件，确定性渲染管线。",
+      "version": "2.1.0",
+      "summary": "主题 → 高质量视觉卡片/海报。4 套视觉系统（Editorial / Swiss / Mondrian / Ticket），风格即插件，确定性渲染管线。",
       "entrypoints": [
         "SKILL.md",
         "CHEATSHEET.md",
         "PRODUCT.md",
         "styles/registry.json",
         "styles/METHODOLOGY.md",
+        "references/design_system.md",
         "shared/intake.py",
         "shared/router.py",
         "shared/platform.py",
@@ -22,6 +54,7 @@
         "shared/render.py",
         "shared/verify.py",
         "scripts/select_style.py",
+        "scripts/select_metaphor.py",
         "scripts/verify_design_system.py"
       ],
       "validation": [

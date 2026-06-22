@@ -20,6 +20,7 @@ showcase:
 	cd kairos-wechat-typeset && python3 scripts/render.py --theme wending --input fixtures/wending-style-system.md --output goldens/wending-style.html
 	cd kairos-wechat-typeset && python3 scripts/render.py --theme tech --input fixtures/tech-style-system.md --output goldens/tech-style.html
 	cd kairos-wechat-typeset && python3 scripts/render.py --theme wisme --input fixtures/wisme-style-system.md --output goldens/wisme-style.html
+	cd kairos-wechat-typeset && python3 scripts/render.py --theme pi --input fixtures/pi-style-system.md --output goldens/pi-style.html
 	@echo "Golden files regenerated."
 
 verify-fonts:

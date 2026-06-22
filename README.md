@@ -58,7 +58,7 @@ python3 scripts/select_metaphor.py --title "增长" --usage "封面"
       <b>kairos-wechat-typeset</b>
     </a>
     <br>
-    <sub>微信公众号排版 · 4 套主题 · Markdown → HTML</sub>
+    <sub>微信公众号排版 · 5 套主题 · Markdown → HTML</sub>
   </td>
   <td align="center" width="50%">
     <a href="./kairos-visual-generator/">

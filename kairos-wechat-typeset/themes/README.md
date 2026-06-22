@@ -84,7 +84,9 @@ python3 scripts/verify_image_plan.py \
 
 `goldens/wisme-style.html` is rendered from `fixtures/wisme-style-system.md` so the WISME Theme reference stays aligned with the attached component-specification design: 32px H1, black numbered section headings with gray rules, 18px H2 titles, 16px H3, 15px body text, 13px auxiliary/code text, red single-accent emphasis, dark code blocks, gray fine-line tables, red insight panels, and 4px image radius. Its suitable article types are knowledge explainers, research reports, component specifications, methodology essays, and professional documentation.
 
-All 4 golden HTML files are also re-rendered from `fixtures/universal-showcase.md`, a single article that covers all component types (headings, paragraphs, bold/italic/strike/highlight, links, inline code, ordered/unordered/task lists, code blocks, tables, quotes, callouts, figures, dividers, lead, insight, pullquote, soft-list, closing-note). This shared article is used for the showcase images so readers can compare the same content across all themes.
+`goldens/pi-style.html` is rendered from `fixtures/pi-style-system.md` so the Pi Theme reference stays aligned with pi.dev's warm serif editorial design: 30px serif H1, monospace section labels, tidal-blue accent bars, 22px H2 titles, 16px serif body text at 1.65 line-height, dark code blocks with zero-radius, warm parchment background (#ebe7e4), low-contrast warm-gray lines, and monospace callout labels. Its suitable article types are developer documentation, technical tutorials, API references, tool guides, and programming articles.
+
+All golden HTML files are also re-rendered from `fixtures/universal-showcase.md`, a single article that covers all component types (headings, paragraphs, bold/italic/strike/highlight, links, inline code, ordered/unordered/task lists, code blocks, tables, quotes, callouts, figures, dividers, lead, insight, pullquote, soft-list, closing-note). This shared article is used for the showcase images so readers can compare the same content across all themes.
 
 Run the visual audit after every polish pass:
 

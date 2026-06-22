@@ -27,12 +27,14 @@
 | `wending` | 稳境白纸 | 个人成长、心理秩序、慢阅读 | 安静白纸 + 灰度规格 + 重宋标题 |
 | `tech` | 科技 | AI 技术文章、工程实践、工具教程 | 蓝色编号 + 暗色代码 + 浅蓝信息块 |
 | `wisme` | WISME 规范 | 知识科普、研究报告、组件规范 | 黑字标题 + 红色短线 + 灰色表格 |
+| `pi` | Pi 开发者 | 开发者文档、技术教程、API 参考 | 衬线暖纸 + 潮汐蓝 + monospace 标签 |
 
 选择规则：
 - 不知道选什么 → `song`
 - 技术/工程/AI → `tech`
 - 个人/心理/慢阅读 → `wending`
 - 科普/报告/规范 → `wisme`
+- 开发者文档/API/工具指南 → `pi`
 
 ---
 
@@ -146,7 +148,7 @@ python3 scripts/render.py --list-themes
 |--------|--------|------|
 | "太挤了" | 当前 spacing_scale | (a) compressed (b) relaxed |
 | "不够高级" | 当前 emphasis_mode | (a) minimal (b) editorial |
-| "颜色不对" | 当前主题 ID | (a) song (b) wending (c) tech (d) wisme |
+| "颜色不对" | 当前主题 ID | (a) song (b) wending (c) tech (d) wisme (e) pi |
 | "标题太大了" | 当前 H1 字号 | 降低到下一级 |
 | "段落太长" | 当前段落长度 | 拆分为多段 |
 

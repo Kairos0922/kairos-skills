@@ -18,6 +18,8 @@ WeChat 文章类型 → 推荐排版策略的确定性查找表。
 | 研究报告 | `wisme` | Table + Insight + Figure + Callout | 多图（3-5 张数据图） | 数据无来源、结论不明确 |
 | 生活方式 | `wending` | Lead + Figure + Pullquote + ClosingNote | 多图（3-5 张生活图） | 图文脱节、文字过少 |
 | 书评 | `song` | Lead + Pullquote + Insight + ClosingNote | 极少图（0-1 张封面图） | 大段摘抄不评论、缺少个人判断 |
+| 开发者文档 | `pi` | CodeBlock + Steps + Insight + Callout | 少图（0-2 张架构图） | 代码示例不完整、步骤跳步 |
+| API 参考 | `pi` | CodeBlock + Table + Insight + Figure | 少图（0-1 张流程图） | 参数说明不全、返回值缺失 |
 
 ---
 
@@ -39,11 +41,13 @@ WeChat 文章类型 → 推荐排版策略的确定性查找表。
 用户说"方法论/框架/思考" → song
 用户说"个人/成长/心理/慢阅读" → wending
 用户说"科普/报告/规范/说明" → wisme
+用户说"开发者文档/API/工具指南/编程实战" → pi
 用户不确定 → 问"这篇文章的核心是什么？"
   - 核心是判断/观点 → song
   - 核心是步骤/操作 → tech
   - 核心是感受/体验 → wending
   - 核心是事实/数据 → wisme
+  - 核心是代码/接口/工具 → pi
 ```
 
 ---

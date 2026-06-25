@@ -4,6 +4,8 @@ Render pipeline: deterministic HTML/CSS → PNG generation.
 All steps are deterministic — AI does not participate in rendering.
 """
 
+from __future__ import annotations
+
 import json
 import re
 import textwrap

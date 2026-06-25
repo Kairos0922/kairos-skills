@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://img.shields.io/badge/Agent-Harness%20Engineering-111111?style=flat-square" />
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" />
-  <img src="https://img.shields.io/badge/python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white" />
   <h1>Kairos Skills</h1>
   <p><b>给 AI 套上缰绳，让它按规矩办事</b></p>
   <p>确定性的 AI 内容生产工作流。AI 只做编辑判断，视觉系统由代码和契约决定。</p>
@@ -16,7 +16,7 @@
 git clone https://github.com/Kairos0922/kairos-skills.git
 cd kairos-skills
 
-# 微信排版：一篇 Markdown → 可粘贴到公众号的 HTML
+# 微信排版：一篇 Markdown → 可粘贴到公众号的 HTML（纯标准库，即装即用）
 cd kairos-wechat-typeset
 python3 scripts/render.py --theme song --input article.md --output article.html
 
@@ -24,6 +24,9 @@ python3 scripts/render.py --theme song --input article.md --output article.html
 cd kairos-visual-generator
 python3 scripts/select_metaphor.py --title "增长" --usage "封面"
 ```
+
+> 两个 skill 相互独立，无需同时安装。微信排版纯 Python 标准库；视觉卡片生成 PNG 时需要浏览器（`pip install -r requirements-dev.txt && playwright install chromium`），风格路由与隐喻查询本身无需任何依赖。
+
 
 <br>
 
@@ -94,6 +97,21 @@ python3 scripts/select_metaphor.py --title "增长" --usage "封面"
 | 反模式驱动 | Bad/Fix 对照比正向规范更有效 |
 | 分层加载 | 按任务复杂度读取不同深度的规范 |
 | 自包含 | 每个 skill 独立，不依赖私有路径 |
+
+<br>
+
+## 常用命令
+
+| 命令 | 作用 |
+|------|------|
+| `make install` | 环境自检 + 两 skill 的冒烟测试 |
+| `make test` | 全量校验（微信 11 项 + 视觉设计系统 + skills.json） |
+| `make showcase` | 重新生成微信 5 套主题的 golden HTML |
+| `make screenshots` | 重新生成两 skill 的 showcase 预览图（需 Playwright） |
+| `make verify-offline` | 字体完整性 + CDN 引用扫描（确保完全离线） |
+| `make clean` | 清除 `__pycache__` / `*.pyc` |
+
+CI 已在 push / PR 时自动运行 `make test` + `make verify-offline`。
 
 <br>
 

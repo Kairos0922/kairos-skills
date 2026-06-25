@@ -4,6 +4,8 @@ Intake Engine: natural language parsing + auto-inference + clarification.
 Quality-first principle: must ask when uncertain, never guess when quality risk is high.
 """
 
+from __future__ import annotations
+
 import re
 from dataclasses import dataclass, field
 from pathlib import Path

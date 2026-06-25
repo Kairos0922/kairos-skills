@@ -10,7 +10,7 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 GOLDENS_DIR = SKILL_ROOT / "goldens"
 SHOWCASE_DIR = SKILL_ROOT / "assets" / "showcase"
 
-THEMES = ["song", "wending", "tech", "wisme"]
+THEMES = ["song", "wending", "tech", "wisme", "pi"]
 
 VIEWPORT_WIDTH = 430
 DEVICE_SCALE = 2

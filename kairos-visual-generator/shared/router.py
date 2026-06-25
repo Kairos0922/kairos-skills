@@ -4,6 +4,8 @@ Style router: two-layer routing (explicit keyword > semantic inference).
 Deterministic code — AI handles uncertainty in intake.py, not here.
 """
 
+from __future__ import annotations
+
 import json
 from pathlib import Path
 

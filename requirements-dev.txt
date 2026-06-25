@@ -1,0 +1,8 @@
+# Development-only dependencies.
+#
+# The two skills render HTML using the Python standard library only — no third-party
+# packages are needed to produce output. Playwright is only required to regenerate the
+# showcase PNG screenshots (see `make screenshots`).
+#
+# Install:  pip install -r requirements-dev.txt && playwright install chromium
+playwright>=1.40

@@ -4,6 +4,8 @@ Platform routing: usage alias normalization + aspect ratio mapping.
 Deterministic code — no AI judgment involved.
 """
 
+from __future__ import annotations
+
 # ─── Content type → natural ratio (highest priority) ───
 # These ratios reflect real-world artifact proportions.
 # AI should determine content_type first, then code selects the ratio.

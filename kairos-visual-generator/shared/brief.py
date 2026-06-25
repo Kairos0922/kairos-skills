@@ -5,6 +5,8 @@ AI generates the Brief, code validates and consumes it.
 Brief must pass JSON Schema validation before rendering.
 """
 
+from __future__ import annotations
+
 import json
 from dataclasses import dataclass, field, asdict
 from typing import Any

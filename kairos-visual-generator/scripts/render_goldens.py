@@ -6,12 +6,27 @@ Usage:
     python3 scripts/render_goldens.py --folder editorial-magazine
 """
 
+from __future__ import annotations
+
 import argparse
+import subprocess
+import sys
 from pathlib import Path
-from playwright.sync_api import sync_playwright
 
 GOLDENS_DIR = Path(__file__).parent.parent / "goldens"
 SHOWCASE_DIR = Path(__file__).parent.parent / "assets" / "showcase"
+
+
+def _ensure_playwright():
+    """Import sync_playwright, auto-installing Playwright + Chromium on first use."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("Installing playwright...", file=sys.stderr)
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "playwright", "-q"])
+        subprocess.check_call([sys.executable, "-m", "playwright", "install", "chromium"])
+        from playwright.sync_api import sync_playwright
+    return sync_playwright
 
 # Map folder names to HTML files and output PNG names
 EXAMPLES = {
@@ -56,6 +71,7 @@ def main():
 
     SHOWCASE_DIR.mkdir(parents=True, exist_ok=True)
 
+    sync_playwright = _ensure_playwright()
     with sync_playwright() as p:
         browser = p.chromium.launch()
 

@@ -1,4 +1,4 @@
-.PHONY: install test showcase clean verify-fonts verify-assets verify-offline
+.PHONY: install test showcase clean verify-fonts verify-assets verify-offline screenshots screenshots-wechat screenshots-visual
 
 install:
 	@echo "Checking Python version..."
@@ -22,6 +22,15 @@ showcase:
 	cd kairos-wechat-typeset && python3 scripts/render.py --theme wisme --input fixtures/wisme-style-system.md --output goldens/wisme-style.html
 	cd kairos-wechat-typeset && python3 scripts/render.py --theme pi --input fixtures/pi-style-system.md --output goldens/pi-style.html
 	@echo "Golden files regenerated."
+
+screenshots: screenshots-wechat screenshots-visual
+	@echo "Showcase PNGs regenerated."
+
+screenshots-wechat:
+	cd kairos-wechat-typeset && python3 scripts/screenshot_goldens.py
+
+screenshots-visual:
+	cd kairos-visual-generator && python3 scripts/render_goldens.py
 
 verify-fonts:
 	@echo "Verifying visual-generator fonts..."

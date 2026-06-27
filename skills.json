@@ -64,6 +64,19 @@
         "python3 scripts/select_style.py '帮我做一张小红书封面，主题是用户增长飞轮'",
         "python3 scripts/select_style.py '做一张蒙德里安风格的海报，主题是建筑设计'"
       ]
+    },
+    {
+      "id": "kairos-loop",
+      "path": "kairos-loop",
+      "status": "runnable",
+      "version": "0.1.0",
+      "summary": "场景 → 高质量 loop prompt。对话顾问型 skill：多轮访谈把模糊目标逼成可验证门槛，先判断该不该做成 loop，再交付一段可直接运行的自循环提示词（有界任务 + 可复现验证 + 状态记录 + 命名停止态 + 批准边界）。",
+      "entrypoints": [
+        "SKILL.md",
+        "references/examples.md",
+        "references/audit.md"
+      ],
+      "validation": []
     }
   ]
 }

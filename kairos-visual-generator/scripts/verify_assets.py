@@ -20,7 +20,7 @@ CDN_PATTERNS = [
 
 SCAN_EXTENSIONS = {".html", ".css", ".json", ".py", ".md"}
 
-EXCLUDE_FILES = {"download_fonts.py", "README.md", "CONTRIBUTING.md"}
+EXCLUDE_FILES = {"download_fonts.py", "README.md"}
 
 
 def scan_file(path: Path) -> list[tuple[int, str, str]]:

@@ -51,7 +51,7 @@ Use this sequence when adding a high-quality theme quickly:
 7. Create one canonical fixture at `fixtures/<theme-id>-style-system.md` that covers the common WeChat body matrix.
 8. Add only the renderer branches that tokens cannot express: usually H2, quote/pullquote, insight, table, task list, code, and figure caption.
 9. Render directly to `goldens/<theme-id>-style.html` and treat that file as the acceptance artifact.
-10. Update registry, README, SKILL, and `skills.json` in the same change so the next agent can reproduce the theme.
+10. Update registry, README, and SKILL in the same change so the next agent can reproduce the theme. Run `python3 check.py` from the repo root to verify.
 
 This pipeline should make the first useful version fast while keeping the quality ceiling high.
 
@@ -86,7 +86,6 @@ scripts/render.py
 README.md
 SKILL.md
 themes/README.md
-../skills.json
 ```
 
 Use the smallest possible renderer patch. In most cases, adding a theme means:

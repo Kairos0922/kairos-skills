@@ -1,110 +1,64 @@
 # AGENTS.md
 
-This repository provides deterministic AI content production skills. AI agents implement, refactor, verify, and document the skills so the repository stays usable by both humans and future agents.
+Kairos Skills 是一个高质量、可沉淀的个人 skill 集合。AI agent 在这里实现、重构、验证和文档化 skill，让仓库对人和未来的 agent 都保持可用、可扩展。
 
-## Repository Purpose
+skill 有不同形态：有的是**确定性内容渲染型**（脚本锁定视觉，AI 只做编辑判断，如 kairos-wechat-typeset、kairos-visual-generator），有的是**对话/推理型**（通过对话产出高质量产物，如 kairos-loop）。不要假设所有 skill 都长一个样，也不要把一种形态的约束强加给另一种。
 
-- Provide reusable skills that produce stable, high-quality content.
-- Keep every skill self-contained and understandable without private context.
-- Prefer deterministic scripts, tests, fixtures, and verification over one-off prompt magic.
+## Agent 起步顺序
 
-## First Steps For Agents
+1. 读本文件。
+2. 读根 `README.md` 了解仓库总览。
+3. 读目标 skill 的 `SKILL.md`（必读，机读指令）。
+4. 编辑前看一眼现有目录结构和脚本，别急着造新结构。
+5. 编辑前 `git status --short`，不要覆盖无关的用户改动。
 
-1. Read this file first.
-2. Read the root `README.md` for repository overview.
-3. Read `skills.json` for a machine-readable inventory of runnable skills.
-4. Read the target skill's `SKILL.md` and `README.md` before editing it.
-5. Inspect the existing directory structure and scripts before proposing new structure.
-6. Check `git status --short` before edits and avoid overwriting unrelated user changes.
+## Skill 的唯一硬约束
 
-## Tooling Preferences
+每个 skill 是一个顶级目录，**只有两条必须遵守的规则**：
 
-- Use the OpenAI Docs MCP server for OpenAI API, Codex, and SDK documentation.
-- Use the GitHub MCP server for repositories, issues, and pull requests. Do not use browser tools for GitHub if MCP can handle it.
-- Use Playwright MCP for browser automation, navigation, clicking, and scraping.
-- Use Chrome DevTools MCP only for debugging DOM, network, performance, or console issues.
-- Prefer MCP tools and local repository inspection over guessing. If one relevant tool fails, try another relevant tool.
-- Use `rg` / `rg --files` for repository search whenever available.
+1. **有 `SKILL.md`**，且 YAML frontmatter 至少含 `name` 和 `description`（description 是触发依据，要写清"何时加载"）。
+2. **自包含、可移植**：不硬编码 `/Users/...` 等私有绝对路径，不含密钥，不依赖跨 skill 的共享目录或私有上下文。
 
-## Skill Directory Contract
+其余一切（README、scripts/、references/、themes/、assets/ 等）**按需添加**，不强制。一个 skill 该有什么结构，由它自己的形态决定。
 
-Every skill directory should be self-contained and should avoid relying on private machine paths.
+## 质量准则（不是硬约束，但请遵循）
 
-Required:
+- skill 聚焦：把一个工作流做好，而不是什么都做一点。
+- 稳定行为尽量沉淀到脚本或结构化配置，减少 LLM 即兴发挥——**对渲染型 skill 尤其重要**；推理型 skill 则把判断逻辑写进 SKILL.md 的清晰规则里。
+- `SKILL.md` 保持精简，深度细节移到脚本或 `references/`。
+- 渲染型 skill 的资产（字体、图片）必须本地化，不引外部 CDN，验证脚本随代码更新。
+- 不为了"看起来规范"而过度设计：按当前真实规模做，能随规模长大即可。
 
-- `SKILL.md`: machine-facing skill instructions with YAML frontmatter.
-- `README.md`: human-facing usage and maintenance notes.
+## 验证
 
-Recommended when useful:
+仓库根的 `check.py` 自动发现所有 skill 并验证：
 
-- `CHEATSHEET.md`: one-page quick reference.
-- `PRODUCT.md`: design decisions and product boundaries.
-- `scripts/`: deterministic executable helpers.
-- `references/`: reference specs and methodologies.
-- `agents/`: role prompts or sub-agent instructions.
-- `themes/`, `assets/`, `goldens/`, `fixtures/`, or `evals/`: only when they directly support the skill.
+```bash
+python3 check.py          # 全量：基线检查 + 各 skill 的 validate.sh
+python3 check.py --smoke  # 只做基线检查（frontmatter + 私有路径扫描）
+```
 
-## Asset Policy
+基线检查对所有 skill 一视同仁（SKILL.md frontmatter 合法、无私有路径/密钥）。
+如果一个 skill 需要更深的验证（编译脚本、跑渲染、校验 JSON），在它自己的目录下放一个 `validate.sh`，`check.py` 会自动调用。没有 `validate.sh` 的 skill 只跑基线检查即可——这对推理型 skill 完全正常。
 
-Every skill must be fully self-contained. No shared asset directories between skills.
-
-Required local assets:
-
-- `assets/fonts/`: All fonts used by the skill (woff2 format preferred).
-- `assets/fonts/fonts.json`: Font registry with metadata and license info.
-- `assets/fonts/fonts.css`: Auto-generated @font-face declarations (via `scripts/build_font_css.py`).
-- `assets/placeholders/`: Local SVG placeholder images (no external placehold.co).
-
-Forbidden:
-
-- CDN references in rendering code (golden HTMLs, theme JSONs, render scripts).
-- Shared asset directories that break single-skill installation.
-- External API dependencies for fonts, images, or other runtime assets.
-
-Verification:
-- `scripts/verify_fonts.py`: Validates all declared font files exist.
-- `scripts/verify_assets.py`: Scans for external CDN references in runtime code.
-
-Avoid:
-
-- Local-only paths such as `/Users/...`, `/tmp/...`, or machine-specific URLs.
-- Secrets, tokens, passwords.
-- Runtime caches, generated throwaway examples, `.DS_Store`, `__pycache__`, `.env`.
-- Hard dependencies on external APIs.
-- Large auxiliary docs that duplicate `SKILL.md` or `README.md`.
-
-## Design And Implementation Rules
-
-- Keep skills focused. A skill should solve one coherent workflow well.
-- Put stable behavior into scripts or structured config instead of relying on LLM improvisation.
-- Keep `SKILL.md` concise enough for agents to load quickly. Move deep implementation detail into scripts or targeted reference files.
-- Treat themes, golden outputs, fixtures, and evals as product assets, not scratch files.
-- When changing a runnable skill, update its validation commands and run them.
-- When deleting examples or generated files, update all docs that referenced them.
-- For open-source readiness, search for personal paths, secrets, stale commands, and private assumptions before committing.
-
-## Validation Checklist
-
-Before finishing a change, run the checks that match the edited area:
-
-- Python syntax: `python3 -m py_compile ...`
-- JSON validity: `python3 -m json.tool path/to/file.json >/dev/null`
-- Skill-specific verify scripts, such as `python3 scripts/verify.py ...`
-- Font integrity: `python3 scripts/verify_fonts.py`
-- Asset independence: `python3 scripts/verify_assets.py`
-- Repository hygiene search for personal paths or stale examples when docs are edited.
-
-Always remove caches created by validation before committing:
+提交前清掉缓存：
 
 ```bash
 find . -type d -name __pycache__ -prune -exec rm -rf {} +
 ```
 
-## Git Discipline
+## 新增一个 Skill
 
-- Keep unrelated changes out of a commit.
-- Do not revert user changes unless explicitly asked.
-- Use clear commit messages that describe the skill or repository workflow being changed.
-- Prefer one coherent commit per user-requested task.
+1. 建顶级目录，短小稳定的全小写名称。
+2. 写 `SKILL.md`（含 frontmatter）。其余文件按 skill 形态按需添加。
+3. 如需深度验证，加 `validate.sh`。
+4. 跑 `python3 check.py` 确认通过。
 
-Keep `skills.json` updated when adding, removing, renaming, or materially changing a skill.
+**不需要**改任何中心清单或 Makefile——`check.py` 会自动发现新目录。
+
+## Git 纪律
+
+- 一次提交只包含一个连贯任务的改动，不夹带无关变更。
+- 不擅自回退用户改动。
+- commit message 用简洁的 conventional 风格（`feat:` / `fix:` / `docs:` / `refactor:` / `chore:`）。
+- 提交前扫一遍私有路径、密钥、过时引用和缓存文件。

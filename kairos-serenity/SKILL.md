@@ -18,11 +18,9 @@ metadata:
 python3 /path/to/kairos-x-scraper/scripts/fetch_tweets.py aleabitoreddit --days 3
 ```
 
-x-scraper 交付干净的原始推文 JSONL：`~/.kairos/x-scraper/aleabitoreddit/tweets.jsonl`。
+x-scraper 交付按日/月/年归档的原始推文 JSONL：`~/.kairos/x-scraper/aleabitoreddit/`。
 
-**Serenity 自己从原始推文中读取和提炼**：直接解析 JSONL → 提取 tickers/signals/themes/insights → 结合 references/ 框架分析。不依赖 x-scraper 做任何提炼。
-
-抓取成功后，记录抓取时间到配置文件 `last_tweet_fetch` 字段。
+**Serenity 自己从原始推文中读取和提炼**：读最近3天的日文件 → 提取 tickers/signals/themes/insights → 结合 references/ 框架分析。不依赖 x-scraper 做任何提炼。
 
 > ⚠️ **铁律：不得在缺少实时推文数据的情况下推测 Serenity 的当前观点。** 如果没有最近数据，告诉用户"无法获取 Serenity 最新推文，评估无法继续"。3天以上无新推文时标注数据间隔风险。
 
@@ -35,8 +33,7 @@ x-scraper 交付干净的原始推文 JSONL：`~/.kairos/x-scraper/aleabitoreddi
 ```json
 {
   "holdings": {},
-  "preferences": {},
-  "last_tweet_fetch": null
+  "preferences": {}
 }
 ```
 
@@ -211,7 +208,7 @@ x-scraper 交付干净的原始推文 JSONL：`~/.kairos/x-scraper/aleabitoreddi
 ## 数据来源优先级
 
 ```
-1. 原始推文（~/.kairos/x-scraper/aleabitoreddit/tweets.jsonl）
+1. 原始推文（~/.kairos/x-scraper/aleabitoreddit/ 当月日文件+历史月/年文件）
    → 直接读取，serenity 自己做全部提炼和分析
    → 最高权重
 
@@ -255,7 +252,7 @@ x-scraper 交付干净的原始推文 JSONL：`~/.kairos/x-scraper/aleabitoreddi
 
 | 文件 | 用途 | 何时读 |
 |------|------|--------|
-| `references/methodology.md` | 15步清单 + 10大原则 + 反面模式 | 评估标的时 |
+| `references/methodology.md` | 22条原则(含7大新增维度) + 20项checklist | 评估标的时 |
 | `references/supply-chain-map.json` | AI 供应链各层级 → 对应公司 | 推荐/评估时 |
 | `references/ticker-theses.md` | Serenity 历史论点（每个标的） | 评估标的时 |
 | `references/track-record.md` | 历史推荐 + 验证状态 | 评估标的时 |

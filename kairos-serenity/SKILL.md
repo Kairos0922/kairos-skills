@@ -211,9 +211,9 @@ x-scraper 交付干净的原始推文 JSONL：`~/.kairos/x-scraper/aleabitoreddi
 ## 数据来源优先级
 
 ```
-1. analysis.json（~/.kairos/x-scraper/aleabitoreddit/analysis.json）
-   → x-scraper 预处理的结构化结果：tickers/signals/themes
-   → 最高权重，直接读取
+1. 原始推文（~/.kairos/x-scraper/aleabitoreddit/tweets.jsonl）
+   → 直接读取，serenity 自己做全部提炼和分析
+   → 最高权重
 
 2. 基金季报（WebSearch 获取最新持仓）
    → 基金的实际底层暴露

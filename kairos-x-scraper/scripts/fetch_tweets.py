@@ -28,7 +28,6 @@ parser.add_argument("--months", type=int, default=None, help="往前几月（会
 parser.add_argument("--force", action="store_true", help="强制抓取，忽略已有数据")
 parser.add_argument("--user-query-id")
 parser.add_argument("--tweets-query-id")
-parser.add_argument("--no-stats", action="store_true")
 args = parser.parse_args()
 
 HANDLE = args.handle.lstrip("@")
@@ -472,19 +471,14 @@ while page < 500:
         print("   ✅ 已到日期边界"); break
     time.sleep(0.8 if n_new > 0 else 1.2)
 
-# ---- 保存原始推文 ----
-if new_tweets:
-    save_tweets(new_tweets)
-
 # ---- 保存 ----
 if new_tweets:
     save_new_tweets(new_tweets)
-    archive()  # 新数据写入后再归档一次
+    archive()
 
 # 简短统计
-in_range = sum(1 for t in new_tweets if parse_x_date(t["created_at"]) >= SINCE_DT)
 print(f"\n{'='*50}")
 if new_tweets:
     print(f"✅ 新增 {len(new_tweets)} 条")
-print(f"   📊 {RANGE_LABEL}内: {in_range} 条 | 总计: {len(existing_ids) + len(new_tweets)} 条")
+print(f"   📊 {RANGE_LABEL}内: {len(new_tweets)} 条 | 总计: {len(existing_ids) + len(new_tweets)} 条")
 print(f"   📂 {DATA_DIR}/  (按日分文件)")

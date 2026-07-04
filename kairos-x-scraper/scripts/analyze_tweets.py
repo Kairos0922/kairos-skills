@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-kairos-x-scraper 分析工具 — 从抓取的 JSONL 中提取信号
+kairos-x-scraper 独立分析工具 — 从抓取的 JSONL 中提取信号
 用法:
-  python3 analyze_tweets.py <tweets.jsonl> [--days 3] [--mode summary|signals|tickers|all]
+  python3 analyze_tweets.py <jsonl文件或目录> [--days 3] [--mode summary|signals|tickers|all]
+  目录模式: 自动扫描目录下所有 .jsonl 文件
 """
 
-import json, sys, re, argparse
+import json, sys, re, os, argparse
 from datetime import datetime, timedelta, timezone
 from collections import Counter
 
@@ -80,7 +81,17 @@ def main():
     parser.add_argument("--mode", default="all", choices=["summary","signals","tickers","all"])
     args = parser.parse_args()
 
-    tweets = [json.loads(l) for l in open(args.jsonl)]
+    tweets = []
+    path = args.jsonl
+    if os.path.isdir(path):
+        for fname in sorted(os.listdir(path)):
+            if fname.endswith('.jsonl'):
+                with open(os.path.join(path, fname)) as f:
+                    for line in f:
+                        try: tweets.append(json.loads(line))
+                        except: pass
+    else:
+        tweets = [json.loads(l) for l in open(path)]
     total = len(tweets)
 
     if args.days:

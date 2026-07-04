@@ -256,5 +256,3 @@ x-scraper 交付按日/月/年归档的原始推文 JSONL：`~/.kairos/x-scraper
 | `references/supply-chain-map.json` | AI 供应链各层级 → 对应公司 | 推荐/评估时 |
 | `references/ticker-theses.md` | Serenity 历史论点（每个标的） | 评估标的时 |
 | `references/track-record.md` | 历史推荐 + 验证状态 | 评估标的时 |
-
-静态 references 文件需从 @aleabitoreddit 的公开推文归档中提炼，后续单独生成。

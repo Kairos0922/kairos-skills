@@ -17,9 +17,10 @@ metadata:
 ```
 ~/.kairos/x-scraper/
 ├── aleabitoreddit/
-│   └── tweets.jsonl      ← 该博主全部已抓取推文（增量追加 + 去重）
-├── elonmusk/
-│   └── tweets.jsonl
+│   ├── 2026-07-01.jsonl    ← 当月按天
+│   ├── 2026-07-02.jsonl
+│   ├── 2026-06.jsonl       ← 历史月按月
+│   └── 2025.jsonl          ← 历史年按年
 └── ...
 ```
 
@@ -78,7 +79,7 @@ python3 scripts/fetch_tweets.py <handle> --days 3
 ### Step 4：交付结果
 
 - **"已有数据足够新"** → 秒级返回，直接告诉用户
-- **新增 N 条** → 告知新增数、总计、TOP 代码
+- **新增 N 条** → 告知新增数、总计、日期范围
 - **401** → auth_token 过期，回到获取教程
 - **429 / 限流** → 脚本自动等，告知用户耐心
 - **query ID 全部失败** → 引导用户手动获取
@@ -87,6 +88,6 @@ python3 scripts/fetch_tweets.py <handle> --days 3
 
 ## 注意事项
 
-- 按昵称自动分目录，不覆盖历史数据
-- tweet ID 去重，重复运行不产生冗余
+- 按博主分目录，当月按天/历史月按月/历史年按年，自动归档
+- tweet ID 全局去重，重复运行不产生冗余
 - 遵守 X 服务条款，勿频繁抓取同一账号

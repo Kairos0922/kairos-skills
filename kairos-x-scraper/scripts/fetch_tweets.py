@@ -48,60 +48,132 @@ MSG_TOKEN_EXPIRED = "❌ auth_token 已过期。请重新登录 X。"
 def parse_x_date(s):
     return datetime.strptime(s, '%a %b %d %H:%M:%S %z %Y')
 
+def list_archive_files():
+    """列出所有归档文件（日/月/年）"""
+    files = []
+    if os.path.exists(DATA_DIR):
+        for fname in os.listdir(DATA_DIR):
+            if fname.endswith('.jsonl'):
+                files.append(fname)
+    return sorted(files)
+
 def load_existing():
-    """扫描所有日期文件，返回 (id集合, 最新日期)"""
+    """扫描所有归档文件，返回 (id集合, 最新日期)"""
     ids = set()
     newest = None
-    if os.path.exists(DATA_DIR):
-        for fname in sorted(os.listdir(DATA_DIR)):
-            if not fname.endswith('.jsonl'):
-                continue
-            with open(os.path.join(DATA_DIR, fname)) as f:
-                for line in f:
+    for fname in list_archive_files():
+        with open(os.path.join(DATA_DIR, fname)) as f:
+            for line in f:
+                try:
+                    t = json.loads(line)
+                    ids.add(t["id"])
                     try:
-                        t = json.loads(line)
-                        ids.add(t["id"])
-                        try:
-                            dt = parse_x_date(t["created_at"])
-                            if newest is None or dt > newest:
-                                newest = dt
-                        except ValueError:
-                            pass
-                    except json.JSONDecodeError:
-                        continue
+                        dt = parse_x_date(t["created_at"])
+                        if newest is None or dt > newest:
+                            newest = dt
+                    except ValueError:
+                        pass
+                except json.JSONDecodeError:
+                    continue
     return ids, newest
 
-def daily_file(date_str):
-    """推文日期 → 对应的日期文件路径"""
-    # date_str 格式: "Sat Jul 04 00:07:23 +0000 2026"
+def file_for_tweet(date_str):
+    """推文日期 → 当前月按天文件"""
     dt = parse_x_date(date_str)
     return os.path.join(DATA_DIR, f"{dt.strftime('%Y-%m-%d')}.jsonl")
 
-def save_tweets_by_day(tweets):
-    """按推文日期写入对应天文件，天内去重"""
+def save_new_tweets(tweets):
+    """新推文写入当天日文件，天内去重"""
     os.makedirs(DATA_DIR, exist_ok=True)
-    by_day = {}
     for t in tweets:
-        df = daily_file(t["created_at"])
-        by_day.setdefault(df, []).append(t)
-
-    for df, day_tweets in by_day.items():
-        # 读取当天已有 ID
+        df = file_for_tweet(t["created_at"])
         day_ids = set()
         if os.path.exists(df):
             with open(df) as f:
                 for line in f:
-                    try:
-                        day_ids.add(json.loads(line)["id"])
+                    try: day_ids.add(json.loads(line)["id"])
                     except: pass
-        with open(df, "a") as f:
-            for t in day_tweets:
-                if t["id"] not in day_ids:
-                    f.write(json.dumps(t, ensure_ascii=False) + "\n")
-                    day_ids.add(t["id"])
+        if t["id"] not in day_ids:
+            with open(df, "a") as f:
+                f.write(json.dumps(t, ensure_ascii=False) + "\n")
+
+def archive():
+    """归档旧数据: 上月日文件→月文件, 去年月文件→年文件"""
+    now = datetime.now(timezone.utc)
+    this_month = now.strftime('%Y-%m')
+    this_year = now.strftime('%Y')
+
+    merged = []
+    for fname in list_archive_files():
+        base = fname.replace('.jsonl', '')
+        parts = base.split('-')
+
+        if len(parts) == 3:  # 日文件 YYYY-MM-DD
+            if base[:7] < this_month:  # 上月的日文件 → 合并为月文件
+                merged.append(fname)
+        elif len(parts) == 2:  # 月文件 YYYY-MM
+            if parts[0] < this_year:  # 去年的月文件 → 合并为年文件
+                merged.append(fname)
+
+    if not merged:
+        return
+
+    # 按目标归档文件分组
+    groups = {}
+    for fname in merged:
+        base = fname.replace('.jsonl', '')
+        parts = base.split('-')
+        if len(parts) == 3:  # 日→月
+            target = f"{parts[0]}-{parts[1]}.jsonl"
+        else:  # 月→年
+            target = f"{parts[0]}.jsonl"
+        groups.setdefault(target, []).append(fname)
+
+    for target, sources in groups.items():
+        target_path = os.path.join(DATA_DIR, target)
+        seen = set()
+        # 目标文件已有 ID
+        if os.path.exists(target_path):
+            with open(target_path) as f:
+                for line in f:
+                    try: seen.add(json.loads(line)["id"])
+                    except: pass
+        # 合并源文件
+        with open(target_path, "a") as out:
+            for src in sorted(sources):
+                src_path = os.path.join(DATA_DIR, src)
+                with open(src_path) as f:
+                    for line in f:
+                        try:
+                            t = json.loads(line)
+                            if t["id"] not in seen:
+                                out.write(line)
+                                seen.add(t["id"])
+                        except: pass
+                os.remove(src_path)  # 归档后删除源文件
+        # 去重写入
+        _dedup_file(target_path)
+
+def _dedup_file(path):
+    """文件内按 ID 去重"""
+    seen = set()
+    lines = []
+    with open(path) as f:
+        for line in f:
+            try:
+                tid = json.loads(line)["id"]
+                if tid not in seen:
+                    seen.add(tid)
+                    lines.append(line)
+            except: pass
+    with open(path, "w") as f:
+        f.writelines(lines)
 
 # ---- 增量判断 ----
 existing_ids, newest_existing = load_existing()
+
+# 每次执行都归档（合并旧日文件→月文件，旧月文件→年文件）
+archive()
 
 if not args.force and newest_existing:
     age_hours = (datetime.now(timezone.utc) - newest_existing).total_seconds() / 3600
@@ -404,9 +476,10 @@ while page < 500:
 if new_tweets:
     save_tweets(new_tweets)
 
-# ---- 按天保存原始推文（不做分析、不提炼观点） ----
+# ---- 保存 ----
 if new_tweets:
-    save_tweets_by_day(new_tweets)
+    save_new_tweets(new_tweets)
+    archive()  # 新数据写入后再归档一次
 
 # 简短统计
 in_range = sum(1 for t in new_tweets if parse_x_date(t["created_at"]) >= SINCE_DT)

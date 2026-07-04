@@ -3,8 +3,8 @@
 kairos-x-scraper — 按博主增量抓取 X.com 公开推文
 用法: python3 fetch_tweets.py <handle> [--days N] [--force]
 
-数据按博主分类存储: ~/.kairos/x-scraper/{handle}/tweets.jsonl
-已有数据自动跳过，--force 强制重新抓取。
+数据按博主+日期分文件: ~/.kairos/x-scraper/{handle}/YYYY-MM-DD.jsonl
+读取最近N天 = N个小文件，不碰历史数据。
 """
 
 import json, time, sys, re, os, argparse
@@ -37,9 +37,8 @@ if args.months is not None:
 SINCE_DT = datetime.now(timezone.utc) - timedelta(days=args.days)
 RANGE_LABEL = f"{args.months}个月" if args.months else f"{args.days}天"
 
-# 数据目录
+# 数据目录（按天分文件）
 DATA_DIR = os.path.join(DATA_BASE, HANDLE)
-TWEETS_FILE = os.path.join(DATA_DIR, "tweets.jsonl")
 
 MSG_NO_TOKEN = f"""❌ 未找到 X 认证信息。
 请在浏览器中获取 auth_token 和 ct0，配置保存在 {CONFIG_PATH}"""
@@ -50,32 +49,56 @@ def parse_x_date(s):
     return datetime.strptime(s, '%a %b %d %H:%M:%S %z %Y')
 
 def load_existing():
-    """加载已有推文，返回 (id集合, 最新日期)"""
+    """扫描所有日期文件，返回 (id集合, 最新日期)"""
     ids = set()
     newest = None
-    if os.path.exists(TWEETS_FILE):
-        with open(TWEETS_FILE) as f:
-            for line in f:
-                try:
-                    t = json.loads(line)
-                    ids.add(t["id"])
-                    if t.get("created_at"):
+    if os.path.exists(DATA_DIR):
+        for fname in sorted(os.listdir(DATA_DIR)):
+            if not fname.endswith('.jsonl'):
+                continue
+            with open(os.path.join(DATA_DIR, fname)) as f:
+                for line in f:
+                    try:
+                        t = json.loads(line)
+                        ids.add(t["id"])
                         try:
                             dt = parse_x_date(t["created_at"])
                             if newest is None or dt > newest:
                                 newest = dt
                         except ValueError:
                             pass
-                except json.JSONDecodeError:
-                    continue
+                    except json.JSONDecodeError:
+                        continue
     return ids, newest
 
-def save_tweets(tweets):
-    """追加保存（不去重，调用前已去重）"""
+def daily_file(date_str):
+    """推文日期 → 对应的日期文件路径"""
+    # date_str 格式: "Sat Jul 04 00:07:23 +0000 2026"
+    dt = parse_x_date(date_str)
+    return os.path.join(DATA_DIR, f"{dt.strftime('%Y-%m-%d')}.jsonl")
+
+def save_tweets_by_day(tweets):
+    """按推文日期写入对应天文件，天内去重"""
     os.makedirs(DATA_DIR, exist_ok=True)
-    with open(TWEETS_FILE, "a") as f:
-        for t in tweets:
-            f.write(json.dumps(t, ensure_ascii=False) + "\n")
+    by_day = {}
+    for t in tweets:
+        df = daily_file(t["created_at"])
+        by_day.setdefault(df, []).append(t)
+
+    for df, day_tweets in by_day.items():
+        # 读取当天已有 ID
+        day_ids = set()
+        if os.path.exists(df):
+            with open(df) as f:
+                for line in f:
+                    try:
+                        day_ids.add(json.loads(line)["id"])
+                    except: pass
+        with open(df, "a") as f:
+            for t in day_tweets:
+                if t["id"] not in day_ids:
+                    f.write(json.dumps(t, ensure_ascii=False) + "\n")
+                    day_ids.add(t["id"])
 
 # ---- 增量判断 ----
 existing_ids, newest_existing = load_existing()
@@ -84,9 +107,8 @@ if not args.force and newest_existing:
     age_hours = (datetime.now(timezone.utc) - newest_existing).total_seconds() / 3600
     if age_hours < args.days * 24:
         print(f"✅ 已有数据足够新（{age_hours:.0f}小时前），无需重复抓取。")
-        print(f"   文件: {TWEETS_FILE}")
-        print(f"   已有: {len(existing_ids)} 条")
-        # 用 --force 可强制重新抓取
+        print(f"   目录: {DATA_DIR}")
+        print(f"   已有: {len(existing_ids)} 条（按日分文件）")
         sys.exit(0)
 
 # 有旧数据 → 只抓增量（从最新推文日期起）
@@ -382,45 +404,14 @@ while page < 500:
 if new_tweets:
     save_tweets(new_tweets)
 
-# ---- 保存原始推文（不做分析、不提炼观点） ----
+# ---- 按天保存原始推文（不做分析、不提炼观点） ----
 if new_tweets:
-    save_tweets(new_tweets)
+    save_tweets_by_day(new_tweets)
 
-# ---- 输出统计（仅基础计数，不提炼） ----
-total_tweets = len(existing_ids) + len(new_tweets)
-
-# 统计范围内推文数
-in_range = 0
-if os.path.exists(TWEETS_FILE):
-    with open(TWEETS_FILE) as f:
-        for line in f:
-            try:
-                t = json.loads(line)
-                try:
-                    if parse_x_date(t["created_at"]) >= SINCE_DT:
-                        in_range += 1
-                except ValueError:
-                    continue
-            except json.JSONDecodeError:
-                continue
-
-dates_in_range = []
-if os.path.exists(TWEETS_FILE):
-    with open(TWEETS_FILE) as f:
-        for line in f:
-            try:
-                t = json.loads(line)
-                dt = parse_x_date(t["created_at"])
-                if dt >= SINCE_DT:
-                    dates_in_range.append(dt)
-            except: pass
-
+# 简短统计
+in_range = sum(1 for t in new_tweets if parse_x_date(t["created_at"]) >= SINCE_DT)
 print(f"\n{'='*50}")
 if new_tweets:
     print(f"✅ 新增 {len(new_tweets)} 条")
-print(f"   📊 {RANGE_LABEL}内: {in_range} 条 | 总计存储: {total_tweets} 条")
-print(f"   📂 原始数据: {TWEETS_FILE}")
-
-if dates_in_range:
-    dates_in_range.sort()
-    print(f"   📅 {dates_in_range[0].strftime('%Y-%m-%d')} → {dates_in_range[-1].strftime('%Y-%m-%d')}")
+print(f"   📊 {RANGE_LABEL}内: {in_range} 条 | 总计: {len(existing_ids) + len(new_tweets)} 条")
+print(f"   📂 {DATA_DIR}/  (按日分文件)")

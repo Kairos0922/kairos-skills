@@ -378,25 +378,119 @@ while page < 500:
         print("   ✅ 已到日期边界"); break
     time.sleep(0.8 if n_new > 0 else 1.2)
 
-# ---- 保存 ----
+# ---- 保存原始推文 ----
 if new_tweets:
     save_tweets(new_tweets)
-    total = len(existing_ids)
-else:
-    total = len(existing_ids)  # 已有数据总量
 
+# ---- 生成结构化分析结果 ----
+# 对所有推文（含已有）中符合时间范围的做分析
+ANALYSIS_FILE = os.path.join(DATA_DIR, "analysis.json")
+
+# 加载所有推文用于分析
+all_for_analysis = []
+if os.path.exists(TWEETS_FILE):
+    with open(TWEETS_FILE) as f:
+        for line in f:
+            try:
+                t = json.loads(line)
+                try:
+                    dt = parse_x_date(t["created_at"])
+                    if dt >= SINCE_DT:
+                        all_for_analysis.append(t)
+                except ValueError:
+                    continue
+            except json.JSONDecodeError:
+                continue
+
+# 分析
+FALSE_POSITIVES = {
+    'I','A','THE','AND','FOR','NOT','ALL','NEW','ONE','OUT','TOP',
+    'AI','AT','IN','ON','IT','OR','TO','NO','BE','CEO','OFC','GTC',
+    'API','CPU','GPU','TPU','HBM','CPO','SIPH','JUST','FROM','WITH',
+}
+
+ticker_counts = {}
+for t in all_for_analysis:
+    for m in re.findall(r'\$([A-Z]{1,5})', t["text"]):
+        if m not in FALSE_POSITIVES:
+            ticker_counts[m] = ticker_counts.get(m, 0) + 1
+
+# 信号提取
+signals = []
+for t in all_for_analysis:
+    txt = t["text"].lower()
+    tks = list(set(re.findall(r'\$([A-Z]{1,5})', t["text"])))
+    tks = [x for x in tks if x not in FALSE_POSITIVES]
+
+    signal_type = None
+    if any(w in txt for w in ['disclosure','own','position','holding','concentration',
+                               'adding','bought','long on','favorite','heavily added']):
+        signal_type = "position"
+    elif any(w in txt for w in ['bearish','avoid','short','dilution','bagholder',
+                                  'f-tier','lowest signal']):
+        signal_type = "bearish"
+    elif any(w in txt for w in ['bullish','validation','confirmed','catalyst',
+                                  'supercycle','bottleneck','chokepoint','monopoly']):
+        signal_type = "bullish"
+
+    if signal_type:
+        signals.append({
+            "date": t["created_at"][4:10],
+            "type": signal_type,
+            "tickers": tks,
+            "text": t["text"][:200],
+            "likes": t.get("likes", 0),
+        })
+
+# 主题分布
+THEME_KW = {
+    "光学/CPO/光子": ['optical','CPO','photonics','laser','CW','DFB','InP','transceiver','LITE','SIVE','AAOI','COHR','POET','AXTI'],
+    "存储/HBM": ['memory','NAND','DRAM','HBM','SNDK','Samsung','Hynix','MU'],
+    "AI/GPU/算力": ['NVDA','GPU','NVIDIA','AMD','AVGO','MRVL','ASIC','TPU','TSM'],
+    "新云/数据中心": ['NBIS','neocloud','datacenter','IREN','CRWV','CIFR','WULF','capex'],
+    "人形机器人": ['humanoid','robot','Agility','CCXI','physical AI','Unitree','Optimus'],
+    "电网/能源": ['power','grid','energy','transformer','VRT','XLU','AOSL'],
+    "太空/卫星": ['space','RKLB','satellite','ASTS','SPCX','Starlink'],
+}
+theme_counts = {}
+for theme, kws in THEME_KW.items():
+    theme_counts[theme] = sum(1 for t in all_for_analysis
+                              if any(kw.lower() in t["text"].lower() for kw in kws))
+
+# 日期范围
+dates = sorted([parse_x_date(t["created_at"]) for t in all_for_analysis])
+date_range = [dates[0].strftime('%Y-%m-%d'), dates[-1].strftime('%Y-%m-%d')] if dates else []
+
+analysis = {
+    "handle": HANDLE,
+    "fetched_at": datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+    "range_days": args.days,
+    "tweet_count": len(all_for_analysis),
+    "total_stored": len(existing_ids) + len(new_tweets),
+    "date_range": date_range,
+    "tickers": dict(sorted(ticker_counts.items(), key=lambda x: x[1], reverse=True)),
+    "signals": signals,
+    "themes": theme_counts,
+}
+
+with open(ANALYSIS_FILE, "w") as f:
+    json.dump(analysis, f, ensure_ascii=False, indent=2)
+
+# ---- 输出 ----
 print(f"\n{'='*50}")
-print(f"✅ 新增 {len(new_tweets)} 条，总计 {total} 条")
-print(f"   📂 {TWEETS_FILE}")
+if new_tweets:
+    print(f"✅ 新增 {len(new_tweets)} 条推文")
+print(f"   📊 分析范围: {len(all_for_analysis)} 条（{RANGE_LABEL}）")
+print(f"   📂 原始数据: {TWEETS_FILE}")
+print(f"   📊 分析结果: {ANALYSIS_FILE}")
 
-if not args.no_stats and new_tweets:
-    tickers = {}
-    for t in new_tweets:
-        for m in re.findall(r'\$([A-Z]{1,5})', t["text"]):
-            if m not in ("I","A","THE","AND","FOR","NOT","ALL","NEW","ONE",
-                         "AI","AT","IN","ON","IT","OR","TO","NO"):
-                tickers[m] = tickers.get(m,0) + 1
-    if tickers:
-        print(f"   🏷️ 新推文中 {len(tickers)} 个代码")
-        for i,(tk,n) in enumerate(sorted(tickers.items(), key=lambda x:x[1], reverse=True)[:10], 1):
-            print(f"      {i:2}. ${tk:5s} {n}")
+if date_range:
+    print(f"   📅 {date_range[0]} → {date_range[1]}")
+if ticker_counts:
+    top = list(sorted(ticker_counts.items(), key=lambda x: x[1], reverse=True))[:10]
+    print(f"   🏷️  TOP 10: {' | '.join(f'${t}×{n}' for t,n in top)}")
+if signals:
+    pos = sum(1 for s in signals if s["type"] == "position")
+    bull = sum(1 for s in signals if s["type"] == "bullish")
+    bear = sum(1 for s in signals if s["type"] == "bearish")
+    print(f"   📡 信号: 📗持仓{pos} 🟢看多{bull} 🔴看空{bear}")

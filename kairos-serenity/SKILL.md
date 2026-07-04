@@ -12,16 +12,24 @@ metadata:
 
 ## 运行前提：每次执行前抓取最新数据
 
-**强制**：每次被调用时，先用 kairos-x-scraper 增量抓取 @aleabitoreddit 最近 3 天推文。
+**强制**：每次被调用时，先用 kairos-x-scraper 抓取并分析 @aleabitoreddit 最近 3 天推文。
 
 ```bash
 python3 /path/to/kairos-x-scraper/scripts/fetch_tweets.py aleabitoreddit --days 3
 ```
 
-数据持久化在 `~/.kairos/x-scraper/aleabitoreddit/tweets.jsonl`，已有数据自动跳过。抓取后运行分析：
+x-scraper 自动完成：抓取 → 去重 → 分析 → 生成 `~/.kairos/x-scraper/aleabitoreddit/analysis.json`。
 
-```bash
-python3 /path/to/kairos-x-scraper/scripts/analyze_tweets.py ~/.kairos/x-scraper/aleabitoreddit/tweets.jsonl --days 3 --mode all
+**直接读取 `analysis.json`** 获取结构化结果（无需再解析原始 JSONL）：
+
+```json
+{
+  "tickers": {"SIVE": 15, "NVDA": 8, ...},    // 股票提及计数
+  "signals": [                                   // 持仓/看多/看空信号
+    {"date": "Jul 03", "type": "position", "tickers": ["SIVE"], "text": "..."}
+  ],
+  "themes": {"光学/CPO/光子": 53, "存储/HBM": 20, ...}  // 主题分布
+}
 ```
 
 抓取成功后，记录抓取时间到配置文件 `last_tweet_fetch` 字段。
@@ -213,14 +221,15 @@ python3 /path/to/kairos-x-scraper/scripts/analyze_tweets.py ~/.kairos/x-scraper/
 ## 数据来源优先级
 
 ```
-1. 实时推文（~/.kairos/serenity/serenity_tweets_*.jsonl）
-   → Serenity 当前观点，最高权重
+1. analysis.json（~/.kairos/x-scraper/aleabitoreddit/analysis.json）
+   → x-scraper 预处理的结构化结果：tickers/signals/themes
+   → 最高权重，直接读取
 
 2. 基金季报（WebSearch 获取最新持仓）
    → 基金的实际底层暴露
 
 3. references/ 静态框架
-   → 15步清单、供应链地图、历史论点
+   → 22条原则、供应链地图、历史论点
    → 仅在实时推文无覆盖时作为背景参考
 ```
 

@@ -24,6 +24,13 @@ dated example from the corpus. A runnable checklist is at the bottom.
 13. [Conviction tiering, sizing, and timing](#13-conviction-tiering-sizing-and-timing)
 14. [Anti-patterns he calls out](#14-anti-patterns-he-calls-out)
 15. [The checklist (run this on any new name)](#15-the-checklist-run-this-on-any-new-name)
+16. [Bottleneck vs. Chokepoint — formal distinction](#16-bottleneck-vs-chokepoint--formal-distinction)
+17. [Architecture moat identification](#17-architecture-moat-identification)
+18. [News second-order effects](#18-news-second-order-effects)
+19. [Vertical-integration roadmap prediction](#19-vertical-integration-roadmap-prediction)
+20. [Cross-exposure / dual-theme screening](#20-cross-exposure--dual-theme-screening)
+21. [Structured macro filter](#21-structured-macro-filter)
+22. [IPO anchor + starter-position scaling](#22-ipo-anchor--starter-position-scaling)
 
 ---
 
@@ -341,6 +348,222 @@ none of this is a buy signal on its own.
     examples.
 14. **Macro overlay?** Does the current rate path / tariff / war regime help or
     hurt this specific thesis right now?
+
+16. [Bottleneck vs. Chokepoint — formal distinction](#16-bottleneck-vs-chokepoint--formal-distinction)
+17. [Architecture moat identification](#17-architecture-moat-identification)
+18. [News second-order effects](#18-news-second-order-effects)
+19. [Vertical-integration roadmap prediction](#19-vertical-integration-roadmap-prediction)
+20. [Cross-exposure / dual-theme screening](#20-cross-exposure--dual-theme-screening)
+21. [Structured macro filter](#21-structured-macro-filter)
+22. [IPO anchor + starter-position scaling](#22-ipo-anchor--starter-position-scaling)
+
+Then: confirm current price and fundamentals, weight using
+`track-record.md`, and present as analysis — never as an order.
+
+---
+
+## 16. Bottleneck vs. Chokepoint — formal distinction
+
+- **What:** The word "bottleneck" is used loosely. Serenity distinguishes two
+  fundamentally different types of supply-chain constraint. Only one creates true
+  pricing power.
+- **Signal:**
+  - **瓶颈 (capacity bottleneck):** Production capacity limits industry expansion,
+    but multiple suppliers exist. Example: Win Semi is a capacity bottleneck for
+    laser foundry, but GFS and TSEM also offer SiPh foundry services. The
+    constraint is *volume*, not *exclusivity*.
+  - **卡脖子 (strategic chokepoint) ✓:** Sole or primary source; remove it and the
+    downstream product literally cannot be built. Example: $SIVE CW DFB laser
+    arrays — "remove Sivers and you literally cannot build their product, delaying
+    roadmaps by years." The constraint is *architecture*.
+- **Apply:** For every candidate, ask: "Is this a capacity problem (bottleneck) or
+  a structural dependency problem (chokepoint)?" A chokepoint + capacity scarcity
+  = simultaneous pricing power. A bottleneck alone is just a cyclical supply
+  shortage.
+- **Example:** $SNDK doesn't manufacture all NAND but controls Kioxia allocation —
+  chokepoint via allocation control, not via production volume.
+
+## 17. Architecture moat identification
+
+- **What:** Distinguish architecture binding from commodity interchangeability. A
+  component is a true moat only if replacing it requires redesigning the
+  downstream system, not just swapping a part number.
+- **Signal:** CW DFB lasers are **not interchangeable** with EML lasers — different
+  architecture, different thermal profile, different array configuration. $SIVE's
+  lasers are chosen by Ayar, Celestial, and Lightmatter **for architectural
+  reasons**, not because they're 10% cheaper. Competitors ($LITE, Furukawa) make
+  different architectural choices that don't slot into the same design.
+- **Apply:** For any candidate, ask "can the customer swap this out without
+  redesigning their product?" If yes → commodity risk. If no → architecture moat.
+  Architecture moat → customer stickiness → pricing power → ~60%+ gross margins.
+- **Example:** "$LITE has higher power but different architecture — it's not a
+  substitute. If you think CW lasers are interchangeable with Furukawa, I don't
+  know how to explain this to you."
+
+## 18. News second-order effects
+
+- **What:** A specific mental model: when news breaks, the first-order trade is
+  already priced in. The edge is asking "who benefits *second*?" before the market
+  connects the dots.
+- **Signal:** A headline event → trace the supply chain one or two hops upstream
+  from the obvious beneficiary → find the hidden bottleneck that enables the
+  obvious beneficiary.
+- **Apply:** For every major AI/tech headline, run the table:
+
+  | Event | Second-Order Derivation | Target |
+  |-------|------------------------|--------|
+  | SpaceX acquires Mesh optical networking | Needs CW DFB laser source | $SIVE |
+  | Marvell acquires Celestial | SIVE already mapped to Celestial | $SIVE |
+  | OpenAI launches model on Cerebras | Technical validation + endorsement premium | $CBRS |
+  | Google compute limits Meta | External neocloud demand rises | $NBIS |
+  | MRVL earnings highlight scale-up optical interconnect | CPO theme ascends | $SIVE, $AAOI |
+
+- **Example:** MRVL earnings call mentions scale-up optical interconnect revenue
+  doubling → Serenity reads it as CPO volume-ramp confirmation for $SIVE lasers,
+  *not* as a primary MRVL trade.
+
+## 19. Vertical-integration roadmap prediction
+
+- **What:** Don't just analyze a company's current product. Predict its 3-5 year
+  full-stack evolution using a comparable company's historical path as the
+  template.
+- **Signal:** Use $LITE's history as the reference path:
+  `Laser die → acquire Cloud Lite → vertically integrate → $75B market cap`.
+  Then map the candidate's likely path:
+  `CW lasers → M&A optical engines → pluggable transceivers → TAM ×N`.
+- **Apply:** Current revenue severely understates the candidate if it doesn't
+  price in downstream integration value. The laser business alone might be worth
+  $X, but M&A into optical engines and pluggables multiplies the TAM.
+- **Example:** $SIVE's current laser revenue "severely undervalues" the company
+  because it doesn't account for post-M&A downstream integration value. The
+  entire optical engine / pluggable TAM is the real prize.
+
+## 20. Cross-exposure / dual-theme screening
+
+- **What:** Intentionally seek companies benefiting from **two megatrends
+  simultaneously**. This doubles the probability of a catalyst hitting and
+  provides a second chance if one theme temporarily cools.
+- **Signal:** A company whose product serves AI datacenter **and** humanoid
+  robotics, or automotive **and** humanoid BOM, or memory **and** LiDAR sensing.
+- **Apply:** Screen candidates against two independent demand drivers:
+
+  | Ticker | Theme A | Theme B |
+  |--------|---------|---------|
+  | $SIVE | AI DC optical interconnect | Humanoid LiDAR (via AEVA → Boston Dynamics) |
+  | DRAM/NAND | AI training/inference | Humanoid robot storage/inference |
+  | Schaeffler | Automotive components | Humanoid robot BOM (~50%) |
+  | $JBL | AI DC transceivers | Manufacturing outsourcing |
+  | $AEVA | LiDAR sensing | Boston Dynamics humanoid |
+
+- **Example:** "Automotive suppliers are being undervalued because of EV drag, but
+  they have humanoid BOM exposure — that's the opportunity." The auto business
+  pays the bills; humanoid exposure is a free call option the market ignores.
+
+## 21. Structured macro filter
+
+- **What:** A systematic checklist of macro conditions that tilt the portfolio
+  between risk-on and risk-off, rather than treating macro as an afterthought.
+- **Signal:**
+
+  **顺风 / Bullish (risk-on, add to high-beta names):**
+  - Fed not hiking rates
+  - Hyperscaler CapEx continuing to expand
+  - Compute supply severely insufficient
+  - Robotics investment dollars rising sharply
+
+  **逆风 / Bearish (reduce high-beta, rotate to large-cap/defensive):**
+  - Fed rate hike expectations rising
+  - China AI distilling US models (regulatory/competitive risk)
+  - Chinese humanoid robots entering US market (supply-chain disruption risk)
+  - OpenAI's position being challenged (ecosystem risk)
+
+- **Apply:** Overlay this filter before sizing any new position. In a bullish
+  macro regime, high-beta small-cap chokepoint names get full size. In a bearish
+  regime, reduce small-cap exposure, rotate to large-cap compounders ($TSM,
+  memory), or hold cash. Don't fight the macro when it genuinely changes the rate
+  path.
+- **Example:** March 2026 Iran conflict genuinely hurt rate-cut-dependent XLU/EWY
+  longs — macro broke the thesis when the rate path changed.
+
+## 22. IPO anchor + starter-position scaling
+
+- **What:** A concrete position-building method: use the IPO price as a valuation
+  floor, enter a small "starter position," and scale up only as information
+  confirms the thesis.
+- **Signal:**
+  - **IPO price anchor:** For newly public companies, the IPO price represents the
+    underwriter's fair-value assessment. Buying below or near IPO = built-in
+    margin of safety. $CBRS IPO $185, bought at ~$170.
+  - **Starter position:** Enter small initially. Don't go full size on a thesis
+    that still has unknown unknowns.
+  - **Scale with confirmation:** Add to the position only as OSINT discoveries,
+    contract announcements, earnings calls, or supply-chain evidence confirms the
+    original thesis. Each confirmation = one step up in sizing.
+  - **Catalyst required:** Never enter without a dated, identifiable catalyst
+    (earnings, conference, MSCI inclusion, policy announcement) within a tradable
+    window.
+- **Apply:** The sequence: 1) Identify chokepoint → 2) Build OSINT supply-chain
+  map → 3) Find a dated catalyst → 4) Enter starter position → 5) Wait for
+  confirmation → 6) Scale up → 7) Wait for next confirmation → repeat. Never skip
+  from step 1 to full size.
+- **Anti-pattern:** "Don't post new positions during trading hours" — compliance
+  protection for himself and his followers. Treat as a reminder that position
+  disclosure ≠ immediate entry signal for followers.
+
+---
+
+## 15. The checklist (run this on any new name)
+
+Score a candidate against his lens. The more "yes", the more it fits his style —
+none of this is a buy signal on its own.
+
+1. **Bottleneck or Chokepoint?** Distinguish: is this a capacity bottleneck
+   (multiple suppliers, volume constraint) or a strategic chokepoint
+   (sole/primary source, architectural dependency)? Only chokepoints have true
+   pricing power. (§16)
+2. **Architecture moat?** Can the customer swap this out without redesigning
+   their product? If yes → commodity risk. If no → genuine moat with customer
+   stickiness. (§17)
+3. **Upstream & cheap?** Is it upstream of the obvious "shovel seller," and is
+   its component a small % of downstream BOM (so buyers pay through price hikes)?
+4. **Chain fluency?** Can you map the exact chain from raw/input layer to module
+   or finished-system maker without conflating substrate, epiwafer, foundry,
+   laser, transceiver, and module/packaging roles?
+5. **Demand driver?** Is the TAM expanding on hyperscaler AI capex (the master
+   leading indicator) or physical-AI/robotics capex rather than a legacy/cyclical
+   market?
+6. **Second-order exposure?** If a major headline hits tomorrow, would this
+   company benefit as the hidden upstream enabler of the obvious winner? (§18)
+7. **Vertical-integration optionality?** What does this company look like in 3-5
+   years if it follows a LITE-style integration path? Does current valuation
+   ignore downstream TAM? (§19)
+8. **Cross-exposure / dual theme?** Does it benefit from TWO independent
+   megatrends simultaneously? This doubles catalyst probability. (§20)
+9. **Contracts & counterparty?** Are there signed multi-year contracts, and is
+   the tenant creditworthy (AAA hyperscaler, not a cash-burning lab)?
+10. **Real margins?** Do the GAAP margins (not cherry-picked non-GAAP) support
+    the quality claim?
+11. **Financing quality?** Any large active ATM + SBC overhang, or worrying debt
+    interest? (Disqualifier.) Or is dilution small/strategic/debt-retiring?
+12. **Stage?** Is it pre-volume-ramp (qualification design wins) and therefore
+    mispriced on TTM revenue, or already crowded/frontrun? (§6)
+13. **Catalyst & timing?** Is there a dated catalyst (earnings, conference, MSCI
+    inclusion, policy/EO) within a tradable window?
+14. **IPO anchor?** If recently public, does the current price provide margin of
+    safety relative to the IPO price? (§22)
+15. **Sizing discipline?** Start with a starter position. Scale only on
+    confirmation. Never go from discovery to full size in one step. (§22)
+16. **Market cap headroom?** Small enough (<~$3B at call for his moonshots) that
+    institutional re-rating is still ahead?
+17. **Validation lag?** Is institutional/analyst coverage still behind the
+    supply-chain evidence (an edge), or already in (priced)?
+18. **Risk & sizing fit?** How binary is it (dilution, single-customer, China
+    export, restructuring)? Size accordingly; consider defined-risk options.
+19. **Disclosure weight?** Did he say he owns it, sized it, avoided it, or has no
+    position? Treat no-position / exploratory posts as lower-conviction process
+    examples.
+20. **Macro overlay?** Rate path bullish or bearish? Hyperscaler CapEx expanding?
+    China AI / robotics entering US? Adjust sizing to macro regime. (§21)
 
 Then: confirm current price and fundamentals, weight using
 `track-record.md`, and present as analysis — never as an order.

@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-kairos-x-scraper — 抓取 X.com 公开推文
-用法: python3 fetch_tweets.py <handle> <月数> <输出目录> [--user-query-id ID] [--tweets-query-id ID]
+kairos-x-scraper — 按博主增量抓取 X.com 公开推文
+用法: python3 fetch_tweets.py <handle> [--days N] [--force]
+
+数据按博主分类存储: ~/.kairos/x-scraper/{handle}/tweets.jsonl
+已有数据自动跳过，--force 强制重新抓取。
 """
 
 import json, time, sys, re, os, argparse
@@ -13,53 +16,83 @@ except ImportError:
     print("❌ 缺少 requests 库。运行: pip3 install requests")
     sys.exit(1)
 
-# ---- 公开常量 ----
 BEARER = "AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"
+CONFIG_PATH = os.path.expanduser("~/.kairos/kairos-x-scraper-config.json")
+DATA_BASE = os.path.expanduser("~/.kairos/x-scraper")
 
-# ---- 命令行参数 ----
-parser = argparse.ArgumentParser(description="抓取 X.com 公开推文")
-parser.add_argument("handle", help="目标账号 @handle（不用加 @）")
-parser.add_argument("months", type=int, nargs="?", default=1, help="往前翻的月数（默认1）")
-parser.add_argument("output_dir", nargs="?", default=".", help="JSONL 输出目录（默认当前目录）")
-parser.add_argument("--user-query-id", help="手动指定 UserByScreenName GraphQL ID")
-parser.add_argument("--tweets-query-id", help="手动指定 UserTweets GraphQL ID")
+# ---- 命令行 ----
+parser = argparse.ArgumentParser(description="增量抓取 X.com 公开推文")
+parser.add_argument("handle", help="@handle")
+parser.add_argument("--days", type=int, default=3, help="往前几天（默认3）")
+parser.add_argument("--months", type=int, default=None, help="往前几月（会覆盖--days）")
+parser.add_argument("--force", action="store_true", help="强制抓取，忽略已有数据")
+parser.add_argument("--user-query-id")
+parser.add_argument("--tweets-query-id")
+parser.add_argument("--no-stats", action="store_true")
 args = parser.parse_args()
 
 HANDLE = args.handle.lstrip("@")
-MONTHS = args.months
-OUTPUT_DIR = os.path.abspath(args.output_dir)
-SINCE = (datetime.now(timezone.utc) - timedelta(days=MONTHS * 30)).strftime("%Y-%m-%d")
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, f"{HANDLE}_tweets.jsonl")
-CONFIG_PATH = os.path.expanduser("~/.kairos/kairos-x-scraper-config.json")
+if args.months is not None:
+    args.days = args.months * 30
+SINCE_DT = datetime.now(timezone.utc) - timedelta(days=args.days)
+RANGE_LABEL = f"{args.months}个月" if args.months else f"{args.days}天"
 
-# ---- 错误文案（中文） ----
+# 数据目录
+DATA_DIR = os.path.join(DATA_BASE, HANDLE)
+TWEETS_FILE = os.path.join(DATA_DIR, "tweets.jsonl")
+
 MSG_NO_TOKEN = f"""❌ 未找到 X 认证信息。
+请在浏览器中获取 auth_token 和 ct0，配置保存在 {CONFIG_PATH}"""
+MSG_TOKEN_EXPIRED = "❌ auth_token 已过期。请重新登录 X。"
 
-请在浏览器中:
-1. 打开 https://x.com 并登录
-2. F12 → Application → Cookies → https://x.com
-3. 找到 auth_token 和 ct0，复制它们的 Value
-4. 粘贴给我（格式: auth_token: xxx; ct0: yyy）
+# ---- 工具函数 ----
+def parse_x_date(s):
+    return datetime.strptime(s, '%a %b %d %H:%M:%S %z %Y')
 
-这些信息将保存在 {CONFIG_PATH}，下次无需重复提供。"""
+def load_existing():
+    """加载已有推文，返回 (id集合, 最新日期)"""
+    ids = set()
+    newest = None
+    if os.path.exists(TWEETS_FILE):
+        with open(TWEETS_FILE) as f:
+            for line in f:
+                try:
+                    t = json.loads(line)
+                    ids.add(t["id"])
+                    if t.get("created_at"):
+                        try:
+                            dt = parse_x_date(t["created_at"])
+                            if newest is None or dt > newest:
+                                newest = dt
+                        except ValueError:
+                            pass
+                except json.JSONDecodeError:
+                    continue
+    return ids, newest
 
-MSG_TOKEN_EXPIRED = """❌ auth_token 已过期。
+def save_tweets(tweets):
+    """追加保存（不去重，调用前已去重）"""
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(TWEETS_FILE, "a") as f:
+        for t in tweets:
+            f.write(json.dumps(t, ensure_ascii=False) + "\n")
 
-请重新获取:
-1. 打开 https://x.com，退出登录后重新登录
-2. F12 → Application → Cookies → https://x.com
-3. 复制新的 auth_token 和 ct0
-4. 粘贴给我"""
+# ---- 增量判断 ----
+existing_ids, newest_existing = load_existing()
 
-MSG_QUERY_EXPIRED = """❌ X 的内部 API 已更新（GraphQL query ID 过期）。
+if not args.force and newest_existing:
+    age_hours = (datetime.now(timezone.utc) - newest_existing).total_seconds() / 3600
+    if age_hours < args.days * 24:
+        print(f"✅ 已有数据足够新（{age_hours:.0f}小时前），无需重复抓取。")
+        print(f"   文件: {TWEETS_FILE}")
+        print(f"   已有: {len(existing_ids)} 条")
+        # 用 --force 可强制重新抓取
+        sys.exit(0)
 
-请手动获取新的 query ID:
-1. 打开 https://x.com/{handle}
-2. F12 → Network → 清空 → 刷新页面
-3. 搜索框输入: UserByScreenName
-4. 点击该请求 → 复制 URL 中 /graphql/ 后面的那串 ID
-5. 同样搜索 UserTweets，再复制一个 ID
-6. 把两个 ID 告诉我"""
+# 有旧数据 → 只抓增量（从最新推文日期起）
+if newest_existing:
+    SINCE_DT = min(SINCE_DT, newest_existing - timedelta(hours=1))
+    print(f"📌 增量模式: 已有 {len(existing_ids)} 条，最新 {newest_existing.strftime('%Y-%m-%d %H:%M')}")
 
 # ---- 读取配置 ----
 def load_config():
@@ -76,7 +109,7 @@ if not AUTH_TOKEN or not CT0:
     print(MSG_NO_TOKEN)
     sys.exit(1)
 
-# ---- 建立 session ----
+# ---- session ----
 session = requests.Session()
 session.headers.update({
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
@@ -87,28 +120,22 @@ def api_get(url, params=None):
     for attempt in range(3):
         resp = session.get(url, params=params, timeout=30)
         if resp.status_code == 429:
-            wait = 60 * (attempt + 1)
-            print(f"   ⏳ 限流，等待 {wait} 秒...")
+            wait = min(30 * (attempt + 1), 90)
+            print(f"   ⏳ 限流 {wait}s...")
             time.sleep(wait)
             continue
         return resp
     return resp
 
-# ---- 获取 guest token ----
-print("🔑 获取 guest token...")
-gt = session.post(
-    "https://api.x.com/1.1/guest/activate.json",
-    headers={"Authorization": f"Bearer {BEARER}"},
-    timeout=20,
-)
+# ---- guest token ----
+print("🔑 guest token...")
+gt = session.post("https://api.x.com/1.1/guest/activate.json",
+                  headers={"Authorization": f"Bearer {BEARER}"}, timeout=20)
 if gt.status_code != 200:
-    print(f"❌ 无法获取 guest token (HTTP {gt.status_code})")
-    print(MSG_TOKEN_EXPIRED)
+    print(f"❌ guest token 失败 (HTTP {gt.status_code})")
     sys.exit(1)
 
 guest_token = gt.json().get("guest_token", "")
-print(f"   ✅ {guest_token[:25]}...")
-
 session.cookies.set("guest_token", guest_token, domain=".x.com")
 session.cookies.set("auth_token", AUTH_TOKEN, domain=".x.com")
 session.cookies.set("ct0", CT0, domain=".x.com")
@@ -118,102 +145,93 @@ session.headers.update({
     "Authorization": f"Bearer {BEARER}",
 })
 
-# ---- 发现/确认 query ID ----
+# ---- 自动发现 query ID ----
 def discover_query_ids():
-    """尝试从首页 JS 中自动提取 query ID"""
-    query_map = {}
-
-    # 策略A: 从首页 HTML 提取
+    qm = {}
     resp = session.get("https://x.com/", timeout=30, headers={"Accept": "text/html"})
-    if resp.status_code == 200:
-        html = resp.text
-        # 内联 script
-        for s in re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL):
-            for m in re.finditer(r'queryId:\s*"([^"]+)"\s*,\s*operationName:\s*"([^"]+)"', s):
-                query_map[m.group(2)] = m.group(1)
-            for m in re.finditer(r'operationName:\s*"([^"]+)"\s*,\s*queryId:\s*"([^"]+)"', s):
-                query_map[m.group(1)] = m.group(2)
+    if resp.status_code != 200:
+        return qm
+    html = resp.text
 
-        # 策略B: 从 JS bundle 提取
-        js_urls = set()
-        for m in re.finditer(r'/_next/static/chunks/[^"]+\.js', html):
-            js_urls.add(m.group(0))
-        for m in re.finditer(r'src="(https://abs\.twimg\.com/[^"]+\.js[^"]*)"', html):
-            js_urls.add(m.group(1))
+    for s in re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL):
+        for m in re.finditer(r'queryId:"([^"]+)",operationName:"([^"]+)"', s):
+            qm[m.group(2)] = m.group(1)
+        for m in re.finditer(r'operationName:"([^"]+)",queryId:"([^"]+)"', s):
+            qm[m.group(1)] = m.group(2)
+        for m in re.finditer(r'"(\w+)":\s*\{[^}]*queryId:\s*"([^"]+)"', s):
+            if m.group(1) not in qm:
+                qm[m.group(1)] = m.group(2)
 
-        for js_url in list(js_urls)[:5]:
-            full = f"https://x.com{js_url}" if js_url.startswith("/") else js_url
-            try:
-                js = session.get(full, timeout=30, headers={"Accept": "*/*"}).text
-                for m in re.finditer(r'\{queryId:"([^"]+)",operationName:"([^"]+)"', js):
-                    query_map[m.group(2)] = m.group(1)
-                for m in re.finditer(r'operationName:"([^"]+)",queryId:"([^"]+)"', js):
-                    query_map[m.group(1)] = m.group(2)
-            except:
-                pass
+    js_urls = set()
+    for m in re.finditer(r'/_next/static/chunks/[^"]+\.js', html):
+        js_urls.add(m.group(0))
+    for m in re.finditer(r'src="(https://abs\.twimg\.com/[^"]+\.js[^"]*)"', html):
+        js_urls.add(m.group(1))
 
-    return query_map
+    for js_url in list(js_urls)[:8]:
+        full = f"https://x.com{js_url}" if js_url.startswith("/") else js_url
+        try:
+            js_resp = session.get(full, timeout=30, headers={"Accept": "*/*", "Referer": "https://x.com/"})
+            if js_resp.status_code != 200: continue
+            js = js_resp.text
+            for m in re.finditer(r'\{queryId:"([^"]+)",operationName:"([^"]+)"', js):
+                qm[m.group(2)] = m.group(1)
+            for m in re.finditer(r'operationName:"([^"]+)",queryId:"([^"]+)"', js):
+                qm[m.group(1)] = m.group(2)
+        except: pass
+    return qm
 
-# 确定 UserByScreenName ID
+FALLBACK_USER = [
+    "2qvSHpkWTMS9i0zJAwDNiA","32pL5BWe_3mEHPq_2bMeiA","G3KGOASz96HQu8jAk6qP2w",
+    "B9xW2SH5gcX5R8Dq4K8a7Q","k7nNZE7LiuyGimNj2R7ZPA","qWb2gmqRSj5gQcStp0V1uQ",
+    "1CLoG7dqY7dPJvL3YcV0Gw","ZzCRx1bFFjqRRU_VNcDjzg","lpG3Q4lTf6pmTXtzDVAi2Q",
+    "yIo1h5N-I2o-vNMXoMhx3A","6ZDCjABfIuXsAqJIQ8gHlQ","Gd3w-NsHbgTngiEcOKTR7Q",
+]
+FALLBACK_TWEETS = [
+    "hr4gzZONlq23okjU8fIe_A","nrd2A_7XhJZY6XgK7f8Chg","EoMjnH-Nn1yBulIpSJhMYA",
+    "V7H0j_H0q3nWwHEFVJmJzQ","8ISBPy1DQ0FZ9TvhYqRfaw","5Lu2Dng3M4CwZ2tqkF8VYw",
+    "1AcDLhJgE5YKqBUIvXhK2Q","bD40GweSqNRMtqD9B_M9SQ","C8XGpRqP4LtJmNkWsc0UOw",
+    "69hU7DprHxXIjRgFYCbRAg","xT8_QeRMYhGxR8uD4Ka7PA","Y0JDg6r8H_kIx2RtAQHmYg",
+]
+
+def fallback_test(endpoint, qids, variables):
+    for qid in qids:
+        resp = api_get(
+            f"https://x.com/i/api/graphql/{qid}/{endpoint}",
+            params={
+                "variables": json.dumps(variables),
+                "features": json.dumps({"hidden_profile_subgroups_enabled": True} if "ScreenName" in endpoint else {"responsive_web_graphql_exclude_directive_enabled": True}),
+                "fieldToggles": json.dumps({"withAuxiliaryUserLabels": False}),
+            },
+        )
+        if resp.status_code == 200 and "errors" not in resp.json():
+            return qid
+    return None
+
+# ---- 确定 query ID ----
 USER_QID = args.user_query_id
 TWEETS_QID = args.tweets_query_id
 
 if not USER_QID or not TWEETS_QID:
-    print("🔍 自动发现 GraphQL query ID...")
+    print("🔍 自动发现 query ID...")
     qmap = discover_query_ids()
-    print(f"   发现 {len(qmap)} 个 query")
-
+    print(f"   首页+JS: {len(qmap)} 个")
     if not USER_QID:
-        for name in ["UserByScreenName"]:
-            if name in qmap:
-                USER_QID = qmap[name]
-                print(f"   ✅ UserByScreenName: {USER_QID}")
-                break
-
+        for n in ["UserByScreenName"]:
+            if n in qmap: USER_QID = qmap[n]; print(f"   ✅ UserByScreenName: {USER_QID}")
     if not TWEETS_QID:
-        for name in ["UserTweets"]:
-            if name in qmap:
-                TWEETS_QID = qmap[name]
-                print(f"   ✅ UserTweets: {TWEETS_QID}")
-                break
-
-# 自动发现失败 → fallback
-FALLBACK_USER_IDS = [
-    "2qvSHpkWTMS9i0zJAwDNiA", "32pL5BWe_3mEHPq_2bMeiA",
-    "G3KGOASz96HQu8jAk6qP2w", "B9xW2SH5gcX5R8Dq4K8a7Q",
-]
-FALLBACK_TWEETS_IDS = [
-    "hr4gzZONlq23okjU8fIe_A", "nrd2A_7XhJZY6XgK7f8Chg",
-    "EoMjnH-Nn1yBulIpSJhMYA", "V7H0j_H0q3nWwHEFVJmJzQ",
-]
+        for n in ["UserTweets"]:
+            if n in qmap: TWEETS_QID = qmap[n]; print(f"   ✅ UserTweets: {TWEETS_QID}")
 
 if not USER_QID:
-    print("   🔄 尝试 fallback UserByScreenName ID...")
-    for qid in FALLBACK_USER_IDS:
-        test = api_get(
-            f"https://x.com/i/api/graphql/{qid}/UserByScreenName",
-            params={
-                "variables": json.dumps({"screen_name": HANDLE}),
-                "features": json.dumps({"hidden_profile_subgroups_enabled": True}),
-                "fieldToggles": json.dumps({"withAuxiliaryUserLabels": False}),
-            },
-        )
-        if test.status_code == 200 and "errors" not in test.json():
-            USER_QID = qid
-            print(f"   ✅ 命中: {qid}")
-            break
-
-if not TWEETS_QID:
-    print("   🔄 尝试 fallback UserTweets ID...")
-    # 先得有 user_id 才能测试
-    pass  # 等拿到 user_id 后再试
-
+    print("   🔄 fallback UserByScreenName...")
+    USER_QID = fallback_test("UserByScreenName", FALLBACK_USER, {"screen_name": HANDLE})
+    if USER_QID: print(f"   ✅ {USER_QID}")
 if not USER_QID:
-    print(MSG_QUERY_EXPIRED.replace("{handle}", HANDLE))
-    sys.exit(1)
+    print("❌ UserByScreenName 全部失败。"); sys.exit(1)
 
-# ---- 获取用户信息 ----
-print(f"\n🔍 查找 @{HANDLE}...")
+# ---- 获取用户 ID ----
+print(f"\n🔍 @{HANDLE}...")
 UR = api_get(
     f"https://x.com/i/api/graphql/{USER_QID}/UserByScreenName",
     params={
@@ -221,8 +239,6 @@ UR = api_get(
         "features": json.dumps({
             "hidden_profile_subscriptions_enabled": True,
             "profile_label_improvements_pcf_label_in_post_enabled": True,
-            "responsive_web_profile_redirect_enabled": False,
-            "rweb_tipjar_consumption_enabled": False,
             "verified_phone_label_enabled": False,
             "highlights_tweets_tab_ui_enabled": True,
             "creator_subscriptions_tweet_preview_api_enabled": True,
@@ -232,53 +248,31 @@ UR = api_get(
         "fieldToggles": json.dumps({"withPayments": False, "withAuxiliaryUserLabels": True}),
     },
 )
-
-if UR.status_code == 401:
-    print(MSG_TOKEN_EXPIRED)
-    sys.exit(1)
-
+if UR.status_code == 401: print(MSG_TOKEN_EXPIRED); sys.exit(1)
 ud = UR.json()
-if "errors" in ud:
-    print(f"❌ API 错误: {ud['errors']}")
-    sys.exit(1)
+if "errors" in ud: print(f"❌ {ud['errors']}"); sys.exit(1)
 
 ur = ud["data"]["user"]["result"]
 user_id = ur["rest_id"]
 leg = ur.get("legacy", {})
-print(f"   ✅ {leg.get('name')} | ID={user_id}")
-print(f"   👥 {leg.get('followers_count', 0):,} 粉丝 | 📊 {leg.get('statuses_count', 0):,} 推文")
+print(f"   ✅ {leg.get('name')} | ID={user_id} | 👥{leg.get('followers_count',0):,}")
 
 # ---- 补全 TWEETS_QID ----
 if not TWEETS_QID:
-    print("   🔄 fallback UserTweets ID...")
-    for qid in FALLBACK_TWEETS_IDS:
-        test = api_get(
-            f"https://x.com/i/api/graphql/{qid}/UserTweets",
-            params={
-                "variables": json.dumps({"userId": user_id, "count": 1, "includePromotedContent": True}),
-                "features": json.dumps({"responsive_web_graphql_exclude_directive_enabled": True}),
-            },
-        )
-        if test.status_code == 200 and "errors" not in test.json():
-            TWEETS_QID = qid
-            print(f"   ✅ 命中: {qid}")
-            break
-
+    print("   🔄 fallback UserTweets...")
+    TWEETS_QID = fallback_test("UserTweets", FALLBACK_TWEETS, {"userId": user_id, "count": 1, "includePromotedContent": True})
+    if TWEETS_QID: print(f"   ✅ {TWEETS_QID}")
 if not TWEETS_QID:
-    print(MSG_QUERY_EXPIRED.replace("{handle}", HANDLE))
-    sys.exit(1)
+    print("❌ UserTweets 全部失败。"); sys.exit(1)
 
 # ---- 抓取 ----
-print(f"\n📥 抓取 @{HANDLE} 的推文（往前 {MONTHS} 个月，从 {SINCE} 起）...")
+print(f"\n📥 抓取（{RANGE_LABEL}，从 {SINCE_DT.strftime('%Y-%m-%d')} 起）...")
 
 FEATURES = json.dumps({
-    "rweb_video_screen_enabled": False,
-    "rweb_cashtags_enabled": True,
+    "rweb_video_screen_enabled": False, "rweb_cashtags_enabled": True,
     "profile_label_improvements_pcf_label_in_post_enabled": True,
-    "responsive_web_profile_redirect_enabled": False,
-    "rweb_tipjar_consumption_enabled": False,
-    "verified_phone_label_enabled": False,
-    "creator_subscriptions_tweet_preview_api_enabled": True,
+    "responsive_web_profile_redirect_enabled": False, "rweb_tipjar_consumption_enabled": False,
+    "verified_phone_label_enabled": False, "creator_subscriptions_tweet_preview_api_enabled": True,
     "responsive_web_graphql_timeline_navigation_enabled": True,
     "responsive_web_graphql_skip_user_profile_image_extensions_enabled": False,
     "premium_content_api_read_enabled": False,
@@ -290,8 +284,7 @@ FEATURES = json.dumps({
     "responsive_web_jetfuel_frame": True,
     "responsive_web_grok_share_attachment_enabled": True,
     "responsive_web_grok_annotations_enabled": True,
-    "articles_preview_enabled": True,
-    "responsive_web_edit_tweet_api_enabled": True,
+    "articles_preview_enabled": True, "responsive_web_edit_tweet_api_enabled": True,
     "rweb_conversational_replies_downvote_enabled": False,
     "graphql_is_translatable_rweb_tweet_is_translatable_enabled": True,
     "view_counts_everywhere_api_enabled": True,
@@ -301,8 +294,7 @@ FEATURES = json.dumps({
     "content_disclosure_ai_generated_indicator_enabled": True,
     "responsive_web_grok_show_grok_translated_post": True,
     "responsive_web_grok_analysis_button_from_backend": True,
-    "post_ctas_fetch_enabled": False,
-    "freedom_of_speech_not_reach_fetch_enabled": True,
+    "post_ctas_fetch_enabled": False, "freedom_of_speech_not_reach_fetch_enabled": True,
     "standardized_nudges_misinfo": True,
     "tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled": True,
     "longform_notetweets_rich_text_read_enabled": True,
@@ -313,129 +305,98 @@ FEATURES = json.dumps({
     "responsive_web_enhance_cards_enabled": False,
 })
 
-all_tweets = []
+new_tweets = []
 cursor = None
 page = 0
-reached_boundary = False
+consecutive_oob = 0
 
 while page < 500:
-    v = {
-        "userId": user_id, "count": 100,
-        "includePromotedContent": True,
-        "withQuickPromoteEligibilityTweetFields": True,
-        "withVoice": True,
-    }
-    if cursor:
-        v["cursor"] = cursor
+    v = {"userId": user_id, "count": 100, "includePromotedContent": True,
+         "withQuickPromoteEligibilityTweetFields": True, "withVoice": True}
+    if cursor: v["cursor"] = cursor
 
     resp = api_get(
         f"https://x.com/i/api/graphql/{TWEETS_QID}/UserTweets",
-        params={
-            "variables": json.dumps(v),
-            "features": FEATURES,
-            "fieldToggles": json.dumps({"withArticlePlainText": False}),
-        },
+        params={"variables": json.dumps(v), "features": FEATURES,
+                "fieldToggles": json.dumps({"withArticlePlainText": False})},
     )
-
-    if resp.status_code == 401:
-        print(MSG_TOKEN_EXPIRED)
-        sys.exit(1)
-    if resp.status_code != 200:
-        print(f"❌ HTTP {resp.status_code}: {resp.text[:300]}")
-        break
+    if resp.status_code == 401: print(MSG_TOKEN_EXPIRED); sys.exit(1)
+    if resp.status_code == 429: print("❌ 限流过度"); break
+    if resp.status_code != 200: print(f"❌ HTTP {resp.status_code}"); break
 
     data = resp.json()
-    if "errors" in data:
-        print(f"⚠️ {data['errors']}")
-        break
+    if "errors" in data: print(f"⚠️ {data['errors']}"); break
 
-    tl = (data.get("data", {}).get("user", {}).get("result", {})
-          .get("timeline", {}).get("timeline", {}))
+    tl = (data.get("data",{}).get("user",{}).get("result",{})
+          .get("timeline",{}).get("timeline",{}))
     entries = []
-    for ins in tl.get("instructions", []):
+    for ins in tl.get("instructions",[]):
         if ins.get("type") == "TimelineAddEntries":
-            entries = ins.get("entries", [])
-            break
+            entries = ins.get("entries",[]); break
 
-    new = 0
+    n_new, n_dup, n_oob = 0, 0, 0
     cursor = None
     for e in entries:
-        eid = e.get("entryId", "")
-        ct = e.get("content", {})
-        if ct.get("cursorType") == "Bottom":
-            cursor = ct.get("value")
-            continue
-        if not (eid.startswith("tweet-") or eid.startswith("profile-conversation-")):
-            continue
+        eid = e.get("entryId",""); ct = e.get("content",{})
+        if ct.get("cursorType") == "Bottom": cursor = ct.get("value"); continue
+        if not (eid.startswith("tweet-") or eid.startswith("profile-conversation-")): continue
 
-        tr = ct.get("itemContent", {}).get("tweet_results", {}).get("result", {})
+        tr = ct.get("itemContent",{}).get("tweet_results",{}).get("result",{})
         if not tr:
-            items = ct.get("items", [])
-            if items:
-                tr = items[0].get("item", {}).get("itemContent", {}).get("tweet_results", {}).get("result", {})
-        if tr.get("__typename") == "TweetWithVisibilityResults":
-            tr = tr.get("tweet", {})
-        lg = tr.get("legacy", {})
-        if not lg:
-            continue
+            items = ct.get("items",[])
+            if items: tr = items[0].get("item",{}).get("itemContent",{}).get("tweet_results",{}).get("result",{})
+        if tr.get("__typename") == "TweetWithVisibilityResults": tr = tr.get("tweet",{})
+        lg = tr.get("legacy",{})
+        if not lg: continue
 
-        ca = lg.get("created_at", "")
-        if ca < SINCE:
-            reached_boundary = True
-            continue
+        tid = tr.get("rest_id") or lg.get("id_str","")
+        ca = lg.get("created_at","")
+        try: ca_dt = parse_x_date(ca)
+        except ValueError: continue
 
-        all_tweets.append({
-            "id": tr.get("rest_id") or lg.get("id_str", ""),
-            "created_at": ca,
-            "text": lg.get("full_text", ""),
-            "likes": lg.get("favorite_count", 0),
-            "retweets": lg.get("retweet_count", 0),
-            "replies": lg.get("reply_count", 0),
-            "quotes": lg.get("quote_count", 0),
-            "views": tr.get("views", {}).get("count", 0),
-            "lang": lg.get("lang", ""),
-            "urls": [u.get("expanded_url", "") for u in lg.get("entities", {}).get("urls", [])],
+        if ca_dt < SINCE_DT: n_oob += 1; continue
+        if tid in existing_ids: n_dup += 1; continue
+
+        new_tweets.append({
+            "id": tid, "created_at": ca, "text": lg.get("full_text",""),
+            "likes": lg.get("favorite_count",0), "retweets": lg.get("retweet_count",0),
+            "replies": lg.get("reply_count",0), "quotes": lg.get("quote_count",0),
+            "views": tr.get("views",{}).get("count",0), "lang": lg.get("lang",""),
+            "urls": [u.get("expanded_url","") for u in lg.get("entities",{}).get("urls",[])],
         })
-        new += 1
+        n_new += 1
+        existing_ids.add(tid)
 
     page += 1
-    earliest = min((t["created_at"] for t in all_tweets), default=SINCE)
-    print(f"   📄 第{page}页 | +{new}条 | 累计{len(all_tweets)}条 | 最早 {earliest[:10]}", flush=True)
+    print(f"   📄 p{page} | +{n_new} 🆕 | ~{n_dup}已有 | 《{n_oob}越界 | ∑{len(new_tweets)}", flush=True)
 
-    if reached_boundary or (new == 0 and cursor is None):
-        break
-    time.sleep(1.5)
+    if n_oob > 0 and n_new == 0:
+        consecutive_oob += 1
+    else:
+        consecutive_oob = 0
+    if consecutive_oob >= 2:
+        print("   ✅ 已到日期边界"); break
+    time.sleep(0.8 if n_new > 0 else 1.2)
 
 # ---- 保存 ----
-with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-    for t in all_tweets:
-        f.write(json.dumps(t, ensure_ascii=False) + "\n")
+if new_tweets:
+    save_tweets(new_tweets)
+    total = len(existing_ids)
+else:
+    total = len(existing_ids)  # 已有数据总量
 
-# ---- 统计 ----
 print(f"\n{'='*50}")
-print(f"✅ 抓取完成")
-print(f"   账号: @{HANDLE}")
-print(f"   推文: {len(all_tweets)} 条")
-print(f"   文件: {OUTPUT_FILE}")
-print(f"   大小: {os.path.getsize(OUTPUT_FILE) / 1024:.1f} KB")
+print(f"✅ 新增 {len(new_tweets)} 条，总计 {total} 条")
+print(f"   📂 {TWEETS_FILE}")
 
-if all_tweets:
-    print(f"   日期: {all_tweets[-1]['created_at'][:10]} → {all_tweets[0]['created_at'][:10]}")
-
-    # 股票代码统计
+if not args.no_stats and new_tweets:
     tickers = {}
-    for t in all_tweets:
+    for t in new_tweets:
         for m in re.findall(r'\$([A-Z]{1,5})', t["text"]):
-            # 过滤假阳性
-            if m in ("I", "A", "THE", "AND", "FOR", "NOT", "ALL", "NEW", "ONE",
-                     "AI", "AT", "IN", "ON", "IT", "OR", "TO", "NO"):
-                continue
-            tickers[m] = tickers.get(m, 0) + 1
-
+            if m not in ("I","A","THE","AND","FOR","NOT","ALL","NEW","ONE",
+                         "AI","AT","IN","ON","IT","OR","TO","NO"):
+                tickers[m] = tickers.get(m,0) + 1
     if tickers:
-        print(f"   💹 股票代码: {len(tickers)} 个")
-        print(f"   TOP 20:")
-        for i, (tk, n) in enumerate(sorted(tickers.items(), key=lambda x: x[1], reverse=True)[:20], 1):
-            print(f"      {i:2}. ${tk:5s} {n}次")
-    else:
-        print(f"   💹 未检测到股票代码提及")
+        print(f"   🏷️ 新推文中 {len(tickers)} 个代码")
+        for i,(tk,n) in enumerate(sorted(tickers.items(), key=lambda x:x[1], reverse=True)[:10], 1):
+            print(f"      {i:2}. ${tk:5s} {n}")

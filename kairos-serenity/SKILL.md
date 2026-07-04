@@ -12,15 +12,17 @@ metadata:
 
 ## 运行前提：每次执行前抓取最新数据
 
-**强制**：每次被调用时，先用 kairos-x-scraper 的逻辑抓取 @aleabitoreddit 最近 3 天的推文。
+**强制**：每次被调用时，先用 kairos-x-scraper 增量抓取 @aleabitoreddit 最近 3 天推文。
 
-```
-抓取目标: aleabitoreddit
-时间范围: 3 天
-输出路径: ~/.kairos/serenity/serenity_tweets_[YYYYMMDD_HHMMSS].jsonl
+```bash
+python3 /path/to/kairos-x-scraper/scripts/fetch_tweets.py aleabitoreddit --days 3
 ```
 
-如果 `~/.kairos/kairos-x-scraper-config.json` 不存在或 token 过期，先引导用户完成 x-scraper 的密钥配置。
+数据持久化在 `~/.kairos/x-scraper/aleabitoreddit/tweets.jsonl`，已有数据自动跳过。抓取后运行分析：
+
+```bash
+python3 /path/to/kairos-x-scraper/scripts/analyze_tweets.py ~/.kairos/x-scraper/aleabitoreddit/tweets.jsonl --days 3 --mode all
+```
 
 抓取成功后，记录抓取时间到配置文件 `last_tweet_fetch` 字段。
 

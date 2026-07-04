@@ -8,6 +8,7 @@ kairos-x-scraper — 按博主增量抓取 X.com 公开推文
 """
 
 import json, time, sys, re, os, argparse
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 
 try:
@@ -382,6 +383,61 @@ while page < 500:
 if new_tweets:
     save_tweets(new_tweets)
 
+# ---- 核心观点提取 ----
+def extract_insights(tweets):
+    """从推文中提取 Serenity 的核心论点，不只是数 ticker"""
+    insights = []
+    for t in tweets:
+        txt = t["text"]
+        # 跳过纯互动/太短的推文
+        if len(txt) < 80:
+            continue
+        tks = list(set(re.findall(r'\$([A-Z]{1,5})', txt)))
+        tks = [x for x in tks if x not in FALSE_POSITIVES]
+
+        # 分类核心观点
+        tags = []
+        if any(w in txt.lower() for w in ['bottleneck','chokepoint','monopoly','sole source','only supplier','pricing power']):
+            tags.append('卡脖子/垄断')
+        if any(w in txt.lower() for w in ['supply chain','OSINT','linkedin','filing','sec','conference','deck']):
+            tags.append('供应链发现')
+        if any(w in txt.lower() for w in ['architecture','roadmap','vertically integrat','TAM','market cap']):
+            tags.append('架构/估值')
+        if any(w in txt.lower() for w in ['sold out','capacity','shortage','ramp','qualification']):
+            tags.append('产能/爬坡')
+        if any(w in txt.lower() for w in ['capex','hyperscaler','meta','google','amazon','microsoft','datacenter']):
+            tags.append('云商capex')
+        if any(w in txt.lower() for w in ['robot','humanoid','agility','optimus','unitree','physical AI']):
+            tags.append('人形机器人')
+        if any(w in txt.lower() for w in ['position','own','holding','concentration','adding','bought','sold','bearish','avoid']):
+            tags.append('持仓信号')
+        if any(w in txt.lower() for w in ['crash','selloff','drawdown','dip','correction','-35%','-40%']):
+            tags.append('市场波动')
+        if any(w in txt.lower() for w in ['fed','rate','macro','tariff','china','export control','chip act']):
+            tags.append('宏观/政策')
+
+        if tags:
+            # 提取核心句（前 250 字符含关键信息）
+            core = txt[:250]
+            # 截断到完整句子
+            if len(txt) > 250:
+                last_period = max(core.rfind('.'), core.rfind('\n'))
+                if last_period > 100:
+                    core = core[:last_period+1]
+
+            insights.append({
+                "date": t["created_at"][4:10],
+                "tickers": tks,
+                "tags": tags,
+                "likes": t.get("likes", 0),
+                "text": core,
+                "url": f"https://x.com/aleabitoreddit/status/{t['id']}",
+            })
+
+    # 按点赞排序，最有价值的在前
+    insights.sort(key=lambda x: x["likes"], reverse=True)
+    return insights
+
 # ---- 生成结构化分析结果 ----
 # 对所有推文（含已有）中符合时间范围的做分析
 ANALYSIS_FILE = os.path.join(DATA_DIR, "analysis.json")
@@ -461,6 +517,8 @@ for theme, kws in THEME_KW.items():
 dates = sorted([parse_x_date(t["created_at"]) for t in all_for_analysis])
 date_range = [dates[0].strftime('%Y-%m-%d'), dates[-1].strftime('%Y-%m-%d')] if dates else []
 
+insights = extract_insights(all_for_analysis)
+
 analysis = {
     "handle": HANDLE,
     "fetched_at": datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
@@ -471,6 +529,7 @@ analysis = {
     "tickers": dict(sorted(ticker_counts.items(), key=lambda x: x[1], reverse=True)),
     "signals": signals,
     "themes": theme_counts,
+    "insights": insights,          # ⬅ 核心观点，serenity 的主要消费对象
 }
 
 with open(ANALYSIS_FILE, "w") as f:
@@ -494,3 +553,9 @@ if signals:
     bull = sum(1 for s in signals if s["type"] == "bullish")
     bear = sum(1 for s in signals if s["type"] == "bearish")
     print(f"   📡 信号: 📗持仓{pos} 🟢看多{bull} 🔴看空{bear}")
+if insights:
+    tag_counts = Counter()
+    for ins in insights:
+        tag_counts.update(ins["tags"])
+    top_tags = [f'{t}×{n}' for t,n in tag_counts.most_common(5)]
+    print(f"   💡 核心观点: {len(insights)}条 | {' | '.join(top_tags)}")

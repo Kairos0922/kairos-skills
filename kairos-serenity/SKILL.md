@@ -20,15 +20,21 @@ python3 /path/to/kairos-x-scraper/scripts/fetch_tweets.py aleabitoreddit --days 
 
 x-scraper 自动完成：抓取 → 去重 → 分析 → 生成 `~/.kairos/x-scraper/aleabitoreddit/analysis.json`。
 
-**直接读取 `analysis.json`** 获取结构化结果（无需再解析原始 JSONL）：
+**直接读取 `analysis.json`** 获取结构化结果。**核心字段 `insights` 包含了 Serenity 的论点链**，是框架分析的主要依据：
 
 ```json
 {
-  "tickers": {"SIVE": 15, "NVDA": 8, ...},    // 股票提及计数
-  "signals": [                                   // 持仓/看多/看空信号
-    {"date": "Jul 03", "type": "position", "tickers": ["SIVE"], "text": "..."}
+  "insights": [                                  // ⬅ 核心观点（主要消费对象）
+    {
+      "date": "Jul 03", "tickers": ["SIVE","AAOI"],
+      "tags": ["持仓信号","市场波动"],
+      "text": "反驳SemiAnalysis CPO延迟报告，已大幅加仓光学",
+      "likes": 4400, "url": "https://x.com/..."
+    }
   ],
-  "themes": {"光学/CPO/光子": 53, "存储/HBM": 20, ...}  // 主题分布
+  "tickers": {"SIVE": 15, ...},                  // 股票提及计数（辅助）
+  "signals": [...],                               // 持仓/看多/看空（辅助）
+  "themes": {"光学/CPO/光子": 53, ...}             // 主题分布（辅助）
 }
 ```
 

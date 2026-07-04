@@ -12,31 +12,15 @@ metadata:
 
 ## 运行前提：每次执行前抓取最新数据
 
-**强制**：每次被调用时，先用 kairos-x-scraper 抓取并分析 @aleabitoreddit 最近 3 天推文。
+**强制**：每次被调用时，先用 kairos-x-scraper 抓取 @aleabitoreddit 最近 3 天推文。
 
 ```bash
 python3 /path/to/kairos-x-scraper/scripts/fetch_tweets.py aleabitoreddit --days 3
 ```
 
-x-scraper 自动完成：抓取 → 去重 → 分析 → 生成 `~/.kairos/x-scraper/aleabitoreddit/analysis.json`。
+x-scraper 交付干净的原始推文 JSONL：`~/.kairos/x-scraper/aleabitoreddit/tweets.jsonl`。
 
-**直接读取 `analysis.json`** 获取结构化结果。**核心字段 `insights` 包含了 Serenity 的论点链**，是框架分析的主要依据：
-
-```json
-{
-  "insights": [                                  // ⬅ 核心观点（主要消费对象）
-    {
-      "date": "Jul 03", "tickers": ["SIVE","AAOI"],
-      "tags": ["持仓信号","市场波动"],
-      "text": "反驳SemiAnalysis CPO延迟报告，已大幅加仓光学",
-      "likes": 4400, "url": "https://x.com/..."
-    }
-  ],
-  "tickers": {"SIVE": 15, ...},                  // 股票提及计数（辅助）
-  "signals": [...],                               // 持仓/看多/看空（辅助）
-  "themes": {"光学/CPO/光子": 53, ...}             // 主题分布（辅助）
-}
-```
+**Serenity 自己从原始推文中读取和提炼**：直接解析 JSONL → 提取 tickers/signals/themes/insights → 结合 references/ 框架分析。不依赖 x-scraper 做任何提炼。
 
 抓取成功后，记录抓取时间到配置文件 `last_tweet_fetch` 字段。
 

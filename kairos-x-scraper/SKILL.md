@@ -8,7 +8,9 @@ metadata:
 
 # kairos-x-scraper
 
-按博主增量抓取 X.com 推文，数据持久化，自动跳过已有数据。
+**只做一件事**：抓取 X.com 公开推文 → 清洗格式 → 按博主持久化存储。
+
+**不做的**：提炼观点、分类标签、统计主题、提取信号。这些是消费方（如 kairos-serenity）的职责。
 
 ## 数据存储
 
@@ -73,20 +75,7 @@ python3 scripts/fetch_tweets.py <handle> --days 3
 | `--user-query-id ID` | 手动指定 query ID（自动发现失败时） |
 | `--tweets-query-id ID` | 同上 |
 
-### 分析已抓取数据
-
-```bash
-python3 scripts/analyze_tweets.py ~/.kairos/x-scraper/<handle>/tweets.jsonl --days 3 --mode all
-```
-
-| mode | 输出 |
-|------|------|
-| `summary` | 条数、日期、主题分布 |
-| `tickers` | 股票代码 TOP 20 |
-| `signals` | 持仓/看多/看空信号 |
-| `all` | 以上全部 |
-
-### Step 4：处理结果
+### Step 4：交付结果
 
 - **"已有数据足够新"** → 秒级返回，直接告诉用户
 - **新增 N 条** → 告知新增数、总计、TOP 代码

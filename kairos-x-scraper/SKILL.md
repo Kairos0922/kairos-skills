@@ -2,6 +2,13 @@
 name: kairos-x-scraper
 description: |
   抓取 X.com（Twitter）任意公开账号的推文。触发词："抓取推文"、"抓X"、"爬twitter"、"fetch tweets"、"抓他的推文"、"抓一下XXX的X"、提到 X/Twitter 账号想抓取其内容。当用户想获取某个账号的推文数据用于分析时加载。
+allowed-tools:
+  - Bash(python3 scripts/fetch_tweets.py *)
+  - Bash(python3 scripts/analyze_tweets.py *)
+  - Read
+  - Write
+  - Grep
+  - Glob
 metadata:
   version: "1.1.0"
 ---

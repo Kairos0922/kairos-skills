@@ -2,6 +2,11 @@
 name: kairos-loop
 description: |
   当用户想把一个反复要做的任务交给 AI 自主迭代完成、或想写一段"自循环"提示词时加载。触发词包括："写个 loop"、"做个循环任务"、"让 AI 自己跑直到完成"、"loop prompt"、"自动迭代"、"帮我把这个流程做成 loop"、"loop engineering"、"自循环"、"agent 自己跑到绿"。也适用于用户描述了一个重复性场景（如"每次发版都要核对文档"、"跑测试跑到全过"），即使没说"loop"这个词，只要意图是让 AI 设定目标后自主"计划→执行→验证→修正→重复"，都应主动加载。不适用于单次问答、内容排版、生成图片这类一问一答任务。
+allowed-tools:
+  - Read
+  - Write
+  - Grep
+  - Glob
 metadata:
   version: "0.1.0"
 ---

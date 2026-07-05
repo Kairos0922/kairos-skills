@@ -5,6 +5,12 @@ description: |
   "做一张封面"、"生成信息图"、"视觉卡片"、"海报"、"小红书封面"、
   "PPT 封面"、"蒙德里安"、"咨询风"、"杂志风"、"票据风"、"行程卡"、"清单"。
   不适用于微信正文排版、PPT 演示文稿或纯图片编辑。
+allowed-tools:
+  - Bash(python3 scripts/*)
+  - Read
+  - Write
+  - Grep
+  - Glob
 metadata:
   version: "2.1.0"
 ---

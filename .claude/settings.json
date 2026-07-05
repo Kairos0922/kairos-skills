@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "defaultMode": "auto",
+    "allow": ["Bash(python3 *)", "Bash(git *)", "WebSearch", "WebFetch(*)"]
+  },
+  "env": {
+    "CLAUDE_CODE_ENABLE_AUTO_MODE": "1"
+  }
+}

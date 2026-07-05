@@ -2,6 +2,13 @@
 name: kairos-serenity
 description: |
   基于 X 账号 @aleabitoreddit（Serenity）的 AI 供应链瓶颈投资框架，推荐标的、评估股票/基金、诊断持仓组合。触发词："选股"、"推荐标的"、"帮我看看这个基金"、"评估持仓"、"Serenity"、"瓶颈股"、"AI供应链"、"光通信标的"、"这个股票怎么样"、"有没有类似的标的"、"帮我用Serenity框架分析"、"诊断持仓"、"修改定投方案"。每次执行自动抓取 Serenity 最新3天推文，基于实时数据+框架进行评估。
+allowed-tools:
+  - Bash(python3 *fetch_tweets.py *)
+  - Read
+  - Write
+  - WebSearch
+  - Grep
+  - Glob
 metadata:
   version: "1.0.0"
 ---

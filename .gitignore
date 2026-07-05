@@ -4,8 +4,6 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Claude Code
-.claude/
 
 # Environment and secrets
 .env
@@ -18,6 +16,9 @@ skill-autoresearch/runs/
 
 # Documentation
 docs/
+
+# Claude Code (local overrides)
+.claude/settings.local.json
 
 # IDE
 .idea/

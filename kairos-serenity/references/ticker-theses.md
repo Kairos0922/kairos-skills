@@ -35,7 +35,7 @@ restore branch split.
 ## Optical / CPO basket and upstream glass substrates
 
 - **Latest signal**: Bullish dip-add / supply-chain reinforcement — Jul 3 updates frame the optical selloff as caused by false Meta-capex and CPO-delay narratives, with Serenity saying he heavily added to optical positions. A separate Jul 3 post adds positive upstream glass-substrate read-through from Sumitomo Chemical and Samsung Electro-Mechanics formally establishing the GlaSSEM JV in Korea, with timeline and funding finalized.
-- **Latest tweets**: [2072936659369517341](https://x.com/aleabitoreddit/status/2072936659369517341) / [2072940349300122098](https://x.com/aleabitoreddit/status/2072940349300122098) / [2072986020640076052](https://x.com/aleabitoreddit/status/2072986020640076052) — 2026-07-03
+- **Latest tweets**: 2072936659369517341 / 2072940349300122098 / 2072986020640076052 — 2026-07-03
 - **Context**: Treat the optical posts as position-action evidence during a drawdown, not proof that CPO timing risk is gone. The glass-substrate JV is a concrete upstream supply-chain timing marker, but Serenity's captured text is truncated, so do not infer named public beneficiaries beyond the advanced-packaging / glass-core substrate watch.
 
 ---
@@ -43,7 +43,7 @@ restore branch split.
 ## Unitree / Agility Robotics / $CCXI / Harmonic Drive — humanoid robotics exposure
 
 - **Latest signal**: Bullish humanoid-robotics validation — Jul 3 update notes LeaderDrive (688017) hit all-time highs after a 20% limit-up move, and frames robotics excitement as driven by frontier humanoid companies including `$CCXI` / Agility Robotics and Unitree's approved STAR listing. Jul 2 update still calls Agility Robotics the current #1 U.S. humanoid player by commercialization, accessed via `$CCXI`, ahead of `$TSLA` Optimus and Figure in Serenity's personal ranking.
-- **Latest tweet**: [2072913865458004014](https://x.com/aleabitoreddit/status/2072913865458004014) — 2026-07-03T05:22:33Z
+- **Latest tweet**: 2072913865458004014 — 2026-07-03T05:22:33Z
 - **Context**: Treat Agility as the explicit favorite direct robotics exposure and `$CCXI` as the public listing route to monitor, not as a completed listing. The durable additions are commercialization ranking, strategic-backer / PIPE validation, U.S.-sourcing/localization, BOM-cost framing, and cross-market China robotics sentiment via LeaderDrive / Unitree; Harmonic Drive remains the explicit upstream component exposure in prior captured text.
 
 ---
@@ -51,7 +51,7 @@ restore branch split.
 ## $ASTS / Rakuten / $SPCX — Japan LEO satellite networks
 
 - **Latest signal**: Bullish LEO satellite-network validation — Jun 29 update says Rakuten will establish a joint venture with AST SpaceMobile to build out LEO satellite networks for Japan, framed by Digitimes/Nikkei as a strategic response to Starlink's growing influence in Japan.
-- **Latest tweet**: [2071545016007467486](https://x.com/aleabitoreddit/status/2071545016007467486) — 2026-06-29T10:43:13Z
+- **Latest tweet**: 2071545016007467486 — 2026-06-29T10:43:13Z
 - **Context**: Treat as satellite-infrastructure demand validation for $ASTS and the broader LEO communications theme. $SPCX/Starlink is the competitive benchmark rather than the direct beneficiary.
 
 ---
@@ -59,7 +59,7 @@ restore branch split.
 ## $GM / $NVDA — factory robotics validation
 
 - **Latest signal**: Bullish robotics adoption read-through — Jun 29 update says GM cut 1,000 workers and replaced them with 50 robots in a Jun 22 report, while separate reports show GM working on a factory-robotics deal with NVIDIA.
-- **Latest tweet**: [2071532870859149617](https://x.com/aleabitoreddit/status/2071532870859149617) — 2026-06-29T09:54:58Z
+- **Latest tweet**: 2071532870859149617 — 2026-06-29T09:54:58Z
 - **Context**: Treat as industry-validation evidence for physical AI / robotics operating leverage rather than a disclosed GM or NVIDIA position. The thesis is that large manufacturers are starting to trade labor expense for robotics capacity, supporting the broader robotics supply-chain theme.
 
 ---
@@ -67,7 +67,7 @@ restore branch split.
 ## $RKLB / $SPCX — orbital compute and reusable rocket infrastructure
 
 - **Latest signal**: Thematic bullish watch — Jun 29 update frames 2020-2030 as an unusually strong innovation decade, citing reusable rockets for orbital compute, ASI/recursive learning, and advanced robotics as linked frontiers.
-- **Latest tweet**: [2071465314794233905](https://x.com/aleabitoreddit/status/2071465314794233905) — 2026-06-29T05:26:31Z
+- **Latest tweet**: 2071465314794233905 — 2026-06-29T05:26:31Z
 - **Context**: Treat as broad thematic mapping, not a disclosed position or company-specific catalyst. It extends the existing space/compute infrastructure watchlist from $SPCX to $RKLB and ties it to AI and robotics demand.
 
 ---
@@ -75,7 +75,7 @@ restore branch split.
 ## $CBRS — Cerebras Systems
 
 - **Latest signal**: Bullish inference-capacity scarcity reinforcement — Jun 30 update cites an anecdotal Machine Learning subreddit complaint that a user needed 1-2K tokens/sec, tried to use Cerebras, and claimed OpenAI reserved all capacity, making waitlists effectively infinite for non-hyperscalers. This builds on the Jun 27 starter long / OpenAI inference catalyst where Serenity said OpenAI was launching its heavyweight 5.6 Sol frontier model on Cerebras at up to 750 tokens/sec and disclosed starter positions in Cerebras in the ~$170s, below the $185 IPO price.
-- **Latest tweet**: [2071961279380791729](https://x.com/aleabitoreddit/status/2071961279380791729) — 2026-06-30T14:17:18Z
+- **Latest tweet**: 2071961279380791729 — 2026-06-30T14:17:18Z
 - **Quote**: "Claims OpenAI reserved all capacity, making waitlist infinite for everyone else not a hyperscaler."
 - **Context**: Treat as thesis reinforcement for scarce high-speed inference capacity and OpenAI workload validation, not as a confirmed contract or sizing increase. Position size still appears early/starter, so conviction remains below core holdings unless later updates add sizing, formal customer evidence, or durable revenue follow-through.
 
@@ -84,7 +84,7 @@ restore branch split.
 ## $SPCX / $SIVE — SpaceX optical networking read-through
 
 - **Latest signal**: Bullish supply-chain read-through — Jun 27 update links Elon Musk / SpaceX's acquisition of Mesh, an optical networking startup working on 1.6T OSFP pluggables, to continued demand for merchant CW DFB laser suppliers. Serenity frames Mesh as likely owning optical engine / packaging while sourcing lasers externally; $SIVE is highlighted as one of the more startup-friendly suppliers.
-- **Latest tweet**: [2070691462354993543](https://x.com/aleabitoreddit/status/2070691462354993543) — 2026-06-27T02:11:30Z
+- **Latest tweet**: 2070691462354993543 — 2026-06-27T02:11:30Z
 - **Quote**: "$SPCX / Elon Musk acquires Mesh, an optical networking startup. Which is working on 1.6T OSFP (pluggable)."
 - **Context**: Treat as an ecosystem validation / demand-side catalyst rather than a disclosed Serenity position change. It reinforces the existing CW laser bottleneck thesis around $SIVE and merchant optical suppliers.
 
@@ -93,16 +93,16 @@ restore branch split.
 ## $ACMR — ACM Research Inc (+ WUS / 2316 HK)
 
 - **Latest signal**: Long (disclosed exposure, position increase planned) — Jun 20 personal notes confirm $ACMR and WUS remain core positions in the NAV discount + independent AI growth screen. Serenity states intent to "put more concentration into those on top of what I already own Monday" (Mon Jun 22). New context: Wistron (3231 TWO) added to the same screen as the new highest-conviction name. H-Share subsidiary listing for both $ACMR and WUS expected soon, adding an unlock catalyst. Activist investor involvement in WUS adds another potential unlock beyond pure NAV discount.
-- **Latest tweet**: [2068180134667182470](https://x.com/aleabitoreddit/status/2068180134667182470) — 2026-06-20T03:52:23Z
+- **Latest tweet**: 2068180134667182470 — 2026-06-20T03:52:23Z
 - **Quote**: "I think both $ACMR and WUS have H-Share subsidiary listing soon, and those were the biggest NAV discounts with independent growth. Then you have a highly successful activist going after WUS so I'd expect some middle ground there. So maybe I'll put more concentration into those on top of what I already own Monday."
-- **Context**: $ACMR (ACM Research, US-listed semiconductor equipment maker, large China exposure) and WUS (2316 HK, holding company with AI growth exposure) are disclosed holdings. Position increase signaled for Mon Jun 22 open. SK Square remains the benchmark holding-company archetype comparator. Activist investor involvement in WUS adds a potential unlock catalyst beyond pure NAV discount. Original Jun 18 discovery tweet: [2067658240612262198](https://x.com/aleabitoreddit/status/2067658240612262198).
+- **Context**: $ACMR (ACM Research, US-listed semiconductor equipment maker, large China exposure) and WUS (2316 HK, holding company with AI growth exposure) are disclosed holdings. Position increase signaled for Mon Jun 22 open. SK Square remains the benchmark holding-company archetype comparator. Activist investor involvement in WUS adds a potential unlock catalyst beyond pure NAV discount. Original Jun 18 discovery tweet: 2067658240612262198.
 
 ---
 
 ## Wistron (3231 TWO) — Taiwan-listed holding company with AI supply chain exposure
 
 - **Latest signal**: Strongly Bullish — New entry Jun 20 2026. "Best one I've seen since $SIVE" among NAV discount + AI growth screens. Key stats: ~$16.2B MC, Q1 revenue up 144% Y/Y, owns 35.46% of Wiwynn (~0.66x Wistron MC). Position likely initiated or increased Mon Jun 22. Wiwynn is an AI server manufacturer; its continued growth is the core thesis driver. Serenity describes this as "growing very fast independently" vs the Korean names which have governance concerns.
-- **Latest tweet**: [2068180134667182470](https://x.com/aleabitoreddit/status/2068180134667182470) — 2026-06-20T03:52:23Z
+- **Latest tweet**: 2068180134667182470 — 2026-06-20T03:52:23Z
 - **Quote**: "Wistron (3231) is the best one I've seen since $SIVE + Ayar + Wiwynn are one of my favorite trio. ~$16.2B MC, Q1 revenue up a ridiculous amount with 144% Y/Y growth. Owns 35.46% of Wiwynn, which is ~0.66x of MC. I'd expect Wiwynn to keep on growing. [...] And Wistron was growing very fast independently. So maybe I'll put more concentration into those on top of what I already own Monday, we'll see."
 - **Context**: TWO:3231 listed on Taiwan Stock Exchange. Wistron is the parent company; Wiwynn is the AI server subsidiary. The 35.46% Wiwynn stake at ~0.66x Wistron's own MC creates a significant NAV discount angle on top of independent revenue growth (+144% Y/Y in Q1). Serenity compares it to $SIVE in terms of conviction level. The Monday (Jun 22) purchase signal is actionable. Key risk: Taiwan-listed stock with currency and geopolitical considerations; Wiwynn is the leveraged play on AI server demand. No explicit governance concerns flagged (unlike Korean peers Simmtech and Iljin).
 
@@ -111,7 +111,7 @@ restore branch split.
 ## $XFAB — X-FAB Silicon Foundries
 
 - **Latest signal**: Bullish / sovereignty funding catalyst — X-FAB received €127.4M from the CHIPS Act for its MEMS foundry, with Fab4Micro in Erfurt framed as a key Germany/Europe technological-sovereignty project. Production start planned in 2028.
-- **Latest tweet**: [2069430169300070612](https://x.com/aleabitoreddit/status/2069430169300070612) — 2026-06-23T14:39:35Z
+- **Latest tweet**: 2069430169300070612 — 2026-06-23T14:39:35Z
 - **Quote**: "Today, $XFAB (1.23B MC) receives €127.4 million from CHIPS ACT for their MEMS Foundry."
 - **Context**: Prior Jun 11 framing was research-bullish on X-FAB as an early EU silicon photonics foundry around ~€1.1B MC. Jun 23 added Bernstein sellside validation, then a CHIPS Act funding catalyst tied to European semiconductor sovereignty. Treat the grant as balance-sheet / credibility support, with production-start timing still out in 2028.
 
@@ -120,7 +120,7 @@ restore branch split.
 ## $INTC — Intel Corp
 
 - **Latest signal**: Policy-backstop watch — Jul 2 update says Trump would probably like the idea of OpenAI discussing a 5% U.S. government stake and frames it as a potential `$INTC`-style setup if the government becomes a soft backstop for future AI capex/obligations. Earlier Jun 24 update flagged Nancy Pelosi's disclosure of $1M-$5M in `$INTC` March 2027 calls, reportedly executed May 29 by her husband.
-- **Latest tweet**: [2072570681586553112](https://x.com/aleabitoreddit/status/2072570681586553112) — 2026-07-02T06:38:51Z
+- **Latest tweet**: 2072570681586553112 — 2026-07-02T06:38:51Z
 - **Quote**: "If this turns into an $INTC type situation, would be interesting if the US government becomes a soft backstop"
 - **Context**: Treat the OpenAI comment as a reusable policy-financing analogy, not a direct OpenAI trade. Intel remains a politically catalyzed domestic-fab/tariff stock in Serenity's framing. Cross-ref: Trump truth:39333 (Jun 18 04:29 UTC) named Intel with domestic fab/tariff protection framing; Serenity's Jun 18 reaction questioned sustainability.
 
@@ -129,7 +129,7 @@ restore branch split.
 ## $UBER — Uber Technologies
 
 - **Latest signal**: Political-flow watch — Jun 24 update flags Nancy Pelosi's disclosure of 200 $UBER March 19 2027 call option contracts with a $50 strike, reportedly executed May 29 by her husband.
-- **Latest tweet**: [2069780882018459851](https://x.com/aleabitoreddit/status/2069780882018459851) — 2026-06-24T13:53:11Z
+- **Latest tweet**: 2069780882018459851 — 2026-06-24T13:53:11Z
 - **Quote**: "200 $UBER March 19, 2027 call option contracts with a $50 strike price"
 - **Context**: Record as a disclosure/attention catalyst only. No Serenity fundamental thesis or personal position was disclosed in the captured text.
 
@@ -138,7 +138,7 @@ restore branch split.
 ## $BABA — Alibaba Group / Qwen AI lab
 
 - **Latest signal**: Risk Watch / AI model-distillation controversy — Jun 25 update says Anthropic directly accused Alibaba's Qwen AI lab of distilling frontier models via thousands of fake accounts and over 28.8M exchanges. Serenity frames the allegation as broadly known but not yet met with real penalties.
-- **Latest tweet**: [2069938631817699588](https://x.com/aleabitoreddit/status/2069938631817699588) — 2026-06-25T00:20:02Z
+- **Latest tweet**: 2069938631817699588 — 2026-06-25T00:20:02Z
 - **Quote**: "Today, Anthropic has directly accused the $BABA Qwen AI lab of distilling its frontier AI models."
 - **Context**: Treat as regulatory / reputation / AI-competition risk commentary, not a disclosed Serenity long or short. The market relevance is that enforcement, if any, could affect Alibaba's Qwen positioning and broader China AI-lab perceptions.
 
@@ -147,7 +147,7 @@ restore branch split.
 ## $MU — Micron Technology
 
 - **Latest signal**: Bullish / memory-bottleneck reinforcement — Jun 26 update cites Elon Musk sounding the alarm on massive memory demand and price hikes relative to supply for $MU / SK Hynix / Samsung. This follows the Jun 25 humanoid-robot memory-demand thesis and Jun 24 earnings validation: revenue $41.46B vs $35.8B est, EPS $25.11 vs $20.78 est, guide materially above estimates, and 16 long-term agreements.
-- **Latest tweet**: [2070413682996347069](https://x.com/aleabitoreddit/status/2070413682996347069) — 2026-06-26T07:47:43Z
+- **Latest tweet**: 2070413682996347069 — 2026-06-26T07:47:43Z
 - **Quote**: "Very interesting statement today: $MU CEO predicts a multi-decade memory demand cycle driven by humanoid robots."
 - **Context**: Memory thesis entry implied ~March 2026 when consensus was bearish. Serenity uses $MU as the lead name in the memory validation, pairing it with $SNDK, $EWY (Korea ETF), SK Hynix, and Samsung. Jun 24 earnings and long-term agreements added fundamental validation; Jun 25 adds a longer-duration robotics/humanoid demand driver; Jun 26 adds external AI-demand validation from Musk's memory-supply warning.
 
@@ -156,7 +156,7 @@ restore branch split.
 ## $SNDK — Sandisk Corp
 
 - **Latest signal**: Track record validated (+281%) — Memory supercycle fully validated: $SNDK from $565 to $2155 (+281%) in ~3 months, the strongest absolute performer among the memory basket. Part of the same Jun 18 memory validation tweet.
-- **Latest tweet**: [2067621883525394768](https://x.com/aleabitoreddit/status/2067621883525394768) — 2026-06-18T14:54:06Z
+- **Latest tweet**: 2067621883525394768 — 2026-06-18T14:54:06Z
 - **Quote**: "$SNDK $565 -> $2155 (+281.42%)"
 - **Context**: SNDK (now independent after WD spin-off) delivered the highest percentage return of the memory names Serenity tracked. No new position change; track record validation tweet. Part of the same memory supercycle narrative as $MU, SK Hynix, Samsung, and $EWY.
 
@@ -165,7 +165,7 @@ restore branch split.
 ## $AMD — Advanced Micro Devices
 
 - **Latest signal**: Catalyst Watch / Supply concern — Trendforce reports AMD is actively trying to secure CW (continuous-wave) laser supply via multiple major procurement orders. AMD is described as "tipping the first domino after NVIDIA" in the CW laser supply race. Other hyperscalers (Amazon, Microsoft) expected to follow. Serenity frames AMD's move as confirming the "invaluable chokepoint" nature of CW laser supply. No explicit long/short position in AMD disclosed; AMD is primarily the demand-side catalyst validating the CW laser bottleneck thesis ($SIVE, $AAOI).
-- **Latest tweet**: [2067206734427697196](https://x.com/aleabitoreddit/status/2067206734427697196) — 2026-06-17T11:24:26Z
+- **Latest tweet**: 2067206734427697196 — 2026-06-17T11:24:26Z
 - **Quote**: "Trendforce reports that $AMD is actively trying to secure CW laser supply with multiple major procurement orders… AMD is tipping the first domino after Nvidia."
 - **Context**: AMD's move mirrors NVIDIA, which already locked up Lumentum/Coherent under multi-year LTAs. Now AMD is racing to secure remaining independent Western capacity ($SIVE, $AAOI, Macom). AMD's rationale per Trendforce: "to ensure that its future capacity will not be constrained by NVIDIA and other major CSPs." Serenity expects this to cascade to other hyperscalers, driving further supply scarcity for all CW laser makers.
 
@@ -174,7 +174,7 @@ restore branch split.
 ## $IQE — IQE plc (LON: IQE)
 
 - **Latest signal**: Strongly Bullish — Called at ~$12 as key Western InP epiwafer supplier critical to optical supply chains. Validated: $MTSI secured multi-year IQE supply, then Tower Semiconductor ($TSEM) signed multi-year InP epiwafer deal (Jun 15, 2026). China eased InP substrate exports (Jun 15, Digitimes), relieving upstream capacity bottlenecks → bullish for all InP epiwafer consumers. Supply chain: $AXTI (substrates) → $IQE (epiwafers) → $MTSI, $TSEM, laser makers downstream.
-- **Latest tweet**: [2066421816793714938](https://x.com/aleabitoreddit/status/2066421816793714938) — 2026-06-15T07:25:28Z
+- **Latest tweet**: 2066421816793714938 — 2026-06-15T07:25:28Z
 - **Quote**: "Wow, $IQE and $TSEM sign a multi year InP epiwafer deal. Remember I told you all IQE was important to Western optical supply chains back at $12? $MTSI had to go out of their way to secure their supply with IQE. Now there's another critical deal with Tower Semi."
 - **Context**: IQE is the critical InP epiwafer chokepoint in Western optical supply chains. After calling it at $12, thesis validated by two successive multi-year supply agreements ($MTSI then $TSEM), confirming IQE's monopoly-adjacent position. China InP substrate export easing (Jun 15) is a second-order bullish: more upstream inputs → more IQE production capacity → more revenue. Serenity has explicitly held IQE as a core supply chain position.
 
@@ -183,7 +183,7 @@ restore branch split.
 ## $SIVE — (SEK-listed)
 
 - **Latest signal**: Bullish CPO/photonics reinforcement — Jul 2 updates argue photonics is backed by revenue and an NVIDIA-driven architecture shift, unlike low-revenue quantum analogies. Serenity also says SIVE's volume-ramp paths include JBL 1.6T LRO, POET, AEVA, GFS reference-laser use, and Ayar/NVIDIA NVLink CPO mass production; Jul 1 Nasdaq-listing timeline and institutional financing demand remain the corporate-action support.
-- **Latest tweet**: [2072726120706007465](https://x.com/aleabitoreddit/status/2072726120706007465) — 2026-07-02T16:56:31Z
+- **Latest tweet**: 2072726120706007465 — 2026-07-02T16:56:31Z
 - **Quote**: "Photonics is backed by actual revenue numbers and it's an architectural shift championed by $NVDA."
 - **Context**: SEK-listed stock. Original long thesis initiated ~March 13, 2026 at 4 SEK entry. By June 13, 2026, up ~1900% (~3 months), then experienced a sharp drawdown alongside the optical/CPO basket. Major institutions (JPM, Fidelity) had only recently begun entering as of mid-June; the Jul 1 financing update added stronger demand/terms validation for the upsized 700M SEK round, and the later Nasdaq-listing timeline update strengthens the corporate-action/liquidity path. Jul 2 replies add near-term volume-ramp evidence through JBL, POET, AEVA, GFS, and Ayar/NVIDIA NVLink, while still remaining Serenity's mapping rather than confirmed customer revenue. Watch dilution, use of proceeds, allocation details, customer confirmation, listing execution, and volume revenue.
 
@@ -192,7 +192,7 @@ restore branch split.
 ## $POET — POET Technologies
 
 - **Latest signal**: Bullish AGM / optical shortage read-through — Jun 29 update says POET AGM notes imply the top three laser suppliers control 68% of the market and are sold out for the next two years. Serenity links this to $LITE CEO commentary into 2028 and frames it as laser shortage visibility extending into 2029.
-- **Latest tweet**: [2071488272245944399](https://x.com/aleabitoreddit/status/2071488272245944399) — 2026-06-29T06:57:45Z
+- **Latest tweet**: 2071488272245944399 — 2026-06-29T06:57:45Z
 - **Quote**: "POET implicitly confirms laser shortage is going into 2029 now."
 - **Context**: This adds supply-duration support to the prior Jun 24 OSINT / hyperscaler-customer thesis. Treat as photonics market bottleneck validation, not a confirmed POET customer contract.
 
@@ -201,7 +201,7 @@ restore branch split.
 ## $AXTI — AXT Inc
 
 - **Latest signal**: Bullish — China eased InP substrate exports (Jun 15, source: Digitimes), expected to relieve mass production bottlenecks in the photonics market. InP substrate easing = more upstream capacity flowing through the chain ($AXTI→$IQE→$AAOI/$LITE/$SIVE).
-- **Latest tweet**: [2066340661633372452](https://x.com/aleabitoreddit/status/2066340661633372452) — 2026-06-15T02:02:59Z
+- **Latest tweet**: 2066340661633372452 — 2026-06-15T02:02:59Z
 - **Quote**: "Today, there's a new report that China eased InP substrate exports. Which is expected to relieve mass production bottlenecks in the photonics market. My optical positions are very happy to hear this: From $AXTI (substrates), $IQE (epiwafers) to $AAOI (lasers)/$LITE/$SIVE, and others."
 - **Context**: Original AXTI call (Dec 2025 entry ~$700M MC) returned +1,057%+ by Apr 2026; Reuters InP thesis confirmed Jun 2026. InP substrate easing is bullish because the whole photonics market is currently supply-constrained. "Not a buy now" at +1,057% level for new entries; but as disclosed position, the easing news is positive.
 
@@ -210,7 +210,7 @@ restore branch split.
 ## $LITE — Lumentum Holdings
 
 - **Latest signal**: Bullish supply-duration reinforcement / mixed as new-money signal — Jul 2 update cites POET AGM read-through that Lumentum is sold out for the next two years, likely into 2029, and is supply-strained enough to buy CW lasers externally. This strengthens the optical revenue/supply thesis while keeping Serenity's preference for upstream/high-beta bottleneck names such as $SIVE and $AAOI.
-- **Latest tweet**: [2072726120706007465](https://x.com/aleabitoreddit/status/2072726120706007465) — 2026-07-02T16:56:31Z
+- **Latest tweet**: 2072726120706007465 — 2026-07-02T16:56:31Z
 - **Quote**: "$LITE is completely sold out for the next 2 years (per $POET AGM) likely starting into 2029."
 - **Context**: $LITE is a key laser/optical component maker in the InP supply chain. Prior Jun 17 note: Lumentum/Coherent are locked up under multi-year NVIDIA LTAs, bullish for revenue visibility but limiting supply available to AMD and other hyperscalers. Jul 2 adds longer supply-duration support and external CW-laser sourcing pressure, reinforcing scarcity for remaining independent suppliers.
 
@@ -219,7 +219,7 @@ restore branch split.
 ## $AAOI — Applied Optoelectronics Inc
 
 - **Latest signal**: Bullish (CW laser demand + revenue-ramp asymmetry) — Jun 22 update reframes $AAOI around projection math: if the company hits projections, Serenity estimates 800%+ Y/Y growth and roughly $5.6B annualized revenue against a ~$12.8B market cap, with the $471M/month run-rate likely to keep rising as demand scales into 2028. This extends the Jun 17 AMD CW-laser procurement catalyst: $AAOI remains one of the few independent Western CW laser suppliers after Lumentum/Coherent were locked up by NVIDIA.
-- **Latest tweet**: [2069062745308254434](https://x.com/aleabitoreddit/status/2069062745308254434) — 2026-06-22T14:19:34Z
+- **Latest tweet**: 2069062745308254434 — 2026-06-22T14:19:34Z
 - **Quote**: "If $AAOI hits projections, that’s over 800%+ Y/Y growth, and $5.6B revenue annualized off $12.8B MC."
 - **Context**: AAOI is a CW laser and optical components maker. 2025 thesis entry ~$30, now ~$175 (+483%), market cap grew from ~$3B to ~$14B. Jun 17 AMD procurement news is an incremental demand-side catalyst; Jun 22 adds a valuation/revenue-ramp framing tied to 2028 demand scaling.
 
@@ -228,7 +228,7 @@ restore branch split.
 ## 138080.KQ — OE Solutions
 
 - **Latest signal**: Bullish / acquisition-target thesis — Serenity thinks OE Solutions makes the most sense as an acquisition target for a large downstream player because it trades around a ~$215M market cap despite scarce EML/CW laser IP.
-- **Latest tweet**: [2069230221388333366](https://x.com/aleabitoreddit/status/2069230221388333366) — 2026-06-23T01:25:03Z
+- **Latest tweet**: 2069230221388333366 — 2026-06-23T01:25:03Z
 - **Quote**: "OE Solutions ($138080.KQ) makes the most sense as an acquisition target by a large downstream player."
 - **Context**: Korean optical component company adjacent to the AAOI/SIVE/CW-laser bottleneck thesis. Serenity explicitly compares the possible buyer logic to Source Photonics / Suzhou Dongshan Precision-style acquisitions. xreach text is truncated, so treat this as a fresh watchlist/acquisition-thesis signal, not a complete valuation model.
 
@@ -237,7 +237,7 @@ restore branch split.
 ## $TSEM — Tower Semiconductor
 
 - **Latest signal**: Bullish / validation — Tower Semiconductor was up 10%+ on Jun 22, which Serenity treated as a positive validation of his March long and Jun 15 deal-catalyst framing. He noted in hindsight he should have made it one of his largest positions, while grouping $TSEM with foundries such as $GFS and $INTC that have recently been gaining momentum.
-- **Latest tweet**: [2069188398825566318](https://x.com/aleabitoreddit/status/2069188398825566318) — 2026-06-22T22:38:52Z
+- **Latest tweet**: 2069188398825566318 — 2026-06-22T22:38:52Z
 - **Quote**: "$TSEM up 10%+ today... should have made this one of my largest positions in hindsight back in March."
 - **Context**: Tower Semiconductor's multi-year InP epiwafer deal with IQE remains the core catalyst. The Jun 22 update is mainly a price-action / conviction validation, not a new supply-chain fact.
 
@@ -246,7 +246,7 @@ restore branch split.
 ## $SPCX — SpaceX
 
 - **Latest signal**: Cautious — Cramer inverse signal triggered Jun 18. Jim Cramer blessed $SPCX Jun 17; Serenity notes "Even $SPCX can't withstand his blessing" — invoking "Jim Cramer's law" as a bearish indicator. No position in $SPCX disclosed.
-- **Latest tweet**: [2067604528959238272](https://x.com/aleabitoreddit/status/2067604528959238272) — 2026-06-18T13:45:08Z
+- **Latest tweet**: 2067604528959238272 — 2026-06-18T13:45:08Z
 - **Quote**: "I think Jim Cramer's law needs to be studied in history books. Even $SPCX can't withstand his blessing."
 - **Context**: Jim Cramer had explicitly blessed $SPCX on Jun 17. Jun 18 follow-up confirms Cramer inverse is in effect. This is market commentary; no explicit buy/sell stated.
 
@@ -255,7 +255,7 @@ restore branch split.
 ## $NVDA — NVIDIA Corporation
 
 - **Latest signal**: Bullish — 800V DC power delivery "ahead of schedule," pulled up to Q3 2026 with small volume shipments starting. NVIDIA's Vera Rubin platform is one of the first AI data center platforms to adopt 800V DC. Power semi basket ($VRT, Delta 2308, Schneider, Eaton, Siemens) flagged as beneficiaries.
-- **Latest tweet**: [2066331049605627951](https://x.com/aleabitoreddit/status/2066331049605627951) — 2026-06-15T01:24:47Z
+- **Latest tweet**: 2066331049605627951 — 2026-06-15T01:24:47Z
 - **Quote**: "$NVDA and $GOOGL lead 800V DC ahead of schedule. 'Ahead of schedule', pulled up to Q3 2026 with small volume shipments starting. All flagged as beneficiaries. Source: Commercial Times"
 - **Context**: The Commercial Times source confirms Q3 2026 small volume adoption by NVDA Vera Rubin and Google next-gen AI data centers.
 
@@ -264,7 +264,7 @@ restore branch split.
 ## $GOOGL — Alphabet Inc
 
 - **Latest signal**: Bullish hyperscaler capex durability update — Jun 30 update says it is hard to see U.S. AI hyperscaler capex dropping dramatically from Google to Meta while Chinese entities claim AI-enabled cyber capabilities against Western companies and governments.
-- **Latest tweet**: [2071903552608362500](https://x.com/aleabitoreddit/status/2071903552608362500) — 2026-06-30T10:27:55Z
+- **Latest tweet**: 2071903552608362500 — 2026-06-30T10:27:55Z
 - **Quote**: "Hard to see a world where US AI hyperscaler capex drops dramatically from $GOOGL to $META."
 - **Context**: Treat as top-down AI/security competition support for sustained hyperscaler capex, layered on the earlier Google 800V DC data-center adoption signal.
 
@@ -273,7 +273,7 @@ restore branch split.
 ## $VRT — Vertiv Holdings
 
 - **Latest signal**: Bullish — Flagged as direct beneficiary of 800V DC power delivery going ahead of schedule for Q3 2026.
-- **Latest tweet**: [2066331049605627951](https://x.com/aleabitoreddit/status/2066331049605627951) — 2026-06-15T01:24:47Z
+- **Latest tweet**: 2066331049605627951 — 2026-06-15T01:24:47Z
 - **Quote**: "Delta Electronics (2308), $VRT… All flagged as beneficiaries."
 - **Context**: VRT specializes in data center power and thermal management solutions, making it a direct beneficiary of 800V DC adoption.
 
@@ -282,7 +282,7 @@ restore branch split.
 ## $AOSL — Alpha and Omega Semiconductor
 
 - **Latest signal**: Bullish thematic / power-semiconductor pricing cycle — Jun 26 update says power semis are already starting price hikes, which Serenity reads as bullish for the US power semi trade before the 800V DC data-center power shift fully hits.
-- **Latest tweet**: [2070304723262210194](https://x.com/aleabitoreddit/status/2070304723262210194) — 2026-06-26T00:34:45Z
+- **Latest tweet**: 2070304723262210194 — 2026-06-26T00:34:45Z
 - **Quote**: "Power Semis are already starting price hikes... bullish thematically for US power semi trade from $AOSL to $POWI, before the 800V DC shift fully hits."
 - **Context**: The cited evidence is China's Yangjie Technology announcing its second price increase this year across its product portfolio. Treat as a sector-pricing / cycle signal for US power semis, not a company-specific order or customer confirmation.
 
@@ -291,7 +291,7 @@ restore branch split.
 ## $POWI — Power Integrations
 
 - **Latest signal**: Bullish thematic / power-semiconductor pricing cycle — Jun 26 update includes $POWI in the same US power semi basket as $AOSL, tied to early price hikes and the coming 800V DC data-center power transition.
-- **Latest tweet**: [2070304723262210194](https://x.com/aleabitoreddit/status/2070304723262210194) — 2026-06-26T00:34:45Z
+- **Latest tweet**: 2070304723262210194 — 2026-06-26T00:34:45Z
 - **Quote**: "bullish thematically for US power semi trade from $AOSL to $POWI, before the 800V DC shift fully hits."
 - **Context**: The thesis is thematic: rising power-semi pricing plus future 800V DC adoption. No direct $POWI contract, customer, or position disclosure was made in this post.
 
@@ -300,7 +300,7 @@ restore branch split.
 ## Foosung (093370.KS) — WF₆ Supply Chain Beneficiary
 
 - **Latest signal**: Bullish (call validated, +21% single-day) — China export controls on Japan disrupted ~25% of global WF₆ supply; Foosung (~10% of supply chain) is the "best pure play beneficiary outside of China."
-- **Latest tweet**: [2066404298163154976](https://x.com/aleabitoreddit/status/2066404298163154976) — 2026-06-15T06:15:51Z
+- **Latest tweet**: 2066404298163154976 — 2026-06-15T06:15:51Z
 - **Quote**: "I did say Foosung (093370) was going to be a major winner from the bottleneck created by Chinese export controls on Japan."
 - **Context**: Korean-listed company (~$1.2B MC). China export controlled Japan, taking down ~25% of global WF₆ supply. Validated: +21% single-day move (Jun 15 2026).
 
@@ -309,7 +309,7 @@ restore branch split.
 ## $ASML — ASML Holding NV
 
 - **Latest signal**: Risk Watch / Commentary — Serenity raises the question of China's physical ability to smuggle ASML lithography machines (EUV/DUV units, "the size of a school bus") despite export controls. No $ASML position disclosed.
-- **Latest tweet**: [2067795114211340290](https://x.com/aleabitoreddit/status/2067795114211340290) — 2026-06-19T02:22:27Z
+- **Latest tweet**: 2067795114211340290 — 2026-06-19T02:22:27Z
 - **Quote**: "How does China manage to smuggle in something the size of a school bus from $ASML? Is the real question."
 - **Context**: ASML's EUV and advanced DUV machines are subject to export restrictions limiting sales to China. Serenity's question highlights a concern that physical circumvention of controls (smuggling) could undermine the assumption that export bans alone protect Western semiconductor equipment suppliers' competitive moat. No explicit buy/sell signal.
 
@@ -318,7 +318,7 @@ restore branch split.
 ## $LPK — LPKF Laser & Electronics AG (NASDAQ-targeted; glass-core substrate laser processing)
 
 - **Latest signal**: Strongly Bullish — Explicit $3B-$5B valuation target at full volume ramp (Jun 22 2026). Current MC ~$730M → implied 4-7x upside. "Feels more asymmetrical" — customer base locked in (80% of major global players use LPKF equipment), 70% LIDE/TGV glass-core market share target. Framework: small chokepoint machine suppliers cap from TAM unless holding many chokepoints; LPK has glass-core + CPO-adjacent + advanced packaging exposure. Uses AEHR cycle analogy (<$500m "no customers" → <$1.5B "volume coming" → $3B+ "ramping"). Comparable set: Aixtron (~$8B), Towa (~$2B), Techwing (~$1.5B), MSScorps (~$850M), Riber (~$350M). Disclosure: own confirmed.
-- **Latest tweet**: [2069005921318281566](https://x.com/aleabitoreddit/status/2069005921318281566) — 2026-06-22T10:33:46Z
+- **Latest tweet**: 2069005921318281566 — 2026-06-22T10:33:46Z
 - **Quote**: "As for $LPK: Maybe $3B-$5B seems reasonable when they fully volume ramp if I had to guess. Feels more asymmetrical to me personally since it's just a waiting game and they have the customers for glass substrates. [...] 80% of customers among major global players have selected LPKF equipment. 70% of LIDE market share target for TGV in the glass-core ramp, should be very material. (disclosure: own, the listed names above aside from techwing/aixtron, NFI)."
 - **Context**: Original identification Jun 11 2026 via US import logs (SpaceX supply chain link). Jun 19 thesis upgrade: NASDAQ listing in active discussions, 70% market share target, TAM exceeding prior projections, 4-5 players ordering this year. Jun 22 adds explicit $3B-$5B valuation range at full ramp, with comparable set (Aixtron, Towa, Techwing, MSScorps, Riber) and AEHR cycle template. "Thematic premiums" exceed memory chokepoints due to advanced packaging / CPO adjacency. Disclosure: own confirmed on both Jun 19 and Jun 22.
 

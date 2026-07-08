@@ -22,7 +22,7 @@ metadata:
 **强制**：每次被调用时，先用 kairos-x-scraper 抓取 @aleabitoreddit 最近 3 天推文。
 
 ```bash
-python3 /path/to/kairos-x-scraper/scripts/fetch_tweets.py aleabitoreddit --days 3
+python3 .claude/skills/kairos-x-scraper/scripts/fetch_tweets.py aleabitoreddit --days 3
 ```
 
 x-scraper 交付按日/月/年归档的原始推文 JSONL：`~/.kairos/x-scraper/aleabitoreddit/`。
@@ -223,7 +223,7 @@ x-scraper 交付按日/月/年归档的原始推文 JSONL：`~/.kairos/x-scraper
    → 基金的实际底层暴露
 
 3. references/ 静态框架
-   → 22条原则、供应链地图、历史论点
+   → 30条原则、供应链地图、历史论点
    → 仅在实时推文无覆盖时作为背景参考
 ```
 
@@ -259,7 +259,7 @@ x-scraper 交付按日/月/年归档的原始推文 JSONL：`~/.kairos/x-scraper
 
 | 文件 | 用途 | 何时读 |
 |------|------|--------|
-| `references/methodology.md` | 22条原则(含7大新增维度) + 20项checklist | 评估标的时 |
+| `references/methodology.md` | 30条原则 + 28项checklist | 评估标的时 |
 | `references/supply-chain-map.json` | AI 供应链各层级 → 对应公司 | 推荐/评估时 |
 | `references/ticker-theses.md` | Serenity 历史论点（每个标的） | 评估标的时 |
 | `references/track-record.md` | 历史推荐 + 验证状态 | 评估标的时 |

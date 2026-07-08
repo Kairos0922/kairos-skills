@@ -31,6 +31,14 @@ dated example from the corpus. A runnable checklist is at the bottom.
 20. [Cross-exposure / dual-theme screening](#20-cross-exposure--dual-theme-screening)
 21. [Structured macro filter](#21-structured-macro-filter)
 22. [IPO anchor + starter-position scaling](#22-ipo-anchor--starter-position-scaling)
+23. [Misinformation cycle identification](#23-misinformation-cycle-identification)
+24. [Indiscriminate selloff test](#24-indiscriminate-selloff-test)
+25. [Analyst quantity-gap arbitrage](#25-analyst-quantity-gap-arbitrage)
+26. [Public-private valuation arbitrage](#26-public-private-valuation-arbitrage)
+27. [Actions-over-narrative filter](#27-actions-over-narrative-filter)
+28. [Most-profitable paradox](#28-most-profitable-paradox)
+29. [Time-horizon arbitrage](#29-time-horizon-arbitrage)
+30. [Capex-localization second-order](#30-capex-localization-second-order)
 
 ---
 
@@ -41,8 +49,7 @@ dated example from the corpus. A runnable checklist is at the bottom.
   Anthropic in some cybersecurity exploit benchmarks, framing it as an adverse
   AI-race reset rather than a simple "China model caught up" victory lap. Use
   this as a policy/geopolitical overlay when evaluating AI infra, cyber tooling,
-  and China-exposed AI supply-chain names. Source:
-  [2071074680253911267](https://x.com/aleabitoreddit/status/2071074680253911267).
+  and China-exposed AI supply-chain names. Source: 2071074680253911267.
 
 ---
 
@@ -512,6 +519,157 @@ Then: confirm current price and fundamentals, weight using
 
 ---
 
+## 23. Misinformation cycle identification
+
+- **What:** A structured process for identifying and trading misinformation-driven
+  crashes. The cycle is: bad-faith report/article → sector-wide crash → named
+  party issues one-source rebuttal → rebuttal propagates slowly → price recovers
+  → legitimate analyst downgrades come *after* the recovery. The window is
+  between "rebuttal issued" and "price fully recovered."
+- **Signal:** A report from a named research firm or media outlet triggers a
+  -10% to -40% sector flush. Within 24-72 hours, the company the report was
+  *about* (NVDA, META) issues a direct rebuttal. The rebuttal gets less media
+  coverage than the original report.
+- **Apply:** Do not debate whether the report is "right." Instead: (1) identify
+  the named party the report targets, (2) find their official response (press
+  release, earnings call, executive statement), (3) if rebutted and price hasn't
+  recovered → add to position. The edge is in sourcing speed — most investors
+  trade on the report headline, not the rebuttal.
+- **Example:** Jul 2026 SemiAnalysis published two back-to-back reports claiming
+  CPO delays, triggering a photonics crash. NVDA refuted both: "Our roadmap is
+  intact." Serenity added to optical positions during the window between
+  rebuttal and price recovery, calling it "one of the dumbest thematic selloffs."
+
+## 24. Indiscriminate selloff test
+
+- **What:** When every position in a portfolio falls together — across different
+  sectors, geographies, and theses — the cause is not individual stock
+  fundamentals. It is a macro, liquidity, or risk-off event. Treating it as a
+  thesis failure leads to selling at the bottom.
+- **Signal:** On a single trading day, 5+ unrelated holdings (e.g. NBIS
+  neocloud + MRVL ASIC + INTC foundry + SNDK memory + SIVE lasers + MU DRAM +
+  LITE optical) all down -4% to -10%+. No single fundamental explanation
+  connects them.
+- **Apply:** On an indiscriminate selloff day: (1) do not sell anything, (2) run
+  the test — list all holdings and their daily moves, (3) if the pattern is
+  uniform across unrelated names → macro/liquidity cause, (4) consider adding to
+  highest-conviction positions. Distinguish from a *thematic* selloff where only
+  one sector falls — that requires thesis review.
+- **Example:** Jul 7 2026: NBIS, MRVL, INTC, SNDK, AMD, SIVE, MU, LITE all fell
+  -4% to -10%+ in a single day. Serenity: "Probably doesn't have anything to do
+  with individual fundamentals."
+
+## 25. Analyst quantity-gap arbitrage
+
+- **What:** Analyst shipment and production forecasts use linear extrapolation
+  from historical data. When a new technology enters non-linear adoption
+  (humanoid robots, CPO), official production targets can exceed consensus
+  estimates by multiples. The gap between "what is actually being produced" and
+  "what analysts model" is the alpha.
+- **Signal:** An official source (government agency, company guidance, industry
+  association) publishes a production/shipment number for a new technology that
+  is 3-7× the most recent sell-side consensus estimate.
+- **Apply:** For any emerging hardware theme: (1) find the most recent sell-side
+  consensus shipment estimate, (2) find the most recent official
+  production/government target, (3) if the gap >2×, the entire sector's revenue
+  models are stale. Re-rate the upstream suppliers before analysts revise.
+- **Example:** Jul 2026: Xinhua reported China's 2026 humanoid robot output
+  expected to hit 100,000+ units. Morgan Stanley originally projected 14,000 —
+  a 7× gap. The entire robotics supply-chain revenue model needed rebuilding.
+
+## 26. Public-private valuation arbitrage
+
+- **What:** Private AI companies raise at valuations inflated by scarcity
+  premium — there are few pure-play AI startups, and venture dollars compete for
+  allocation. Public markets have more alternatives and price equivalent or
+  better assets at a discount. The gap is the opportunity.
+- **Signal:** A private AI company raises at valuation $X. A public company in
+  the same or adjacent space with broader commercialization trades at a fraction
+  of $X.
+- **Apply:** Map private funding rounds to public comparables. When a private
+  company raises at $Y billion, find the nearest public pure-play and compare
+  market caps. If the public one is cheaper despite broader commercialization →
+  the public one is mispriced. This extends §22 (IPO Anchor): private funding
+  round valuations are also anchors.
+- **Example:** Jul 2026: Figure AI last valued at ~$39B private, trading at
+  ~$158B implied via CEFs (4× premium for scarcity). Agility Robotics via $CCXI
+  — broader commercialization, public — at a much lower valuation.
+
+## 27. Actions-over-narrative filter
+
+- **What:** Companies act (capex commitments, data center construction, hiring,
+  land purchases). Media narrates ("overbuilding," "cutting capex"). When the
+  two conflict, actions are the ground truth. Narrative is noise.
+- **Signal:** A media narrative claims a company is doing X (retrenching), while
+  that same company announces an action that contradicts X (new $10B facility).
+- **Apply:** For every major media narrative about a company, ask: "What has
+  this company actually *done* in the last 30 days?" Track capex announcements,
+  facility permits, SEC filings. If actions contradict narrative, fade the
+  narrative. This applies to sectors too — a "sector is dead" narrative paired
+  with rising aggregate capex is an entry signal.
+- **Example:** Jul 2026: Bloomberg framed META as "overbuilding" and potentially
+  cutting capex. Days later META announced a new $10B data center in Canada.
+  Narrative contradicted. Serenity: "So much for the media framing."
+
+## 28. Most-profitable paradox
+
+- **What:** A company can post its best-ever financial results and the stock can
+  still decline. Peak fundamentals and peak drawdowns coexist because the market
+  prices factors other than current earnings (macro fears, profit-taking, sector
+  rotation). This is sentiment divergence, not a thesis break.
+- **Signal:** A company reports earnings with operating profit growing >100% YoY
+  and/or becomes the most profitable in its peer group, but the stock drops ≥5%.
+- **Apply:** When a holding posts blowout earnings and sells off: (1) re-read
+  the release to confirm the numbers are actually good, (2) check whether the
+  selloff is company-specific or sector-wide (§24), (3) if numbers are good and
+  selloff is broad → add. The market will eventually price the earnings; it may
+  just not do it on the day they are reported.
+- **Example:** Jul 2026: Samsung operating profit +1803% YoY, exceeding NVDA and
+  Apple as the world's most profitable company. Stock fell -7%. Serenity:
+  "market: we don't think you can keep hiking memory prices / proceeds to hike
+  DRAM by 20%... market: sells off Samsung -7%."
+
+## 29. Time-horizon arbitrage
+
+- **What:** Short-horizon participants (panic-sellers, momentum funds,
+  margin-called levered players) sell into 30-60% drawdowns because their frame
+  is days-to-weeks. Long-horizon participants buy those same drawdowns because
+  their frame is years. The price decline is a transfer of ownership from weak
+  hands to strong hands — not a permanent loss of value.
+- **Signal:** A high-conviction chokepoint name drops 30-60% on no company-
+  specific fundamental deterioration. Social media calls it a "falling knife."
+  The underlying chokepoint thesis is unchanged.
+- **Apply:** When a holding drops sharply: (1) ask whether the chokepoint still
+  exists — did the architecture change? did a competitor qualify? (2) If the
+  chokepoint is intact, the decline is a time-horizon difference, not a thesis
+  failure, (3) add on the assumption that the same institutions selling now on
+  liquidity needs will be buying later on fundamentals. This requires conviction
+  built *before* the drawdown; you cannot build it during.
+- **Example:** Jul 2026: photonics names dropped 30-60% on misinformation.
+  Serenity: "Retail thinks a 30-60% drop is a 'falling knife'... I see it as
+  long term ownership over the next [chokepoints]."
+
+## 30. Capex-localization second-order
+
+- **What:** A hyperscaler's capex flows to a *specific geography* where the
+  facility is being built. The first-order beneficiaries are the local equipment
+  manufacturers, materials suppliers, and construction-adjacent companies — not
+  the hyperscaler itself. This is the geographic dimension of §18 (News
+  Second-Order Effects).
+- **Signal:** A large company announces a facility investment tied to a specific
+  location (e.g. "$9.3B Hiroshima HBM plant"). The geography is explicit.
+- **Apply:** When a capex announcement includes a specific location: (1) map the
+  local equipment and material suppliers in that geography, (2) identify which
+  are publicly traded, (3) local suppliers benefit before global ones because
+  capex is spent locally first. Japanese equipment makers from Hiroshima;
+  Taiwanese from Taichung; American from Arizona/Ohio.
+- **Example:** Jul 2026: MU led ¥1.5T (~$9.3B) Hiroshima HBM plant. Serenity
+  flagged "bullish read through for Disco, Advantest, Resonac, Towa — since
+  capex is localized." These Japanese equipment makers are the first-order
+  beneficiaries, not MU.
+
+---
+
 ## 15. The checklist (run this on any new name)
 
 Score a candidate against his lens. The more "yes", the more it fits his style —
@@ -564,6 +722,23 @@ none of this is a buy signal on its own.
     examples.
 20. **Macro overlay?** Rate path bullish or bearish? Hyperscaler CapEx expanding?
     China AI / robotics entering US? Adjust sizing to macro regime. (§21)
+21. **Misinformation cycle check?** If the stock dropped on a report/article, has
+    the named party (NVDA, META, etc.) issued a one-source rebuttal? If rebutted
+    and price hasn't recovered → window. (§23)
+22. **Indiscriminate selloff?** Are all your unrelated holdings falling together?
+    If yes → macro/liquidity, not thesis failure. (§24)
+23. **Analyst quantity gap?** What is the official production/shipment target vs.
+    consensus analyst estimate? Gap >2x → earnings revisions ahead. (§25)
+24. **Public-private valuation gap?** What is the private-market valuation of an
+    equivalent company? Is the public one trading at a discount? (§26)
+25. **Actions vs. narrative?** What has the company actually done (capex, build,
+    hire) vs. what media says it is doing? (§27)
+26. **Most-profitable paradox check?** Is the company posting record profits while
+    the stock sells off? If yes → sentiment, not fundamentals. (§28)
+27. **Time-horizon check?** Am I selling because the thesis broke, or because the
+    price dropped? Separate time-horizon noise from structural change. (§29)
+28. **Capex localization?** When a hyperscaler announces a facility investment,
+    which local equipment/material suppliers benefit directly? (§30)
 
 Then: confirm current price and fundamentals, weight using
 `track-record.md`, and present as analysis — never as an order.

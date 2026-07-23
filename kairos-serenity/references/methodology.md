@@ -51,6 +51,36 @@ dated example from the corpus. A runnable checklist is at the bottom.
   this as a policy/geopolitical overlay when evaluating AI infra, cyber tooling,
   and China-exposed AI supply-chain names. Source: 2071074680253911267.
 
+- **Retail-capitulation as contrarian bottom indicator.** Jul 16 update: Serenity
+  said "we're close to market bottom on semis from $INTC to $LITE. A good
+  indicator is if everyone on $RDDT blew up their portfolios to $0." This extends
+  §14 (anti-patterns: "ignore Reddit/X sentiment") — when retail sentiment hits
+  extreme despair (portfolios blown up, capitulation posts), treat it as a
+  contrarian signal that the bottom is near, not as a reason to sell. The
+  distinction: ignore sentiment *directionally* during normal volatility; use
+  sentiment *extreme* as a timing signal. Source: 2077784594959725056.
+
+- **Bottom-up fab-capacity revenue modeling template.** Jul 16 update: Serenity
+  published a quantified capacity model for SIVE — "Using 10% of Win's wafer
+  capacity as a low-end allocation (65% yield assumption, $50-$75 ASP): Sivers
+  would support $341-$512M worth of annual array revenue." This extends §2
+  (OSINT supply-chain mapping) with a reusable formula: `Annual Revenue =
+  Foundry Capacity × Allocation % × Yield % × ASP`. Apply this template to any
+  pre-volume-ramp fabless/fab-lite bottleneck name to estimate forward revenue
+  range before it appears in financials. Source: 2077768896061563339.
+
+- **CEO on-site rebuttal as the strongest misinformation-cycle confirmation
+  (second validation).** Jul 14 update: Jensen Huang flew to Tokyo and personally
+  denied Vera Rubin delay reports — "The reports are not true. Vera Rubin is
+  already in production. Giant amounts of production incoming." This mirrors the
+  Jul 3 SemiAnalysis CPO-delay → NVDA rebuttal → Serenity dip-add pattern (§23).
+  Two occurrences in two weeks form a repeatable template: (1) named research
+  firm/media triggers sector selloff, (2) CEO/company issues personal on-site
+  rebuttal (stronger signal than press release), (3) rebuttal gets less coverage
+  than original report, (4) window opens between rebuttal and price recovery.
+  In-person CEO denial carries more weight than a corporate PR statement — treat
+  it as the highest-confidence rebuttal tier. Source: 2076846994614792663.
+
 ---
 
 ## 1. Bottleneck hunting (the core lens)
@@ -105,6 +135,15 @@ dated example from the corpus. A runnable checklist is at the bottom.
 - **Example:** Ayar Labs quietly removed LITE and MTSI from its website partner
   section, leaving only SIVE (April 2026) — read as Sivers becoming Ayar's
   primary merchant laser supplier, before any press release.
+- **Fab-capacity revenue modeling (Jul 2026 addition):** For fabless/fab-lite
+  bottleneck companies, model forward revenue from known foundry capacity before
+  it shows up in earnings. Template: `Annual Revenue = Foundry Wafer Capacity ×
+  Allocation % × Yield % × ASP`. Jul 16 example: SIVE mapped through Win Semi —
+  10% of Win's capacity, 65% yield, $50-75 ASP → $341-512M annual array revenue.
+  Use conservative allocation assumptions (10% as low-end), verify yield rates
+  against industry benchmarks, and cross-check ASP against comparable components.
+  This turns OSINT supply-chain mapping from qualitative ("SIVE supplies through
+  Win Semi") to quantitative ("$341-512M revenue range at volume").
 
 ## 3. Signed-contract ARR vs. market-cap mismatch
 
@@ -302,6 +341,13 @@ dated example from the corpus. A runnable checklist is at the bottom.
 - **Conflating supply-chain layers** — substrate ≠ epiwafer ≠ feedstock; foundry
   ≠ module. He corrects these constantly.
 - **Reddit/X sentiment** — "IGNORE the sentiment since it's usually wrong."
+  **Exception — retail-capitulation as contrarian bottom indicator (Jul 2026):**
+  When retail/Reddit sentiment reaches *extreme despair* — portfolios blown up,
+  capitulation posts, "$0" memes — Serenity treats it as a contrarian signal that
+  the bottom is near. Jul 16: "We're close to market bottom on semis from $INTC
+  to $LITE. A good indicator is if everyone on $RDDT blew up their portfolios to
+  $0." The distinction: ignore sentiment *directionally* during normal
+  volatility; use sentiment *extremes* as a timing signal for entry.
 - **Replying to disinformation campaigns** — May 30 SIVE follow-up: when an
   account spreads apparent disinformation, report it for spam and block it;
   replying only adds engagement.
@@ -535,10 +581,21 @@ Then: confirm current price and fundamentals, weight using
   release, earnings call, executive statement), (3) if rebutted and price hasn't
   recovered → add to position. The edge is in sourcing speed — most investors
   trade on the report headline, not the rebuttal.
-- **Example:** Jul 2026 SemiAnalysis published two back-to-back reports claiming
+- **Example 1 (Jul 3):** SemiAnalysis published two back-to-back reports claiming
   CPO delays, triggering a photonics crash. NVDA refuted both: "Our roadmap is
   intact." Serenity added to optical positions during the window between
   rebuttal and price recovery, calling it "one of the dumbest thematic selloffs."
+- **Example 2 (Jul 14) — second validation, establishing the pattern:** Reports
+  claimed NVDA Vera Rubin was delayed. Jensen Huang flew to Tokyo and personally
+  denied: "The reports are not true. Vera Rubin is already in production. Giant
+  amounts of production incoming." Serenity read this as damage control and
+  followed up Jul 16 calling the semiconductor bottom. Pattern now confirmed:
+  CEO-level, in-person rebuttal is the strongest form — higher weight than a
+  corporate PR statement. Two occurrences in two weeks establish this as
+  repeatable: (1) named party triggers sector selloff, (2) CEO issues personal
+  on-site denial, (3) rebuttal gets less coverage than original report, (4)
+  window opens between rebuttal and price recovery. When the rebuttal comes from
+  the CEO in person rather than a press release, treat it as tier-1 confirmation.
 
 ## 24. Indiscriminate selloff test
 

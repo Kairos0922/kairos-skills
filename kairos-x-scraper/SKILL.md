@@ -10,7 +10,7 @@ allowed-tools:
   - Grep
   - Glob
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # kairos-x-scraper
@@ -70,7 +70,14 @@ metadata:
 ### Step 3：执行
 
 ```bash
+# 默认（6小时内数据不重新抓取）
 python3 scripts/fetch_tweets.py <handle> --days 3
+
+# 需要最新数据（15分钟内数据也重新抓取）
+python3 scripts/fetch_tweets.py <handle> --days 3 --freshness realtime
+
+# 中国网络环境
+python3 scripts/fetch_tweets.py <handle> --days 3 --insecure
 ```
 
 常用参数：
@@ -79,17 +86,21 @@ python3 scripts/fetch_tweets.py <handle> --days 3
 |------|------|
 | `--days N` | 往前 N 天（默认 3） |
 | `--months N` | 往前 N 月 |
-| `--force` | 忽略已有数据，强制重抓 |
+| `--freshness LEVEL` | 新鲜度要求：`realtime`(15min) / `recent`(6h默认) / `daily`(24h) / `any`(有数据就跳过) |
+| `--force` | 无条件强制重抓 |
+| `--insecure` | 禁用 SSL 证书验证（防火墙环境） |
 | `--user-query-id ID` | 手动指定 query ID（自动发现失败时） |
 | `--tweets-query-id ID` | 同上 |
 
 ### Step 4：交付结果
 
-- **"已有数据足够新"** → 秒级返回，直接告诉用户
+- **"已有数据足够新"** → 秒级返回，直接告诉用户；如需最新数据可用 `--freshness realtime`
 - **新增 N 条** → 告知新增数、总计、日期范围
-- **401** → auth_token 过期，回到获取教程
-- **429 / 限流** → 脚本自动等，告知用户耐心
-- **query ID 全部失败** → 引导用户手动获取
+- **401** → auth_token 过期，引导用户重新获取
+- **429 / 限流** → 自动退避重试（最多3次），最终告知用户
+- **网络错误** → 自动重试+降级，给出明确错误类型和修复建议（如 `--insecure`）
+- **query ID 全部失败** → 自动使用本地缓存，缓存也无则引导用户手动获取
+- **退出码**：0=正常, 1=认证/配置错误需人工处理, 2=降级运行（部分功能不可用）
 
 ---
 

@@ -12,9 +12,43 @@ from datetime import datetime, timedelta, timezone
 
 try:
     import requests
+    import urllib3
 except ImportError:
     print("❌ 缺少 requests 库。运行: pip3 install requests")
     sys.exit(1)
+
+# ---- 错误分类体系 (Class F) ----
+class ScraperError(Exception):
+    """基础异常，携带退出码"""
+    def __init__(self, msg, exit_code=1):
+        super().__init__(msg)
+        self.exit_code = exit_code
+
+class NetworkError(ScraperError):
+    """网络不可达（ConnectionError/Timeout/SSLError/DNS）"""
+    def __init__(self, msg, original=None):
+        hint = ""
+        if isinstance(original, requests.exceptions.SSLError):
+            hint = "  💡 尝试加 --insecure 绕过 SSL 验证"
+        elif isinstance(original, requests.exceptions.ConnectionError):
+            hint = "  💡 检查网络连接或代理设置"
+        elif isinstance(original, requests.exceptions.Timeout):
+            hint = "  💡 网络超时，可重试"
+        super().__init__(f"🌐 网络错误: {msg}{hint}", exit_code=2)
+        self.original = original
+
+class AuthError(ScraperError):
+    """认证失败（401 / token过期）"""
+    def __init__(self, msg):
+        super().__init__(f"🔑 认证失败: {msg}\n   💡 请重新获取 auth_token 和 ct0，写入 {CONFIG_PATH}", exit_code=1)
+
+class RateLimitError(ScraperError):
+    """限流（429）"""
+    def __init__(self, msg):
+        super().__init__(f"⏳ 限流: {msg}", exit_code=2)
+
+# 抓取统计（Class F: 不再静默吞错误）
+_stats = {"skipped_parse": 0, "retries": 0, "degraded": False, "degraded_reason": ""}
 
 BEARER = "AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"
 CONFIG_PATH = os.path.expanduser("~/.kairos/kairos-x-scraper-config.json")
@@ -26,6 +60,9 @@ parser.add_argument("handle", help="@handle")
 parser.add_argument("--days", type=int, default=3, help="往前几天（默认3）")
 parser.add_argument("--months", type=int, default=None, help="往前几月（会覆盖--days）")
 parser.add_argument("--force", action="store_true", help="强制抓取，忽略已有数据")
+parser.add_argument("--insecure", action="store_true", help="禁用 SSL 证书验证（防火墙/中国网络环境）")
+parser.add_argument("--freshness", choices=["realtime","recent","daily","any"], default="recent",
+                    help="新鲜度要求: realtime(15min)/recent(6h默认)/daily(24h)/any(跳过不检查)")
 parser.add_argument("--user-query-id")
 parser.add_argument("--tweets-query-id")
 args = parser.parse_args()
@@ -73,6 +110,7 @@ def load_existing():
                     except ValueError:
                         pass
                 except json.JSONDecodeError:
+                    _stats["skipped_parse"] += 1
                     continue
     return ids, newest
 
@@ -168,19 +206,37 @@ def _dedup_file(path):
     with open(path, "w") as f:
         f.writelines(lines)
 
-# ---- 增量判断 ----
+# ---- 新鲜度策略 (Class B) ----
+FRESHNESS_THRESHOLDS = {
+    "realtime": 0.25,   # 15 分钟——交易/评估场景
+    "recent":    6,      # 6 小时——一般查询（默认）
+    "daily":    24,      # 24 小时——批量归档
+    "any":      None,    # 不检查——有数据就跳过
+}
 existing_ids, newest_existing = load_existing()
 
 # 每次执行都归档（合并旧日文件→月文件，旧月文件→年文件）
 archive()
 
-if not args.force and newest_existing:
-    age_hours = (datetime.now(timezone.utc) - newest_existing).total_seconds() / 3600
-    if age_hours < args.days * 24:
-        print(f"✅ 已有数据足够新（{age_hours:.0f}小时前），无需重复抓取。")
-        print(f"   目录: {DATA_DIR}")
-        print(f"   已有: {len(existing_ids)} 条（按日分文件）")
-        sys.exit(0)
+if not args.force:
+    threshold_hours = FRESHNESS_THRESHOLDS.get(args.freshness)
+    if threshold_hours is not None and newest_existing:
+        age_hours = (datetime.now(timezone.utc) - newest_existing).total_seconds() / 3600
+        if age_hours < threshold_hours:
+            freshness_labels = {"realtime": "≤15分钟", "recent": "≤6小时", "daily": "≤24小时"}
+            label = freshness_labels.get(args.freshness, f"≤{threshold_hours:.0f}h")
+            print(f"✅ 已有数据足够新（{age_hours:.0f}小时前 < {label}阈值），无需重复抓取。")
+            print(f"   目录: {DATA_DIR}")
+            print(f"   已有: {len(existing_ids)} 条（按日分文件）")
+            print(f"   💡 需要强制刷新？加 --force 或 --freshness realtime")
+            sys.exit(0)
+    elif threshold_hours is None:  # "any" 模式
+        if newest_existing:
+            age_hours = (datetime.now(timezone.utc) - newest_existing).total_seconds() / 3600
+            print(f"✅ freshness=any: 已有数据（{age_hours:.0f}小时前），跳过抓取。")
+            print(f"   目录: {DATA_DIR}")
+            print(f"   已有: {len(existing_ids)} 条（按日分文件）")
+            sys.exit(0)
 
 # 有旧数据 → 只抓增量（从最新推文日期起）
 if newest_existing:
@@ -202,31 +258,85 @@ if not AUTH_TOKEN or not CT0:
     print(MSG_NO_TOKEN)
     sys.exit(1)
 
-# ---- session ----
-session = requests.Session()
-session.headers.update({
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-    "Accept-Language": "en-US,en;q=0.9",
-})
+# ---- 网络层 (Class A: 集中化 session + 异常处理) ----
+def create_session():
+    """创建配置好的 requests Session（SSL/代理/UA 集中管理）"""
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+    })
+    if args.insecure:
+        session.verify = False
+        urllib3.disable_warnings()
+    # 代理支持（环境变量 HTTP_PROXY / HTTPS_PROXY 由 requests 自动读取）
+    return session
 
-def api_get(url, params=None):
-    for attempt in range(3):
-        resp = session.get(url, params=params, timeout=30)
-        if resp.status_code == 429:
-            wait = min(30 * (attempt + 1), 90)
-            print(f"   ⏳ 限流 {wait}s...")
-            time.sleep(wait)
-            continue
-        return resp
-    return resp
+def safe_request(method, url, **kwargs):
+    """
+    带重试+异常分类的统一网络请求（替代原 api_get）。
+    返回 requests.Response，网络错误抛出 NetworkError/AuthError。
+    """
+    timeout = kwargs.pop("timeout", 30)
+    max_retries = kwargs.pop("max_retries", 3)
+    last_error = None
+
+    for attempt in range(max_retries):
+        try:
+            resp = session.request(method, url, timeout=timeout, **kwargs)
+            if resp.status_code == 429:
+                wait = min(30 * (attempt + 1), 90)
+                print(f"   ⏳ 限流 {wait}s...")
+                time.sleep(wait)
+                _stats["retries"] += 1
+                continue
+            return resp
+        except (AuthError, ScraperError):
+            raise  # 不重试致命错误
+        except requests.exceptions.SSLError as e:
+            last_error = e
+            if args.insecure:
+                _stats["retries"] += 1
+                continue  # 已 insecure 再重试一次
+            else:
+                raise NetworkError("SSL 验证失败（防火墙阻断？）", original=e)
+        except requests.exceptions.ConnectionError as e:
+            last_error = e
+            if attempt < max_retries - 1:
+                wait = 2 ** attempt
+                print(f"   🔄 连接失败，{wait}s 后重试 ({attempt+1}/{max_retries})...")
+                time.sleep(wait)
+                _stats["retries"] += 1
+                continue
+            raise NetworkError("无法连接到 X.com", original=e)
+        except requests.exceptions.Timeout as e:
+            last_error = e
+            if attempt < max_retries - 1:
+                wait = 2 ** attempt
+                print(f"   🔄 超时，{wait}s 后重试 ({attempt+1}/{max_retries})...")
+                time.sleep(wait)
+                _stats["retries"] += 1
+                continue
+            raise NetworkError("请求超时", original=e)
+        except requests.exceptions.RequestException as e:
+            last_error = e
+            if attempt < max_retries - 1:
+                time.sleep(2)
+                _stats["retries"] += 1
+                continue
+            raise NetworkError(str(e), original=e)
+
+    raise NetworkError(f"重试 {max_retries} 次后仍失败", original=last_error)
+
+session = create_session()
 
 # ---- guest token ----
 print("🔑 guest token...")
-gt = session.post("https://api.x.com/1.1/guest/activate.json",
+gt = safe_request("POST", "https://api.x.com/1.1/guest/activate.json",
                   headers={"Authorization": f"Bearer {BEARER}"}, timeout=20)
 if gt.status_code != 200:
     print(f"❌ guest token 失败 (HTTP {gt.status_code})")
-    sys.exit(1)
+    sys.exit(2)
 
 guest_token = gt.json().get("guest_token", "")
 session.cookies.set("guest_token", guest_token, domain=".x.com")
@@ -241,8 +351,14 @@ session.headers.update({
 # ---- 自动发现 query ID ----
 def discover_query_ids():
     qm = {}
-    resp = session.get("https://x.com/", timeout=30, headers={"Accept": "text/html"})
-    if resp.status_code != 200:
+    try:
+        resp = safe_request("GET", "https://x.com/", timeout=30, headers={"Accept": "text/html"})
+        if resp.status_code != 200:
+            return qm
+    except (NetworkError, AuthError):
+        print("   ⚠️ x.com 首页不可达，跳过自动发现，使用 fallback")
+        _stats["degraded"] = True
+        _stats["degraded_reason"] = "x.com 首页不可达"
         return qm
     html = resp.text
 
@@ -264,15 +380,34 @@ def discover_query_ids():
     for js_url in list(js_urls)[:8]:
         full = f"https://x.com{js_url}" if js_url.startswith("/") else js_url
         try:
-            js_resp = session.get(full, timeout=30, headers={"Accept": "*/*", "Referer": "https://x.com/"})
+            js_resp = safe_request("GET", full, timeout=30, headers={"Accept": "*/*", "Referer": "https://x.com/"})
             if js_resp.status_code != 200: continue
             js = js_resp.text
             for m in re.finditer(r'\{queryId:"([^"]+)",operationName:"([^"]+)"', js):
                 qm[m.group(2)] = m.group(1)
             for m in re.finditer(r'operationName:"([^"]+)",queryId:"([^"]+)"', js):
                 qm[m.group(1)] = m.group(2)
-        except: pass
+        except (NetworkError, Exception):
+            pass
     return qm
+
+# ---- Query ID 本地缓存 (Class A: 第三层保护) ----
+def load_query_cache():
+    cache_path = os.path.join(DATA_BASE, ".query_cache.json")
+    if os.path.exists(cache_path):
+        try:
+            with open(cache_path) as f:
+                return json.load(f)
+        except: pass
+    return {}
+
+def save_query_cache(user_qid, tweets_qid):
+    cache_path = os.path.join(DATA_BASE, ".query_cache.json")
+    try:
+        os.makedirs(DATA_BASE, exist_ok=True)
+        with open(cache_path, "w") as f:
+            json.dump({"UserByScreenName": user_qid, "UserTweets": tweets_qid, "updated": datetime.now(timezone.utc).isoformat()}, f)
+    except: pass
 
 FALLBACK_USER = [
     "2qvSHpkWTMS9i0zJAwDNiA","32pL5BWe_3mEHPq_2bMeiA","G3KGOASz96HQu8jAk6qP2w",
@@ -333,7 +468,7 @@ def fallback_test(endpoint, qids, variables):
         })
         test_toggles = json.dumps({"withArticlePlainText": False})
     for qid in qids:
-        resp = api_get(
+        resp = safe_request("GET",
             f"https://x.com/i/api/graphql/{qid}/{endpoint}",
             params={
                 "variables": json.dumps(variables),
@@ -348,6 +483,15 @@ def fallback_test(endpoint, qids, variables):
 # ---- 确定 query ID ----
 USER_QID = args.user_query_id
 TWEETS_QID = args.tweets_query_id
+
+# 先尝试从本地缓存加载（Class A: 第三层保护）
+query_cache = load_query_cache()
+if not USER_QID and "UserByScreenName" in query_cache:
+    USER_QID = query_cache["UserByScreenName"]
+    print(f"   📦 从缓存加载 UserByScreenName: {USER_QID}")
+if not TWEETS_QID and "UserTweets" in query_cache:
+    TWEETS_QID = query_cache["UserTweets"]
+    print(f"   📦 从缓存加载 UserTweets: {TWEETS_QID}")
 
 if not USER_QID or not TWEETS_QID:
     print("🔍 自动发现 query ID...")
@@ -369,7 +513,7 @@ if not USER_QID:
 
 # ---- 获取用户 ID ----
 print(f"\n🔍 @{HANDLE}...")
-UR = api_get(
+UR = safe_request("GET",
     f"https://x.com/i/api/graphql/{USER_QID}/UserByScreenName",
     params={
         "variables": json.dumps({"screen_name": HANDLE, "withGrokTranslatedBio": True}),
@@ -385,9 +529,12 @@ UR = api_get(
         "fieldToggles": json.dumps({"withPayments": False, "withAuxiliaryUserLabels": True}),
     },
 )
-if UR.status_code == 401: print(MSG_TOKEN_EXPIRED); sys.exit(1)
+if UR.status_code == 401:
+    raise AuthError("auth_token 已过期或无效")
 ud = UR.json()
-if "errors" in ud: print(f"❌ {ud['errors']}"); sys.exit(1)
+if "errors" in ud:
+    print(f"❌ API 错误: {ud['errors']}")
+    sys.exit(2)
 
 ur = ud["data"]["user"]["result"]
 user_id = ur["rest_id"]
@@ -400,7 +547,11 @@ if not TWEETS_QID:
     TWEETS_QID = fallback_test("UserTweets", FALLBACK_TWEETS, {"userId": user_id, "count": 1, "includePromotedContent": True})
     if TWEETS_QID: print(f"   ✅ {TWEETS_QID}")
 if not TWEETS_QID:
-    print("❌ UserTweets 全部失败。"); sys.exit(1)
+    print("❌ UserTweets 全部失败。"); sys.exit(2)
+
+# 保存成功的 query ID 到本地缓存 (Class A)
+if USER_QID and TWEETS_QID:
+    save_query_cache(USER_QID, TWEETS_QID)
 
 # ---- 抓取 ----
 print(f"\n📥 抓取（{RANGE_LABEL}，从 {SINCE_DT.strftime('%Y-%m-%d')} 起）...")
@@ -452,12 +603,18 @@ while page < 500:
          "withQuickPromoteEligibilityTweetFields": True, "withVoice": True}
     if cursor: v["cursor"] = cursor
 
-    resp = api_get(
-        f"https://x.com/i/api/graphql/{TWEETS_QID}/UserTweets",
-        params={"variables": json.dumps(v), "features": FEATURES,
-                "fieldToggles": json.dumps({"withArticlePlainText": False})},
-    )
-    if resp.status_code == 401: print(MSG_TOKEN_EXPIRED); sys.exit(1)
+    try:
+        resp = safe_request("GET",
+            f"https://x.com/i/api/graphql/{TWEETS_QID}/UserTweets",
+            params={"variables": json.dumps(v), "features": FEATURES,
+                    "fieldToggles": json.dumps({"withArticlePlainText": False})},
+        )
+    except NetworkError as e:
+        print(f"⚠️ 网络错误: {e}")
+        _stats["degraded"] = True
+        _stats["degraded_reason"] = str(e)
+        break
+    if resp.status_code == 401: raise AuthError("auth_token 已过期或无效")
     if resp.status_code == 429: print("❌ 限流过度"); break
     if resp.status_code != 200: print(f"❌ HTTP {resp.status_code}"); break
 
@@ -520,9 +677,20 @@ if new_tweets:
     save_new_tweets(new_tweets)
     archive()
 
-# 简短统计
+# ---- 统计报告 (Class F: 不再静默) ----
+total_final = len(existing_ids) + len(new_tweets)
 print(f"\n{'='*50}")
 if new_tweets:
     print(f"✅ 新增 {len(new_tweets)} 条")
-print(f"   📊 {RANGE_LABEL}内: {len(new_tweets)} 条 | 总计: {len(existing_ids) + len(new_tweets)} 条")
+else:
+    print(f"📭 无新推文")
+print(f"   📊 {RANGE_LABEL}内: {len(new_tweets)} 条 | 总计: {total_final} 条")
+if _stats["skipped_parse"] > 0:
+    print(f"   ⚠️ 跳过 {_stats['skipped_parse']} 条 JSON 解析错误")
+if _stats["retries"] > 0:
+    print(f"   🔄 重试 {_stats['retries']} 次")
+if _stats["degraded"]:
+    print(f"   ⚠️ 降级运行: {_stats['degraded_reason']}")
 print(f"   📂 {DATA_DIR}/  (按日分文件)")
+# 退出码: 降级运行 → 2, 正常 → 0
+sys.exit(2 if _stats["degraded"] else 0)

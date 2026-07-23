@@ -4,13 +4,15 @@ description: |
   基于 X 账号 @aleabitoreddit（Serenity）的 AI 供应链瓶颈投资框架，推荐标的、评估股票/基金、诊断持仓组合。触发词："选股"、"推荐标的"、"帮我看看这个基金"、"评估持仓"、"Serenity"、"瓶颈股"、"AI供应链"、"光通信标的"、"这个股票怎么样"、"有没有类似的标的"、"帮我用Serenity框架分析"、"诊断持仓"、"修改定投方案"。每次执行自动抓取 Serenity 最新3天推文，基于实时数据+框架进行评估。
 allowed-tools:
   - Bash(python3 *fetch_tweets.py *)
+  - Bash(python3 *analyze_tweets.py *)
+  - Bash(python3 *config.py *)
   - Read
   - Write
   - WebSearch
   - Grep
   - Glob
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # kairos-serenity
@@ -22,12 +24,24 @@ metadata:
 **强制**：每次被调用时，先用 kairos-x-scraper 抓取 @aleabitoreddit 最近 3 天推文。
 
 ```bash
-python3 .claude/skills/kairos-x-scraper/scripts/fetch_tweets.py aleabitoreddit --days 3
+# 交易/评估场景：始终获取最新数据（15分钟内也重抓）
+python3 .claude/skills/kairos-x-scraper/scripts/fetch_tweets.py aleabitoreddit --days 3 --freshness realtime --insecure
 ```
+
+> `--freshness realtime` 确保评估永远基于最新数据。`--insecure` 解决中国网络环境 SSL 阻断问题。
 
 x-scraper 交付按日/月/年归档的原始推文 JSONL：`~/.kairos/x-scraper/aleabitoreddit/`。
 
-**Serenity 自己从原始推文中读取和提炼**：读最近3天的日文件 → 提取 tickers/signals/themes/insights → 结合 references/ 框架分析。不依赖 x-scraper 做任何提炼。
+**两步提炼流程（Class D 优化：先统计再深入）**：
+
+1. **快速统计**：先跑 analyze_tweets.py 拿结构化基线
+   ```bash
+   python3 .claude/skills/kairos-x-scraper/scripts/analyze_tweets.py \
+     ~/.kairos/x-scraper/aleabitoreddit --days 3 --mode all
+   ```
+   获得：ticker 频率 TOP20、主题分布、多空信号分类
+
+2. **深度分析**：基于统计结果，只深度读相关推文 → 结合 references/ 框架分析
 
 > ⚠️ **铁律：不得在缺少实时推文数据的情况下推测 Serenity 的当前观点。** 如果没有最近数据，告诉用户"无法获取 Serenity 最新推文，评估无法继续"。3天以上无新推文时标注数据间隔风险。
 
@@ -36,6 +50,18 @@ x-scraper 交付按日/月/年归档的原始推文 JSONL：`~/.kairos/x-scraper
 ## 配置文件
 
 路径：`~/.kairos/kairos-serenity-config.json`
+
+**所有配置修改统一走 config.py**（Class C：状态完整性），不再用 Edit 工具直接编辑 JSON：
+
+```bash
+python3 .claude/skills/kairos-serenity/scripts/config.py list       # 列出持仓
+python3 .claude/skills/kairos-serenity/scripts/config.py validate   # 校验完整性
+python3 .claude/skills/kairos-serenity/scripts/config.py add <code> --name "..." --market QDII --amount "200/日"
+python3 .claude/skills/kairos-serenity/scripts/config.py update <code> --status active
+python3 .claude/skills/kairos-serenity/scripts/config.py remove <code>
+```
+
+每次修改自动：备份旧文件 → 原子写入 → 读回校验。
 
 ```json
 {
@@ -238,10 +264,30 @@ x-scraper 交付按日/月/年归档的原始推文 JSONL：`~/.kairos/x-scraper
 | 用户说了什么 | 记录字段 |
 |-------------|---------|
 | "我只买A股" | `market: "A股"` |
+| "只买QDII"/"QDII" | `market: "QDII"` |
 | "场外基金" | `fund_type: "场外"` |
-| "定投" | `investment_style: "定投"` |
+| "定投"/"日定投" | `investment_style: "定投"` |
 | "不要一次性买入" | `notes: "..."` |
 | "我能承受高风险" | `risk_tolerance: "high"` |
+| "排除A股"/"不买港股" | `exclude: "..."` |
+| "暂停"/"限购" | 更新 holdings status（非偏好） |
+
+### 基金持仓缓存
+
+holdings 中可缓存基金季报数据，避免每次 WebSearch：
+
+```json
+"012922": {
+  ...
+  "portfolio": {
+    "as_of": "2026-Q2",
+    "fetched": "2026-07-23",
+    "top10": [...]
+  }
+}
+```
+
+超过 14 天自动刷新 WebSearch，否则直接用缓存。
 
 下次执行时先检查已有配置，跳过已记录的问题。
 
@@ -257,9 +303,32 @@ x-scraper 交付按日/月/年归档的原始推文 JSONL：`~/.kairos/x-scraper
 
 ## References
 
-| 文件 | 用途 | 何时读 |
-|------|------|--------|
-| `references/methodology.md` | 30条原则 + 28项checklist | 评估标的时 |
-| `references/supply-chain-map.json` | AI 供应链各层级 → 对应公司 | 推荐/评估时 |
-| `references/ticker-theses.md` | Serenity 历史论点（每个标的） | 评估标的时 |
-| `references/track-record.md` | 历史推荐 + 验证状态 | 评估标的时 |
+### 分层加载策略（Class D：上下文效率）
+
+不再每次全量加载5个文件。按三层按需加载：
+
+**L1 骨架（始终加载，~3K tokens）**：
+- `references/supply-chain-map.json`（公司层位 + Serenity stance）
+
+**L2 标的详情（按需加载）**：
+- `references/ticker-theses.md` → 仅 grep/Read 基金持仓中涉及的 ticker 段落
+- `references/track-record.md` → 仅 grep 相关日期范围条目
+
+**L3 方法论（仅在详细评分时加载）**：
+- `references/methodology.md` 的 checklist 部分（§15-§28）
+- `references/chain_map.md`（供应链详细描述）
+
+### 数据陈旧度检查
+
+读取 references 时检查最后更新日期。如果 > 7 天，在输出中标注：
+> ⚠️ references 数据截止 X 月 X 日，最新推文可能包含未归档的新观点。
+
+### 文件清单
+
+| 文件 | 用途 | 加载层 |
+|------|------|:---:|
+| `references/supply-chain-map.json` | AI 供应链各层级 → 对应公司 | L1 |
+| `references/ticker-theses.md` | Serenity 历史论点（每个标的） | L2 |
+| `references/track-record.md` | 历史推荐 + 验证状态 | L2 |
+| `references/methodology.md` | 30条原则 + 28项checklist | L3 |
+| `references/chain_map.md` | 供应链详细 Mermaid 图 | L3 |

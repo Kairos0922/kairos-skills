@@ -39,6 +39,11 @@ dated example from the corpus. A runnable checklist is at the bottom.
 28. [Most-profitable paradox](#28-most-profitable-paradox)
 29. [Time-horizon arbitrage](#29-time-horizon-arbitrage)
 30. [Capex-localization second-order](#30-capex-localization-second-order)
+31. [Token Expenditure Index as Capex cycle leading indicator](#31-token-expenditure-index-as-capex-cycle-leading-indicator)
+32. [GPU rental forward curve as supply/demand signal](#32-gpu-rental-forward-curve-as-supplydemand-signal)
+33. [Compute market fragmentation as bottleneck diffusion](#33-compute-market-fragmentation-as-bottleneck-diffusion)
+34. [Memory super-cycle + efficiency innovation paradox](#34-memory-super-cycle--efficiency-innovation-paradox)
+35. [Bayesian updating + non-consensus views + intellectual humility — the cognitive OS](#35-bayesian-updating--non-consensus-views--intellectual-humility--the-cognitive-os)
 
 ---
 
@@ -80,6 +85,96 @@ dated example from the corpus. A runnable checklist is at the bottom.
   than original report, (4) window opens between rebuttal and price recovery.
   In-person CEO denial carries more weight than a corporate PR statement — treat
   it as the highest-confidence rebuttal tier. Source: 2076846994614792663.
+
+- **Token Expenditure Index as Capex cycle leading indicator.** Jul 26 update:
+  Silicon Data's model-mix-weighted Token price index is essentially an
+  expenditure-weighted price index — AI's equivalent of PCE, not CPI. It reflects
+  consumer *substitution behavior* (shifting from expensive frontier models to
+  cheaper alternatives), not just price changes. The index peaked in early June
+  2026, marking the transition from "Token Maxing" (spend freely to explore) to
+  "Token Efficiency" (route intelligently by task value). This turning point
+  coincided with AI beneficiary and semiconductor index inflection points. Key
+  interpretive rule: rising ≠ bullish, falling ≠ bearish — must distinguish
+  substitution-driven decline (positive: more tokens consumed as efficiency
+  improves) from demand-contraction decline (negative: fewer tokens consumed).
+  Use as a macro overlay before evaluating any AI hardware exposure. Source:
+  Silicon Data market report, Jul 2026.
+
+- **GPU rental forward curve structure as supply/demand signal.** Jul 26 update:
+  GPU lease forward curves encode the market's real-time supply/demand balance.
+  Backwardation (Nov 2025): cloud providers offered long-term discounts → ample
+  supply. Contango (by Mar 2026): entire curve shifted up, long end flattened and
+  tilted toward contango → providers refused long locks, actively raised prices.
+  By Jul 20 2026, 1-year rates rose monotonically with multiple providers raising
+  simultaneously — not a one-off. Most reliable single indicator: **A100 (5-year-old
+  chip) rental has never declined, only risen** — disproves the "chips depreciate
+  fast" thesis and confirms structural inference demand. When H100 spot dips but
+  B200/H200 continue rising while A100 holds → training workload migration +
+  inference expansion (not demand contraction). Use as a real-time macro check
+  before sizing any AI hardware position. Source: Silicon Data GPU rental index,
+  Jul 2026.
+
+- **Compute market fragmentation as bottleneck diffusion.** Jul 26 update:
+  Current compute demand is highly concentrated (OpenAI + Anthropic ≈ 50% of
+  demand), but three forces drive fragmentation: (1) open-source model
+  commoditization lets enterprises retain sovereignty via model substitutability,
+  routing low-value tasks to cheap open models and high-value tasks to frontier
+  intelligence; (2) inference share rising, runnable on smaller clusters and
+  smaller clouds closer to users; (3) new cloud providers use futures to lock
+  revenue while buyers hedge risk — the same futures/derivatives market structure
+  that evolved in crude oil and agriculture. Fragmentation means bottlenecks
+  diffuse: from one mega-datacenter choke to many distributed small-cloud chokes
+  → optical, laser, memory, networking beneficiaries widen. Cloud providers resist
+  the "commodity" label, but substitutability exists — otherwise they could never
+  win customers from competitors. Source: Silicon Data analysis, Jul 2026.
+
+- **Memory super-cycle + efficiency innovation paradox.** Jul 26 update: Memory
+  is GPU's input; longer contexts, longer conversations, and multi-modal data
+  explode memory demand while supply lags. Memory makers currently enjoy ~85%
+  gross margins — structurally unsustainable beyond ~2 years. But efficiency
+  innovations (Kimi's algorithmic breakthrough breaking linear memory-to-context
+  relationship) lower usage barriers → more usage → Jevons paradox. Price ×
+  quantity framework: price compresses, quantity explodes, everyone still does
+  well. This extends §28 (Most-Profitable Paradox): Samsung +1803% operating
+  profit, -7% stock — the market prices the margin compression before it happens.
+  Direction is clear (memory demand grows relentlessly), timing is not — priced
+  on 2nd/3rd derivatives. More likely to surprise to the upside because every
+  efficiency gain increases willingness to use models more intensively, generating
+  longer contexts and more stored data. Source: Silicon Data memory analysis +
+  Serenity's Samsung observation, Jul 2026.
+
+- **Enterprise AI adoption J-curve.** Jul 26 update: Small companies adopt AI
+  fastest (least process friction, employees report transformed workflows and
+  significant productivity gains), but their dollar volume is limited — explaining
+  why aggregate productivity statistics don't yet show the impact. Large
+  enterprises need time to find workflows and build orchestration layers. Token
+  prices falling to the point where enterprises can "let models run freely without
+  obsessing over token budgets" enables the real Token Maxing — embedding AI into
+  workflows, building data sovereignty and orchestration, turning AI into product
+  upgrades rather than being squeezed by foundation model providers. The adoption
+  curve is a J-curve: pace likely slower than markets expect, but signals will
+  become clearer over the next few quarters. China's open-source models are nearly
+  free partly because Chinese enterprises historically won't pay for SaaS, but
+  they increasingly pay for cloud — the monetization path exists. US-China
+  decoupling means both sides invest more in independent AI supply chains,
+  roughly doubling total compute/hardware demand. Source: Silicon Data analysis,
+  Jul 2026.
+
+- **Bayesian updating + non-consensus views + intellectual humility as the
+  cognitive operating system.** Jul 26 meta-analysis: these three concepts form
+  a unified cognitive OS underlying all 34 principles. Intellectual humility
+  (acknowledging you might be wrong, sizing accordingly) is the prerequisite
+  that enables Bayesian updating (adjusting probability distributions
+  proportional to evidence strength, not binary buy/sell). Bayesian updating
+  produces non-consensus views (seeing evidence the market hasn't priced, or
+  analyzing shared evidence with a superior framework). The cycle: humility →
+  update → non-consensus → position → repeat. Key operational rules: (a) express
+  uncertainty through position size, not words; (b) distinguish "I'm wrong" from
+  "the market temporarily disagrees"; (c) symmetric attribution — don't
+  attribute wins to skill and losses to luck. This extends §13 (conviction
+  tiering) and §22 (starter-position scaling) by making explicit *why* those
+  position-sizing rules work — they are the operational expression of Bayesian
+  reasoning under uncertainty. Source: framework meta-analysis, Jul 2026.
 
 ---
 
@@ -727,6 +822,302 @@ Then: confirm current price and fundamentals, weight using
 
 ---
 
+## 31. Token Expenditure Index as Capex cycle leading indicator
+
+- **What:** A model-mix-weighted Token price index — AI's equivalent of PCE
+  (expenditure-weighted, allowing substitution between similar alternatives),
+  not CPI (fixed basket). It tracks how much users actually *spend* per token,
+  reflecting both price changes and consumer substitution behavior.
+- **Signal:** The index peaked in early June 2026, marking the transition from
+  "Token Maxing" (spend freely to explore use cases) to "Token Efficiency"
+  (route intelligently by task value). This peak coincided with AI beneficiary
+  and semiconductor index turning points — the index is a **leading indicator**
+  for Capex-cycle sentiment shifts, not a coincident one.
+- **Apply:** Before evaluating any AI hardware exposure, check the Token
+  Expenditure Index trend:
+  - Rising → Capex expansion narrative unchallenged, upstream bottlenecks benefit
+  - Peaking/falling → First ask: substitution or contraction?
+    - Substitution-driven (cheaper models gaining share, total tokens consumed
+      still growing) → positive for inference demand, neutral-to-positive
+    - Contraction-driven (total token consumption declining) → Capex 2nd
+      derivative turns negative, upstream under pressure
+  - The index covers only a corner of the market (developer platforms, SMBs) —
+    it skews toward more price-sensitive users than enterprise hyperscaler
+    customers, giving it **leading-indicator** properties: SMBs shift behavior
+    before large enterprises do.
+- **Caveat:** This is not a long-term bearish signal. Rising ≠ bullish, falling ≠
+  bearish — just as inflation going higher or lower isn't inherently good or bad.
+  The transition between phases is inherently bumpy; there may be a vacuum period
+  where current-paradigm Capex ROI hasn't materialized fast enough while the
+  next paradigm (enterprise workflow embedding) hasn't yet scaled.
+- **Example:** Jun 2026: Token Expenditure Index peaked. Jul 2026: AI beneficiary
+  stocks and semiconductor indices corrected. The trigger wasn't demand
+  destruction — it was the market repricing Capex 2nd-derivative expectations as
+  Token Efficiency replaced Token Maxing. The actual driver: intelligent routing
+  (simple tasks → cheap models, complex tasks → frontier models), not demand
+  contraction.
+
+## 32. GPU rental forward curve as supply/demand signal
+
+- **What:** GPU lease forward curves encode real-time supply/demand balance in
+  the compute market, analogous to commodity futures curves. The curve shape
+  (backwardation vs. contango) is a pure market signal — it aggregates
+  information from cloud providers, AI labs, and enterprises negotiating actual
+  lease terms.
+- **Signal:**
+  - **Backwardation (Nov 2025):** Downward-sloping curve. Cloud providers offer
+    long-term discounts because supply is ample and they want to lock in tenants.
+    Signal: compute supply ≥ demand.
+  - **Contango (Mar-Jul 2026):** Upward-sloping or flat curve. Providers refuse
+    long-term discounts, let short-term contracts roll off, and actively seek
+    price increases across all tenors. Signal: compute supply < demand.
+  - **Most reliable single indicator: A100 rent.** A100 is a 5-year-old chip.
+    If its spot rental price holds or rises, inference demand is structurally
+    strong — disproving "GPUs depreciate fast." A100 has never declined.
+  - **Cross-chip divergence:** H100 spot dipping while B200/H200 continue rising
+    and A100 holds → training workloads migrating to newer chips while inference
+    expands across the fleet. Not a demand contraction signal.
+- **Apply:** Before sizing any AI hardware position:
+  1. Check curve shape: contango = supply shortage, upstream bottlenecks benefit
+  2. Check A100 trend: still rising/holding = inference demand intact
+  3. Check 1-year rate trend: monotonically rising with multiple providers
+     raising simultaneously = structural shortage, not one-off squeeze
+  4. If curve is contango + A100 holding + 1-year monotonically rising → full
+     confidence in upstream bottleneck thesis
+  5. If curve flips to backwardation → re-evaluate supply/demand balance
+- **Example:** Jul 20 2026: 1-year GPU lease rate hit new high with multiple
+  providers raising simultaneously. Despite weeks of bearish narratives (Meta
+  renting out compute, model substitution toward frontier alternatives), the
+  forward curve never declined — it monotonically rose. The curve called
+  bullshit on the narratives.
+
+## 33. Compute market fragmentation as bottleneck diffusion
+
+- **What:** The AI compute market is evolving from extreme concentration
+  (OpenAI + Anthropic ≈ 50% of demand, hyperscalers provide/build most supply)
+  toward fragmentation — more buyers, more sellers, more locations. This
+  structural shift changes *which* bottlenecks matter and *how many* companies
+  benefit.
+- **Signal:** Three fragmentation drivers:
+  1. **Model commoditization:** Open-source models let enterprises retain
+     sovereignty — route simple tasks to cheap open models, complex tasks to
+     frontier models. Value accrues to the orchestration layer, not the model
+     provider.
+  2. **Inference share rising:** Inference can run on smaller clusters closer
+     to users — smaller clouds, edge deployments. Training was concentrated;
+     inference is distributed.
+  3. **Futures/derivatives market emerging:** New cloud providers want to lock
+     future revenue via futures contracts; buyers want to hedge compute price
+     risk. This is the same evolution crude oil and agriculture went through.
+- **Apply:** Fragmentation → bottleneck diffusion. Instead of one mega-datacenter
+  choke point, bottlenecks appear at multiple distributed small-cloud choke
+  points → the beneficiary pool widens:
+  - Optical interconnects: every cluster needs them, not just hyperscaler pods
+  - Lasers (CW DFB): every optical module needs them regardless of deployment size
+  - Memory: every GPU needs HBM/DRAM regardless of who owns the cluster
+  - Networking: smaller clusters still need high-bandwidth interconnect
+  - The *number* of bottleneck buyers increases, even if individual order size
+    decreases
+- **Caveat:** Cloud providers resist the "commodity" label, but substitutability
+  exists — otherwise they could never win customers from competitors. The
+  substitution is never perfect, but it doesn't need to be for the market
+  structure to work.
+- **Example:** Silicon Data is building futures contracts for compute — the same
+  financial infrastructure that makes oil and grain markets hedgeable. When
+  derivatives markets emerge for a physical asset, it's a sign the market is
+  fragmenting from bilateral deals toward standardized exchange. This is early
+  but structural.
+
+## 34. Memory super-cycle + efficiency innovation paradox
+
+- **What:** Memory is in a structural super-cycle driven by AI (longer contexts,
+  multi-modal data, inference storage), but the high margins this creates attract
+  efficiency innovations that compress those margins — which then drive even more
+  demand. This is Jevons paradox applied to memory.
+- **Signal:**
+  - Memory makers currently enjoy ~85% gross margins — structurally unsustainable
+    beyond ~2 years
+  - Efficiency innovations (Kimi's algorithmic breakthrough in context-memory
+    relationship) mean memory demand no longer grows linearly with context length
+  - But: cheaper effective memory → more willingness to use models intensively →
+    longer contexts + more stored data → total memory demand still grows
+  - The framework: Price × Quantity. Price compresses, quantity explodes.
+    Everyone still does well, but the *composition* of profits shifts.
+- **Apply:** This extends §28 (Most-Profitable Paradox) with a sector-specific
+  dynamic:
+  - When a memory maker posts blowout profits and the stock sells off → market
+    is pricing the inevitable margin compression, not current earnings
+  - Samsung +1803% operating profit, -7% stock (Jul 2026) is the canonical
+    example of this dynamic in action
+  - Direction is clear (memory demand grows relentlessly with AI), timing is not
+    — everything is priced on 2nd/3rd derivatives
+  - More likely to surprise to the upside: every efficiency gain → more usage →
+    more data → more memory. The efficiency doesn't kill demand; it broadens it.
+- **Related structural overlay — US-China AI decoupling:** Both sides are
+  increasing Capex + state intervention, building independent AI supply chains.
+  Total compute/hardware demand roughly doubles. China's memory capacity will be
+  absorbed by China's own AI demand. The decoupling is a demand multiplier for
+  hardware, not just a geopolitical risk.
+- **Example:** Jul 2026: Samsung became the world's most profitable company
+  (operating profit +1803% YoY, exceeding NVDA and Apple). Stock fell -7%.
+  The market's logic: "we don't think you can keep hiking memory prices." This
+  is the Most-Profitable Paradox (§28) applied to memory specifically, and it
+  will recur for other memory makers entering super-cycle profitability.
+
+---
+
+## 35. Bayesian updating + non-consensus views + intellectual humility — the cognitive OS
+
+- **What:** These three concepts are not standalone tools but a unified cognitive
+  operating system that underlies every other principle in this methodology. They
+  describe *how* to hold and update convictions under deep uncertainty — the
+  meta-layer that explains *why* the position-sizing rules in §13 and §22 work.
+
+### Intellectual humility (the prerequisite)
+
+- **What:** The active acknowledgment that any single conviction can be wrong,
+  operationalized through position sizing rather than verbal hedges.
+- **Operational rules:**
+  1. **Express uncertainty through position size, not words.** Saying "I'm not
+     sure" costs nothing. Holding a 2% position instead of 20% costs real upside.
+  2. **Never go from discovery to full size.** §22's starter-position rule is
+     humility made mechanical: enter small, scale only on confirmation.
+  3. **Even highest conviction ≠ all-in.** §13: "don't have high concentration in
+     small caps." The gap between "highest conviction" and "100% portfolio" is
+     humility — reserving room for unknown unknowns.
+  4. **Use defined-risk instruments when binary.** §12: calls instead of shares
+     on China-export-risk names. Humility about tail risk, not direction.
+- **Anti-pattern:** Confusing humility with indecision. Humility reduces position
+  size; it doesn't prevent entering. An investor who waits for 100% certainty
+  never enters — that's fear, not humility.
+
+### Bayesian updating (the mechanism)
+
+- **What:** Every conviction is a probability distribution, not a binary
+  true/false. New evidence shifts the distribution's center and tightens or
+  widens its spread. The correct response to new evidence is a *proportional*
+  position adjustment, not a binary buy/sell.
+- **The formal structure:**
+  ```
+  Prior: P(thesis is correct) × Position Size
+  New evidence arrives:
+    1. Direction: supports (+) or weakens (−) the thesis?
+    2. Strength: weak / moderate / strong
+    3. Source reliability: OSINT > earnings call > media report > social media
+  Likelihood ratio: P(evidence | thesis true) / P(evidence | thesis false)
+  Posterior: updated P(thesis is correct)
+  Action: adjust position proportionally to ΔP, not to emotion
+  ```
+- **What this looks like in practice — the SIVE example:**
+  | Event | ΔP | Action |
+  |-------|:--:|--------|
+  | Ayar Labs partner page lists only SIVE | +0.15 | Add starter position |
+  | SemiAnalysis says CPO delayed | −0.05 | Hold, no add |
+  | NVDA CEO personally rebuts in Tokyo | +0.10 | Add to position |
+  | Q2 revenue doesn't show volume ramp yet | −0.03 | Hold, timeline shifts right |
+  | Multiple providers raise GPU lease rates simultaneously | +0.05 | Add |
+  - Net: P rose from ~0.50 to ~0.72. Position grew proportionally, not
+    all at once. Serenity never sold because the core thesis (SIVE = sole-source
+    CW DFB laser bottleneck) was never *disconfirmed* — only the *timeline* was
+    questioned.
+- **The trap — anchoring adjustment vs. Bayesian updating:**
+  - Anchoring (wrong): "CEO rebutted → good news → buy more!" (emotional, binary)
+  - Bayesian (correct): "Prior P=0.70. CEO in-person rebuttal is strong evidence.
+    LR ≈ 3:1. Posterior P≈0.85. Add ~15% to position." (proportional, measured)
+- **Key insight:** The most common failure mode is not ignoring new evidence —
+  it's *over-updating* on recent, salient evidence while underweighting the prior.
+  Serenity's §24 (Indiscriminate Selloff Test) is explicitly an anti-over-update
+  mechanism: "all your holdings fell together → not thesis-specific → don't sell."
+
+### Non-consensus views (the output = alpha)
+
+- **What:** A view is non-consensus not because it contradicts popular opinion,
+  but because it is based on evidence or analytical frameworks the consensus
+  doesn't yet possess. Non-consensus ≠ contrarian. Contrarian = opposing for its
+  own sake. Non-consensus = seeing what others haven't seen yet.
+- **Two paths to non-consensus:**
+  - **Path A — Information asymmetry:** You have evidence others don't.
+    - Ayar Labs removes $LITE logo from website → you see it before analysts do
+    - §11 (Institutional Lag): retail OSINT can lead institutions by 4-6 weeks
+    - Alpha source: *discovery speed*
+  - **Path B — Framework asymmetry:** Same evidence, superior analysis.
+    - Photonics crashes 30% on a report. Market reads: "sector is dying."
+    - Serenity reads: §23 (misinformation cycle) + §24 (indiscriminate selloff)
+      → "this is a buying opportunity, not a thesis failure"
+    - Alpha source: *analytical depth*
+- **Non-consensus shelf life — when alpha expires:**
+  | Stage | Signal | Alpha Remaining |
+  |-------|--------|:---:|
+  | Completely unknown | Only you are discussing it | 100% |
+  | Early propagation | X/Twitter followers start echoing | 70% |
+  | Institutional notice | MS/P72 build positions, 13F filings appear | 30% |
+  | Sell-side coverage | Analyst reports published | 10% |
+  | Full consensus | News headlines, retail crowd enters | 0% (or negative) |
+  - §11 operationalized: "treat later analyst upgrades and fund accumulation as
+    *lagging validation*, not new info." The 13F is not a buy signal — it's
+    confirmation that your alpha window is closing.
+- **The risk — you might simply be wrong:**
+  - Non-consensus without intellectual humility is just arrogance with a
+    portfolio. Every non-consensus position must be paired with an explicit
+    disconfirmation criterion: "I will exit or reduce if X happens."
+  - This is what separates Serenity's approach from blind conviction: he names
+    what would change his mind *before* it happens (§13: explicit tiering with
+    exit conditions).
+
+### The unified cycle
+
+```
+INTELLECTUAL HUMILITY
+    "I might be wrong. Size accordingly."
+    ├── Small starter positions (§22)
+    ├── Defined-risk when binary (§12)
+    └── Never all-in on small caps (§13)
+         │
+         ▼
+    BAYESIAN UPDATING
+    "What new evidence exists? How strong? What changes?"
+    ├── OSINT supply-chain signals (§2, §11)
+    ├── Market structure signals (§31-§34)
+    ├── Misinformation cycle check (§23)
+    └── Indiscriminate selloff test (§24)
+         │
+         ▼
+    NON-CONSENSUS VIEWS
+    "What do I see that the market hasn't priced?"
+    ├── Path A: exclusive evidence → 4-6 week lead
+    ├── Path B: superior framework → structural edge
+    └── Track consensus formation → exit when alpha expires
+         │
+         ▼
+    [Loop back to humility — re-examine priors]
+```
+
+- **Apply:** Before every position decision, run the cognitive OS check:
+  1. **Humility:** What am I assuming that could be wrong? What evidence would
+     change my mind? Is my position size proportional to my actual certainty?
+  2. **Bayesian:** What new evidence exists since my last update? Direction?
+     Strength? Source reliability? Am I over-updating on recency?
+  3. **Non-consensus:** What do I believe that the market doesn't? Is my edge
+     Path A (exclusive evidence) or Path B (superior framework)? Where is this
+     view on the consensus-formation timeline?
+  4. **Action:** Adjust position proportionally to ΔP. Document the update so
+     future-you can distinguish "I was wrong" from "the market temporarily
+     disagreed."
+- **Symmetric attribution discipline:**
+  - Loss → first assume you made an error, then look for contrary evidence
+  - Gain → first assume luck participated, then verify your thesis actually
+    materialized
+  - This prevents the most dangerous state: being right for the wrong reason
+    and scaling up conviction on a false understanding of causality.
+- **Example:** Jul 2026 indiscriminate selloff: every holding fell 4-10% in one
+  day across unrelated sectors. Humility: "could I be wrong about all of these
+  simultaneously?" → §24 check → no, uniform selloff across uncorrelated names =
+  macro/liquidity, not thesis failure. Bayesian: no thesis-specific negative
+  evidence arrived. Non-consensus: the market is selling because prices are
+  falling; you're not selling because theses are intact. Action: hold, consider
+  adding to highest-conviction names. This is the cognitive OS executing in real
+  time.
+
 ## 15. The checklist (run this on any new name)
 
 Score a candidate against his lens. The more "yes", the more it fits his style —
@@ -796,6 +1187,31 @@ none of this is a buy signal on its own.
     price dropped? Separate time-horizon noise from structural change. (§29)
 28. **Capex localization?** When a hyperscaler announces a facility investment,
     which local equipment/material suppliers benefit directly? (§30)
+29. **Token Expenditure Index trend?** Is the Token Expenditure Index rising
+    (Capex expansion narrative intact), peaking (transition from Token Maxing to
+    Token Efficiency underway), or falling? If falling: substitution-driven
+    (positive for inference demand) or contraction-driven (negative for upstream)?
+    Treat as leading indicator for Capex-cycle sentiment. (§31)
+30. **GPU forward curve structure?** Contango or backwardation? Is A100 (5-year-old
+    chip) rent holding or rising? Is 1-year rate monotonically rising with multiple
+    providers raising simultaneously? Contango + A100 holding + 1-year rising =
+    structural supply shortage, upstream bottlenecks benefit. (§32)
+31. **Compute market fragmentation trend?** Are we moving toward more distributed
+    compute (more buyers, more sellers, smaller clusters)? If yes → bottleneck
+    beneficiaries widen: optical, laser, memory, networking all benefit from
+    distributed deployment, not just hyperscaler-concentrated deployment. (§33)
+32. **Memory cycle position?** Are memory makers at peak margins with stocks
+    pricing compression? Is an efficiency innovation (Kimi-style) breaking linear
+    demand assumptions? Apply Jevons paradox: efficiency → more usage → more
+    total demand. Direction clear, timing uncertain — price × quantity framework.
+    (§34)
+33. **Cognitive OS check?** Before every position decision: (a) Humility — what
+    am I assuming that could be wrong? Is position size proportional to actual
+    certainty? (b) Bayesian — what new evidence exists? Am I over-updating on
+    recency? (c) Non-consensus — what do I see that the market hasn't priced?
+    Path A (exclusive evidence) or Path B (superior framework)? Where is this
+    view on the consensus-formation timeline? (d) Action — adjust position
+    proportionally to ΔP, not to emotion. (§35)
 
 Then: confirm current price and fundamentals, weight using
 `track-record.md`, and present as analysis — never as an order.
